@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/ReadyPlayerMe/Runtime/Api/V1/Assets/Models/AssetListResponse.cs.meta
 guid: f57b0233039490b4696b84e4bdabd80a
+========
+guid: 2bd9a5f70d5be664782e092acd49a2b2
+>>>>>>>> master:Assets/ReadyPlayerMe/Runtime/API/Characters/CharactersAPI.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
