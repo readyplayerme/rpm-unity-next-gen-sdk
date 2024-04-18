@@ -1,4 +1,4 @@
-﻿namespace ReadyPlayerMe.Phoenix.Data
+﻿namespace ReadyPlayerMe
 {
     public static class Constants
     {

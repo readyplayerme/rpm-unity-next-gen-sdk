@@ -1,14 +1,30 @@
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Phoenix.Data;
 using System.Collections.Generic;
 
 namespace ReadyPlayerMe
 {
+    /*
     public class RefittedAssetEndpoint: EndpointBase
     {
         private const string ENDPOINT = "v1/refitted-assets";
-
+        
+        public async Task<IResponse> Post(IRequest request)
+        {
+            return await WebRequest.Dispatch<RefittedAssetsResponse>(new WebRequestData()
+                {
+                    Url = $"{Constants.BASE_URL}/{ENDPOINT}",
+                    Method = HttpMethod.POST,
+                    Headers = new Dictionary<string, string>()
+                    {
+                        { "Authorization", Constants.TOKEN },
+                        { "Content-Type", "application/json" }
+                    },
+                    Payload = JsonConvert.SerializeObject(request)
+                }
+            );
+        }
+        
         public async Task<IResponse> Get()
         {
             return await WebRequest.Dispatch<RefittedAssetsResponse>(new WebRequestData()
@@ -35,22 +51,6 @@ namespace ReadyPlayerMe
                         { "Authorization", Constants.TOKEN },
                         { "Content-Type", "application/json" }
                     }
-                }
-            );
-        }
-
-        public async Task<IResponse> Post(IRequest request)
-        {
-            return await WebRequest.Dispatch<RefittedAssetsResponse>(new WebRequestData()
-                {
-                    Url = $"{Constants.BASE_URL}/{ENDPOINT}",
-                    Method = HttpMethod.POST,
-                    Headers = new Dictionary<string, string>()
-                    {
-                        { "Authorization", Constants.TOKEN },
-                        { "Content-Type", "application/json" }
-                    },
-                    Payload = JsonConvert.SerializeObject(request)
                 }
             );
         }
@@ -103,4 +103,5 @@ namespace ReadyPlayerMe
             );
         }
     }
+    */
 }
