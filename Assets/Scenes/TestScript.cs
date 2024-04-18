@@ -1,29 +1,65 @@
+using System.Collections.Generic;
+using ReadyPlayerMe.Runtime.Api.V1.Assets;
+using ReadyPlayerMe.Runtime.Api.V1.Assets.Models;
+using ReadyPlayerMe.Runtime.Api.V1.Characters;
+using ReadyPlayerMe.Runtime.Api.V1.Characters.Models;
 using UnityEngine;
-using ReadyPlayerMe.Phoenix;
-using ReadyPlayerMe.Phoenix.Data;
 
 public class TestScript : MonoBehaviour
 {
     private async void Start()
     {
-        var baseModel = new BaseModelsEndpoint();
-        var res = await baseModel.Get();
+        var organizationId = "63eba72b442b6965bf9f1ed2";
         
-        var characters = new CharactersEndpoint();
-        var res2 = await characters.CreateAvatar(new CharactersRequestData
+        var assetApi = new AssetApi();
+        var characterStyleResponse = await assetApi.ListAssetsAsync(new AssetListRequest()
         {
-            organizationBaseModelId = res.data[0].id,
-            organizationId = res.data[0].organizationId
+            Params =
+            {
+                OrganizationId = organizationId,
+                Type = "baseModel"
+            }
+        });
+
+        Debug.Log($"Number of character styles: {characterStyleResponse.Pagination.TotalDocs}");
+        
+        var assetListResponse = await assetApi.ListAssetsAsync(new AssetListRequest()
+        {
+            Params =
+            {
+                OrganizationId = organizationId,
+                ExcludeTypes = "baseModel"
+            }
+        });
+
+        Debug.Log($"Number of assets: {assetListResponse.Pagination.TotalDocs}");
+        
+        var characterApi = new CharacterApi();
+        var characterCreateResponse = await characterApi.CreateCharacterAsync(new CharacterCreateRequest()
+        {
+            Payload = new CharacterCreateRequestBody
+            {
+                OrganizationId = organizationId
+            }
         });
         
-        // var res3 = await characters.PreviewAssetOnCharacter(res2.data.id, res2.data.id);
+        Debug.Log($"New character id: {characterCreateResponse.Data.Id}");
+
+        var characterUpdateResponse = await characterApi.UpdateCharacterAsync(new CharacterUpdateRequest()
+        {
+            CharacterId = characterCreateResponse.Data.Id,
+            Payload = new CharacterUpdateRequestBody()
+            {
+                OrganizationId = organizationId,
+                Assets = new Dictionary<string, string>
+                {
+                    { "baseModel", characterStyleResponse.Data[0].Id },
+                    { assetListResponse.Data[0].Type, assetListResponse.Data[0].Id }
+                }
+            }
+        });
         
-        var refittedAssets = new RefittedAssetEndpoint();
-        var res4 = await refittedAssets.ListEquipableAssets();
-        Debug.Log($"Number of assets: {res4.data.Length}");
-        
-        var res5 = await refittedAssets.ListEquipableAssets("646e76caa993eb77d5a2b831");
-        Debug.Log($"Number of assets in organization [{res2.data.organizationId}]: {res5.data.Length}");
+        Debug.Log($"Updated character url: {characterUpdateResponse.Data.GlbUrl}");
     }
 }
 
