@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe.Phoenix
+namespace ReadyPlayerMe
 {
-    public struct RequestData
+    public struct WebRequestData
     {
         public string Url;
-        public HttpMethod Method;
+        public string Method;
         public string Payload;
         public Dictionary<string, string> Headers;
     }

@@ -2,15 +2,15 @@
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Phoenix
+namespace ReadyPlayerMe
 {
     public static class WebRequest
     {
-        public async static Task<T> Dispatch<T>(RequestData data)
+        public async static Task<T> Dispatch<T>(WebRequestData data)
         {
             using var request = new UnityWebRequest();
             request.url = data.Url;
-            request.method = MethodToString(data.Method);
+            request.method = data.Method;
             request.downloadHandler = new DownloadHandlerBuffer();
 
             if (data.Headers != null)
@@ -37,23 +37,6 @@ namespace ReadyPlayerMe.Phoenix
             T response = JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
         
             return response;
-        }
-        
-        private static string MethodToString(HttpMethod method)
-        {
-            switch (method)
-            {
-                case HttpMethod.GET:
-                    return UnityWebRequest.kHttpVerbGET;
-                case HttpMethod.POST:
-                    return UnityWebRequest.kHttpVerbPOST;
-                case HttpMethod.PUT:
-                    return UnityWebRequest.kHttpVerbPUT;
-                case HttpMethod.DELETE:
-                    return UnityWebRequest.kHttpVerbDELETE;
-                default:
-                    return UnityWebRequest.kHttpVerbGET;
-            }
         }
     }
 }
