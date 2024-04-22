@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ReadyPlayerMe.Runtime.Api.Common;
 
 namespace ReadyPlayerMe.Runtime.Api.V1.Assets.Models
 {
@@ -7,10 +8,10 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Assets.Models
         public AssetListQueryParams Params { get; set; } = new AssetListQueryParams();
     }
 
-    public class AssetListQueryParams
+    public class AssetListQueryParams : PaginationQueryParams
     {
-        [JsonProperty("organizationId")]
-        public string OrganizationId { get; set; }
+        [JsonProperty("applicationId")]
+        public string ApplicationId { get; set; }
         
         [JsonProperty("type")]
         public string Type { get; set; }

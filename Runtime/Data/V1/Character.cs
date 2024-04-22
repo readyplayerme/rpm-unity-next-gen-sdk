@@ -9,8 +9,8 @@ namespace ReadyPlayerMe.Runtime.Data.V1
         [JsonProperty("_id")]
         public string Id { get; set; }
 
-        [JsonProperty("organizationId")]
-        public string OrganizationId { get; set; }
+        [JsonProperty("createdByApplicationId")]
+        public string CreatedByApplicationId { get; set; }
 
         [JsonProperty("glbUrl")]
         public string GlbUrl { get; set; }

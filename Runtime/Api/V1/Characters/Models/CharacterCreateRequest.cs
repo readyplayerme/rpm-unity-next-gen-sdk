@@ -10,8 +10,8 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters.Models
 
     public class CharacterCreateRequestBody
     {
-        [JsonProperty("organizationId")]
-        public string OrganizationId { get; set; }
+        [JsonProperty("applicationId")]
+        public string ApplicationId { get; set; }
         
         [JsonProperty("assets")]
         public IDictionary<string, string> Assets { get; set; }

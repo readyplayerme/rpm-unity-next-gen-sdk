@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GLTFast;
 using ReadyPlayerMe.Runtime.Api.Common;
 using ReadyPlayerMe.Runtime.Api.V1.Characters.Models;
 using UnityEngine.Networking;
@@ -44,20 +45,16 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters
             );
         }
 
-        public virtual async Task<CharacterPreviewResponse> PreviewCharacterAsync(CharacterPreviewRequest request)
+        // TODO: Change this to return a game object
+        public virtual async Task<GltfImport> PreviewCharacterAsync(CharacterPreviewRequest request)
         {
             var queryString = BuildQueryString(request.Params);
 
-            return await Dispatch<CharacterPreviewResponse>(new RequestData<string>
-                {
-                    Url = $"{Settings.ApiBaseUrl}{RESOURCE}/{request.CharacterId}{queryString}",
-                    Method = UnityWebRequest.kHttpVerbGET,
-                    Headers = new Dictionary<string, string>()
-                    {
-                        { "Authorization", Settings.Token }
-                    }
-                }
-            );
+            var gltf = new GltfImport();
+            
+            await gltf.Load($"{Settings.ApiBaseUrl}{RESOURCE}/{request.CharacterId}/preview{queryString}");
+
+            return gltf;
         }
     }
 }
