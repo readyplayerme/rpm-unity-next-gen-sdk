@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Runtime.Api.V1.Assets;
 using ReadyPlayerMe.Runtime.Api.V1.Assets.Models;
+using UnityEngine;
 
 namespace ReadyPlayerMe.Tests.Api.V1
 {
@@ -23,6 +24,8 @@ namespace ReadyPlayerMe.Tests.Api.V1
 
             // Act
             var response = await assetApi.ListAssetsAsync(request);
+            Debug.Log(response.Data[0].Id);
+            Debug.Log(response.Data[0].Type);
 
             // Assert
             Assert.IsNotNull(response);

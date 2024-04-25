@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ReadyPlayerMe.Runtime"
+        "ReadyPlayerMe.Runtime",
+        "glTFast"
     ],
     "includePlatforms": [
         "Editor"
