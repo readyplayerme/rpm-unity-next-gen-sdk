@@ -1,37 +1,61 @@
-using System.Linq;
 using UnityEngine;
-using ReadyPlayerMe.Runtime.Loader;
 
 namespace ReadyPlayerMe.Runtime.Utils
 {
-    public class MeshUtils 
+    public static class MeshUtils 
     {
+        private const string ARMATURE_NAME = "Armature";
+        private const string HIPS_BONE_NAME = "Hips";
+        
         public static void TransferMesh(GameObject source, GameObject target)
         {
-            Renderer[] targetRenderers = target.transform.Find("Armature").GetComponentsInChildren<Renderer>().Where(renderer => renderer.GetComponent<AvatarAttachment>() == null).ToArray();
-            Transform[] bones = (targetRenderers[0] as SkinnedMeshRenderer).bones.Where(bone => bone.GetComponent<AvatarAttachment>() == null).ToArray();
-        
-            foreach (Renderer renderer in targetRenderers)
+            Transform targetArmature = target.transform.Find(ARMATURE_NAME);
+            Transform sourceArmature = source.transform.Find(ARMATURE_NAME);
+            
+            RemoveCurrentMeshes(targetArmature);
+            SetMeshes(targetArmature, sourceArmature);
+            
+            Object.Destroy(source);
+        }
+
+        private static void RemoveCurrentMeshes(Transform targetArmature)
+        {
+            int childCount = targetArmature.childCount;
+
+            for (int i = 0; i < childCount; i++)
             {
-                Object.Destroy(renderer.gameObject);
+                Transform mesh = targetArmature.GetChild(i);
+                if (targetArmature.GetChild(i).name != HIPS_BONE_NAME)
+                {
+                    Object.Destroy(mesh.gameObject);
+                }
             }
+        }
         
-            Renderer[] sourceRenderers = source.transform.Find("Armature").GetComponentsInChildren<Renderer>();
+        private static void SetMeshes(Transform targetArmature, Transform sourceArmature)
+        {
+            Transform rootBone = targetArmature.Find(HIPS_BONE_NAME);
+            Transform[] bones = GetBones(targetArmature);
+            Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
             foreach (Renderer renderer in sourceRenderers)
             {
-                renderer.gameObject.transform.SetParent(target.transform.Find("Armature"));
+                renderer.gameObject.transform.SetParent(targetArmature);
 
-                if (renderer is SkinnedMeshRenderer)
+                if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
                 {
-                    SkinnedMeshRenderer skinnedMeshRenderer = renderer as SkinnedMeshRenderer;
-                    skinnedMeshRenderer.rootBone = target.transform.Find("Armature/Hips");
+                    skinnedMeshRenderer.rootBone = rootBone;
                     skinnedMeshRenderer.bones = bones;
               
                     skinnedMeshRenderer.sharedMesh.RecalculateBounds();
                 }
             }
-            
-            Object.Destroy(source);
+        }
+        
+        private static Transform[] GetBones(Transform targetArmature)
+        {
+            SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
+            Transform[] bones = sampleMesh.bones;
+            return bones;
         }
     }
 }
