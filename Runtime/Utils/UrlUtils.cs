@@ -1,10 +1,14 @@
 using System;
-using UnityEngine;
 
 namespace ReadyPlayerMe.Runtime.Utils
 {
-    public class UrlUtils : MonoBehaviour
+    public static class UrlUtils
     {
+        /// <summary>
+        ///     Get Avatar id from url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public static string GetIdFromUrl(string url)
         {
             Uri.TryCreate(url, UriKind.Absolute, out Uri uri);

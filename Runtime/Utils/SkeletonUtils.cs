@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ReadyPlayerMe.Runtime.Utils
 {
-	public class SkeletonUtils
+	public static class SkeletonUtils
 	{
 		//A static dictionary containing the mapping from joint/bones names in the model
 		//to the names Unity uses for them internally.
@@ -66,16 +66,12 @@ namespace ReadyPlayerMe.Runtime.Utils
 			{ "Spine2", "UpperChest" }
 		};
 
-		/// <summary>
 		/// Create a HumanDescription out of an avatar GameObject. 
 		/// The HumanDescription is what is needed to create an Avatar object
 		/// using the AvatarBuilder API. This function takes care of 
 		/// creating the HumanDescription by going through the avatar's
 		/// hierarchy, defining its T-Pose in the skeleton, and defining
 		/// the transform/bone mapping in the HumanBone array. 
-		/// </summary>
-		/// <param name="avatarRoot">Root of your avatar object</param>
-		/// <returns>A HumanDescription which can be fed to the AvatarBuilder API</returns>
 		private static HumanDescription CreateHumanDescription(GameObject avatarRoot)
 		{
 			HumanDescription description = new HumanDescription()
@@ -87,9 +83,9 @@ namespace ReadyPlayerMe.Runtime.Utils
 			return description;
 		}
 
-		//Create a SkeletonBone array out of an Avatar GameObject
-		//This assumes that the Avatar as supplied is in a T-Pose
-		//The local positions of its bones/joints are used to define this T-Pose
+		// Create a SkeletonBone array out of an Avatar GameObject
+		// This assumes that the Avatar as supplied is in a T-Pose
+		// The local positions of its bones/joints are used to define this T-Pose
 		private static SkeletonBone[] CreateSkeleton(GameObject avatarRoot)
 		{
 			List<SkeletonBone> skeleton = new List<SkeletonBone>();
@@ -111,10 +107,10 @@ namespace ReadyPlayerMe.Runtime.Utils
 			return skeleton.ToArray();
 		}
 
-		//Create a HumanBone array out of an Avatar GameObject
-		//This is where the various bones/joints get associated with the
-		//joint names that Unity understands. This is done using the
-		//static dictionary defined at the top. 
+		// Create a HumanBone array out of an Avatar GameObject
+		// This is where the various bones/joints get associated with the
+		// joint names that Unity understands. This is done using the
+		// static dictionary defined at the top. 
 		private static HumanBone[] CreateHuman(GameObject avatarRoot)
 		{
 			List<HumanBone> human = new List<HumanBone>();
@@ -139,11 +135,10 @@ namespace ReadyPlayerMe.Runtime.Utils
 			return human.ToArray();
 		}
 		
-		///	Apply a skeleton to an avatar GameObject.
-		///	This function will go through the avatar's hierarchy and
-		/// apply the T-Pose to the avatar. It will then create an Avatar
-		/// object out of the avatar and apply it to the avatar's Animator component.
-
+		/// <summary>
+		///		Applies a skeleton to the given Avatar GameObject.
+		/// </summary>
+		/// <param name="source">Avatar GameObject</param>
 		public static void ApplySkeleton(GameObject source)
 		{
 			Transform leftArm = source.transform.Find("Armature/Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm");
@@ -158,9 +153,6 @@ namespace ReadyPlayerMe.Runtime.Utils
 
 			var description = CreateHumanDescription(source);
 			Avatar avatar = AvatarBuilder.BuildHumanAvatar(source, description);
-
-			// save the avatar to the asset database
-			// AssetDatabase.CreateAsset(avatar, "Assets/Avatar.asset");
 
 			Animator animator = source.GetComponent<Animator>();
 			if (animator != null)
