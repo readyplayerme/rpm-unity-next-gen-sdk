@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Runtime.Api.Common;
+using ReadyPlayerMe.Runtime.Api.Common.Models;
 using ReadyPlayerMe.Runtime.Api.V1.Characters.Models;
 using UnityEngine.Networking;
 
@@ -14,7 +15,7 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters
         public virtual async Task<CharacterCreateResponse> CreateCharacterAsync(CharacterCreateRequest request)
         {
             return await Dispatch<CharacterCreateResponse, CharacterCreateRequestBody>(
-                new RequestData<CharacterCreateRequestBody>
+                new ApiRequest<CharacterCreateRequestBody>
                 {
                     Url = $"{Settings.ApiBaseUrl}{RESOURCE}",
                     Method = UnityWebRequest.kHttpVerbPOST,
@@ -31,7 +32,7 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters
         public virtual async Task<CharacterUpdateResponse> UpdateCharacterAsync(CharacterUpdateRequest request)
         {
             return await Dispatch<CharacterUpdateResponse, CharacterUpdateRequestBody>(
-                new RequestData<CharacterUpdateRequestBody>()
+                new ApiRequest<CharacterUpdateRequestBody>()
                 {
                     Url = $"{Settings.ApiBaseUrl}{RESOURCE}/{request.CharacterId}",
                     Method = "PATCH",

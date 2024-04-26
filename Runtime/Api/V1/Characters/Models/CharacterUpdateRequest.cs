@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using ReadyPlayerMe.Runtime.Api.Common.Models;
 
 namespace ReadyPlayerMe.Runtime.Api.V1.Characters.Models
 {

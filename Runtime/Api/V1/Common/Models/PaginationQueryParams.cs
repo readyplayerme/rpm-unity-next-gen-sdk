@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Runtime.Api.Common
+namespace ReadyPlayerMe.Runtime.Api.V1.Common.Models
 {
     public class PaginationQueryParams
     {
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int Limit { get; set; } = 10;
         
         [JsonProperty("page")]
         public int Page { get; set; }

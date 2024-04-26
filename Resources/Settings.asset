@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   ApiBaseUrl: https://api.readyplayer.me/v1/
+  ApplicationId: 
   Token: 

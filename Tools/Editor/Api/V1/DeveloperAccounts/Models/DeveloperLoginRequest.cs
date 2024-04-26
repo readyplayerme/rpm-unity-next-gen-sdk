@@ -1,0 +1,18 @@
+﻿using Newtonsoft.Json;
+
+namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts.Models
+{
+    public class DeveloperLoginRequest
+    {
+        public DeveloperLoginRequestBody Payload { get; set; } = new DeveloperLoginRequestBody();
+    }
+
+    public class DeveloperLoginRequestBody
+    {
+        [JsonProperty("loginId")]
+        public string Email { get; set; }
+        
+        [JsonProperty("password")]
+        public string Password { get; set; }
+    }
+}
