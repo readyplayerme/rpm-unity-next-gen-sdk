@@ -62,7 +62,7 @@ namespace ReadyPlayerMe.Runtime.Loader
                 await gltf.InstantiateSceneAsync(avatar.transform);
                 MeshUtils.TransferMesh(avatar, original);
                 
-                UnityEngine.Object.Destroy(avatar);
+                Object.Destroy(avatar);
             }
 
             return original;
