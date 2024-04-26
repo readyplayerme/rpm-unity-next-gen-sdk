@@ -1,11 +1,11 @@
 using System;
+using UnityEngine;
 using NUnit.Framework;
+using UnityEngine.TestTools;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ReadyPlayerMe.Runtime.Api.V1.Characters;
 using ReadyPlayerMe.Runtime.Api.V1.Characters.Models;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace ReadyPlayerMe.Tests.Api.V1
 {
