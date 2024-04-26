@@ -7,6 +7,11 @@ namespace ReadyPlayerMe.Runtime.Utils
         private const string ARMATURE_NAME = "Armature";
         private const string HIPS_BONE_NAME = "Hips";
         
+        /// <summary>
+        ///     Transfer meshes from source to target GameObject
+        /// </summary>
+        /// <param name="source">New avatar model</param>
+        /// <param name="target">Avatar model existing in the scene</param>
         public static void TransferMesh(GameObject source, GameObject target)
         {
             Transform targetArmature = target.transform.Find(ARMATURE_NAME);
@@ -18,6 +23,7 @@ namespace ReadyPlayerMe.Runtime.Utils
             Object.Destroy(source);
         }
 
+        /// Remove all meshes from the target armature
         private static void RemoveCurrentMeshes(Transform targetArmature)
         {
             int childCount = targetArmature.childCount;
@@ -32,6 +38,7 @@ namespace ReadyPlayerMe.Runtime.Utils
             }
         }
         
+        /// Set meshes from source armature to target armature
         private static void SetMeshes(Transform targetArmature, Transform sourceArmature)
         {
             Transform rootBone = targetArmature.Find(HIPS_BONE_NAME);
@@ -51,6 +58,7 @@ namespace ReadyPlayerMe.Runtime.Utils
             }
         }
         
+        /// Get bones from the target armature
         private static Transform[] GetBones(Transform targetArmature)
         {
             SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
