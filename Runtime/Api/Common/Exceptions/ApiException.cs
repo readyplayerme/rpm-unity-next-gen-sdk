@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReadyPlayerMe.Runtime.Api.Common
+namespace ReadyPlayerMe.Runtime.Api.Common.Exceptions
 {
     public class ApiException : Exception
     {
@@ -10,6 +10,5 @@ namespace ReadyPlayerMe.Runtime.Api.Common
         {
             Error = error;
         }
-
     }
 }
