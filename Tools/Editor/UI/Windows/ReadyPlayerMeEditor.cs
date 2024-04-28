@@ -1,5 +1,7 @@
 ﻿using ReadyPlayerMe.Runtime.Api.V1.Assets;
 using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
+using ReadyPlayerMe.Tools.Editor.Api.V1;
+using ReadyPlayerMe.Tools.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Tools.Editor.Cache;
 using ReadyPlayerMe.Tools.Editor.UI.ViewModels;
@@ -11,9 +13,6 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
 {
     public class ReadyPlayerMeEditor : EditorWindow
     {
-        private DeveloperAccountApi _developerAccountApi;
-        private AssetApi _assetApi;
-
         private DeveloperLoginView _developerLoginView;
         private ApplicationManagementView _applicationManagementView;
 
@@ -26,16 +25,17 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
 
         private async void OnEnable()
         {
-            _developerAccountApi = new DeveloperAccountApi();
-            _assetApi = new AssetApi();
-            _assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
+            var developerAuthApi = new DeveloperAuthApi();
+            var developerAccountApi = new DeveloperAccountApi();
+            var assetApi  = new AssetApi();
+            assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
 
             var settings = Resources.Load<Settings>("Settings");
 
-            var developerLoginViewModel = new DeveloperLoginViewModel(_developerAccountApi);
+            var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
 
-            var projectDetailsViewModel = new ApplicationManagementViewModel(_assetApi, _developerAccountApi, settings);
+            var projectDetailsViewModel = new ApplicationManagementViewModel(assetApi, developerAccountApi, settings);
             _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
 
             if (DeveloperAuthCache.Exists())
@@ -46,7 +46,10 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
         {
             if (!DeveloperAuthCache.Exists())
             {
-                _developerLoginView.Render(async () => { await _applicationManagementView.Init(); });
+                _developerLoginView.Render(async () =>
+                {
+                    await _applicationManagementView.Init();
+                });
                 return;
             }
 

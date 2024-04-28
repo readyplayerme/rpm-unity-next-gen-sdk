@@ -75,7 +75,6 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Views
                     {
                         normal =
                         {
-                            background = Texture2D.grayTexture,
                             textColor = Color.white
                         },
                         margin = new RectOffset(12, 12, 5, 0),

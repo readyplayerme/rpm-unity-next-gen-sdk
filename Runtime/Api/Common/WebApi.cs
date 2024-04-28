@@ -42,8 +42,6 @@ namespace ReadyPlayerMe.Runtime.Api.Common
             request.url = data.Url;
             request.method = data.Method;
             request.downloadHandler = new DownloadHandlerBuffer();
-            
-            Debug.Log(request.url);
 
             if (data.Headers != null)
             {

@@ -40,7 +40,7 @@ namespace ReadyPlayerMe.Runtime.Api.Common
                 return await dispatchRequest(apiRequest);
             
             await _authenticationStrategy.AddAuthToRequestAsync(apiRequest);
-            
+
             var result = await dispatchRequest(apiRequest);
 
             if (result.IsSuccess)
@@ -50,7 +50,7 @@ namespace ReadyPlayerMe.Runtime.Api.Common
                 return result;
 
             var refreshSucceeded = await _authenticationStrategy.TryRefreshAsync(apiRequest);
-
+            
             if (!refreshSucceeded)
                 return result;
            

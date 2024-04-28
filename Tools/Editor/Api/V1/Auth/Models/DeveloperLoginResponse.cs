@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ReadyPlayerMe.Runtime.Api.Common.Models;
 
-namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts.Models
+namespace ReadyPlayerMe.Tools.Editor.Api.V1.Auth.Models
 {
     public class DeveloperLoginResponse : ApiResponse
     {

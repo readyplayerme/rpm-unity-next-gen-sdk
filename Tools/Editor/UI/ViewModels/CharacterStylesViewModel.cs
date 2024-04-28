@@ -5,6 +5,7 @@ using ReadyPlayerMe.Runtime.Api.V1.Assets;
 using ReadyPlayerMe.Runtime.Api.V1.Assets.Models;
 using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
 using ReadyPlayerMe.Runtime.Data.V1;
+using UnityEngine;
 
 namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
 {

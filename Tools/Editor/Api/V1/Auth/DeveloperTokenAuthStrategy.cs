@@ -5,7 +5,7 @@ using ReadyPlayerMe.Runtime.Api.V1.Auth;
 using ReadyPlayerMe.Runtime.Api.V1.Auth.Models;
 using ReadyPlayerMe.Tools.Editor.Cache;
 
-namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts
+namespace ReadyPlayerMe.Tools.Editor.Api.V1.Auth
 {
     public class DeveloperTokenAuthStrategy : IAuthenticationStrategy
     {
@@ -18,8 +18,8 @@ namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts
 
         public Task AddAuthToRequestAsync<T>(ApiRequest<T> request)
         {
-            request.Headers.Add("Authorization",$"Bearer {DeveloperAuthCache.Data.Token}");
-            
+            request.Headers.Add("Authorization",$"Bearer {DeveloperAuthCache.Data?.Token}");
+
             return Task.CompletedTask;
         }
 

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts;
-using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts.Models;
+using ReadyPlayerMe.Tools.Editor.Api.V1.Auth;
+using ReadyPlayerMe.Tools.Editor.Api.V1.Auth.Models;
 using ReadyPlayerMe.Tools.Editor.Cache;
 
 namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
 {
     public class DeveloperLoginViewModel
     {
-        private readonly DeveloperAccountApi _developerAccountApi;
+        private readonly DeveloperAuthApi _developerAuthApi;
         public string Username { get; set; }
 
         public string Password { get; set; }
@@ -17,16 +17,16 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
 
         public string Error { get; private set; }
 
-        public DeveloperLoginViewModel(DeveloperAccountApi developerAccountApi)
+        public DeveloperLoginViewModel(DeveloperAuthApi developerAuthApi)
         {
-            _developerAccountApi = developerAccountApi;
+            _developerAuthApi = developerAuthApi;
         }
 
         public async Task SignIn(Action onSuccess)
         {
             Loading = true;
 
-            var response = await _developerAccountApi.LoginAsync(new DeveloperLoginRequest()
+            var response = await _developerAuthApi.LoginAsync(new DeveloperLoginRequest()
             {
                 Payload = new DeveloperLoginRequestBody
                 {
@@ -42,7 +42,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
                 return;
             }
             
-            DeveloperAuthCache.Data = new Cache.DeveloperAuth()
+            DeveloperAuthCache.Data = new DeveloperAuth()
             {
                 Name = response.Data.Name,
                 Token = response.Data.Token,
