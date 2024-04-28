@@ -3,27 +3,32 @@ using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Runtime.Api.Common;
 using ReadyPlayerMe.Runtime.Api.Common.Models;
+using ReadyPlayerMe.Runtime.Api.V1.Auth.Strategies;
 using ReadyPlayerMe.Runtime.Api.V1.Characters.Models;
 using UnityEngine.Networking;
 
 namespace ReadyPlayerMe.Runtime.Api.V1.Characters
 {
-    public class CharacterApi : WebApi
+    public class CharacterApi : WebApiWithAuth
     {
-        private const string RESOURCE = "characters";
+        private const string Resource = "characters";
 
+        public CharacterApi()
+        {
+            SetAuthenticationStrategy(new ApiKeyAuthStrategy());
+        }
+        
         public virtual async Task<CharacterCreateResponse> CreateCharacterAsync(CharacterCreateRequest request)
         {
             return await Dispatch<CharacterCreateResponse, CharacterCreateRequestBody>(
                 new ApiRequest<CharacterCreateRequestBody>
                 {
-                    Url = $"{Settings.ApiBaseUrl}{RESOURCE}",
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}",
                     Method = UnityWebRequest.kHttpVerbPOST,
                     Payload = request.Payload,
                     Headers = new Dictionary<string, string>()
                     {
                         { "Content-Type", "application/json" },
-                        { "Authorization", Settings.Token }
                     }
                 }
             );
@@ -34,26 +39,24 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters
             return await Dispatch<CharacterUpdateResponse, CharacterUpdateRequestBody>(
                 new ApiRequest<CharacterUpdateRequestBody>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}{RESOURCE}/{request.CharacterId}",
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.CharacterId}",
                     Method = "PATCH",
                     Payload = request.Payload,
                     Headers = new Dictionary<string, string>()
                     {
                         { "Content-Type", "application/json" },
-                        { "Authorization", Settings.Token }
                     }
                 }
             );
         }
-
-        // TODO: Change this to return a game object
+        
         public virtual async Task<GltfImport> PreviewCharacterAsync(CharacterPreviewRequest request)
         {
             var queryString = BuildQueryString(request.Params);
 
             var gltf = new GltfImport();
             
-            await gltf.Load($"{Settings.ApiBaseUrl}{RESOURCE}/{request.CharacterId}/preview{queryString}");
+            await gltf.Load($"{Settings.ApiBaseUrl}/v1/{Resource}/{request.CharacterId}/preview{queryString}");
 
             return gltf;
         }

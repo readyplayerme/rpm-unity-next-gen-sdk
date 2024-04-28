@@ -14,7 +14,7 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Auth
             return await Dispatch<RefreshTokenResponse, RefreshTokenRequestBody>(
                 new ApiRequest<RefreshTokenRequestBody>()
                 {
-                    Url = "https://readyplayer.me/api/auth/refresh",
+                    Url = $"{Settings.ApiBaseAuthUrl}/refresh",
                     Method = UnityWebRequest.kHttpVerbPOST,
                     Headers = new Dictionary<string, string>()
                     {

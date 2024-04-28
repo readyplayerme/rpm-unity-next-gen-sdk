@@ -3,12 +3,12 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ReadyPlayerMe.Tools.Editor.UI.Components.Common
+namespace ReadyPlayerMe.Tools.Editor.UI.Components
 {
     public class ObjectInput
     {
         private Object Value { get; set; }
-        
+
         public void Init(string objectId)
         {
             var assetPath = AssetDatabase.GUIDToAssetPath(objectId);

@@ -1,6 +1,9 @@
-﻿using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts;
+﻿using ReadyPlayerMe.Runtime.Api.V1.Assets;
+using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
+using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Tools.Editor.Cache;
-using ReadyPlayerMe.Tools.Editor.UI.Components;
+using ReadyPlayerMe.Tools.Editor.UI.ViewModels;
+using ReadyPlayerMe.Tools.Editor.UI.Views;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,9 +12,10 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
     public class ReadyPlayerMeEditor : EditorWindow
     {
         private DeveloperAccountApi _developerAccountApi;
+        private AssetApi _assetApi;
 
-        private DeveloperLoginPage _developerLoginPage;
-        private ProjectDetailsPage _projectDetailsPage;
+        private DeveloperLoginView _developerLoginView;
+        private ApplicationManagementView _applicationManagementView;
 
         [MenuItem("Tools/Ready Player Me")]
         public static void Generate()
@@ -23,25 +27,32 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
         private async void OnEnable()
         {
             _developerAccountApi = new DeveloperAccountApi();
+            _assetApi = new AssetApi();
+            _assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
 
-            _developerLoginPage = new DeveloperLoginPage(_developerAccountApi);
-            _projectDetailsPage = new ProjectDetailsPage(_developerAccountApi);
+            var settings = Resources.Load<Settings>("Settings");
 
-            if (DeveloperDetailsCache.Exists())
-                await _projectDetailsPage.Init();
+            var developerLoginViewModel = new DeveloperLoginViewModel(_developerAccountApi);
+            _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
+
+            var projectDetailsViewModel = new ApplicationManagementViewModel(_assetApi, _developerAccountApi, settings);
+            _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
+
+            if (DeveloperAuthCache.Exists())
+                await _applicationManagementView.Init();
         }
 
-        private async void OnGUI()
+        private void OnGUI()
         {
-            if (!DeveloperDetailsCache.Exists())
+            if (!DeveloperAuthCache.Exists())
             {
-                await _developerLoginPage.Render(async () => { await _projectDetailsPage.Init(); });
+                _developerLoginView.Render(async () => { await _applicationManagementView.Init(); });
                 return;
             }
 
             using (new GUILayout.HorizontalScope())
             {
-                GUILayout.Label($"Welcome {DeveloperDetailsCache.Data.Name},", new GUIStyle()
+                GUILayout.Label($"Welcome {DeveloperAuthCache.Data.Name},", new GUIStyle()
                 {
                     normal = new GUIStyleState()
                     {
@@ -62,11 +73,11 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
                         alignment = TextAnchor.MiddleCenter
                     }))
                 {
-                    DeveloperDetailsCache.Delete();
+                    DeveloperAuthCache.Delete();
                 }
             }
 
-            await _projectDetailsPage.Render();
+            _applicationManagementView.Render();
         }
     }
 }

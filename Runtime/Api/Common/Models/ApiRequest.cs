@@ -10,6 +10,6 @@ namespace ReadyPlayerMe.Runtime.Api.Common.Models
         
         public T Payload { get; set; }
 
-        public Dictionary<string, string> Headers { get; set; }
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
     }
 }

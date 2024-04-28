@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d6abe854d9daac4bb2b0d25d21e343c, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  ApiBaseUrl: https://api.readyplayer.me/v1/
+  ApiBaseUrl: https://api.readyplayer.me
+  ApiBaseAuthUrl: https://readyplayer.me/api/auth
   ApplicationId: 
-  Token: 
+  ApiKey: 

@@ -1,21 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ReadyPlayerMe.Runtime.Api.Common;
 using ReadyPlayerMe.Runtime.Api.Common.Models;
-using ReadyPlayerMe.Runtime.Api.V1.Assets.Models;
 using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts.Models;
-using ReadyPlayerMe.Tools.Editor.Cache;
 using UnityEngine.Networking;
 
 namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts
 {
-    public sealed class DeveloperAccountApi : WebApiWithDeveloperTokenRefresh
+    public sealed class DeveloperAccountApi : WebApiWithAuth
     {
+        public DeveloperAccountApi()
+        {
+            SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
+        }
+        
         public async Task<DeveloperLoginResponse> LoginAsync(DeveloperLoginRequest request)
         {
             return await Dispatch<DeveloperLoginResponse, DeveloperLoginRequestBody>(
                 new ApiRequest<DeveloperLoginRequestBody>()
                 {
-                    Url = "https://readyplayer.me/api/auth/login",
+                    Url = $"{Settings.ApiBaseAuthUrl}/login",
                     Method = UnityWebRequest.kHttpVerbPOST,
                     Headers = new Dictionary<string, string>()
                     {
@@ -32,14 +36,8 @@ namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts
 
             return await Dispatch<ApplicationListResponse>(new ApiRequest<string>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}applications{queryString}",
-                    Method = UnityWebRequest.kHttpVerbGET,
-                    Headers = new Dictionary<string, string>()
-                    {
-                        { "Authorization",
-                            $"Bearer {DeveloperDetailsCache.Data.Token}"
-                        }
-                    }
+                    Url = $"{Settings.ApiBaseUrl}/v1/applications{queryString}",
+                    Method = UnityWebRequest.kHttpVerbGET
                 }
             );
         }
@@ -50,28 +48,8 @@ namespace ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts
 
             return await Dispatch<OrganizationListResponse>(new ApiRequest<string>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}organizations{queryString}",
+                    Url = $"{Settings.ApiBaseUrl}/v1/organizations{queryString}",
                     Method = UnityWebRequest.kHttpVerbGET,
-                    Headers = new Dictionary<string, string>()
-                    {
-                        { "Authorization", $"Bearer {DeveloperDetailsCache.Data.Token}" }
-                    }
-                }
-            );
-        }
-        
-        public async Task<AssetListResponse> ListCharacterStylesAsync(AssetListRequest request)
-        {
-            var queryString = BuildQueryString(request.Params);
-            
-            return await Dispatch<AssetListResponse>(new ApiRequest<string>()
-                {
-                    Url = $"{Settings.ApiBaseUrl}phoenix-assets{queryString}",
-                    Method = UnityWebRequest.kHttpVerbGET,
-                    Headers = new Dictionary<string, string>()
-                    {
-                        { "Authorization", Settings.Token }
-                    }
                 }
             );
         }

@@ -1,91 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime.Api.V1.Assets.Models;
-using ReadyPlayerMe.Runtime.Api.V1.Image;
-using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
-using ReadyPlayerMe.Tools.Editor.Api.V1.DeveloperAccounts;
-using ReadyPlayerMe.Tools.Editor.Cache;
-using ReadyPlayerMe.Tools.Editor.UI.Components.Common;
+using ReadyPlayerMe.Tools.Editor.UI.ViewModels;
 using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
-namespace ReadyPlayerMe.Tools.Editor.UI.Components
+namespace ReadyPlayerMe.Tools.Editor.UI.Views
 {
     public class CharacterStylesView
     {
-        private IList<CharacterStyle> _characterStyles;
-        private bool _loading;
+        private readonly CharacterStylesViewModel _viewModel;
+        private IList<CharacterStyleView> _characterStyleViews;
 
-        private readonly DeveloperAccountApi _developerAccountApi;
-
-        public CharacterStylesView(DeveloperAccountApi developerAccountApi)
+        public CharacterStylesView(CharacterStylesViewModel viewModel)
         {
-            _developerAccountApi = developerAccountApi;
+            _viewModel = viewModel;
         }
 
-        public async Task Init()
+        public async Task InitAsync()
         {
-            _loading = true;
+            await _viewModel.Init();
 
-            var settings = Resources.Load<Settings>("Settings");
-
-            if (string.IsNullOrEmpty(settings.ApplicationId))
+            _characterStyleViews = await Task.WhenAll(_viewModel.CharacterStyles.Select(async style =>
             {
-                _characterStyles = new List<CharacterStyle>();
-                _loading = false;
-                return;
-            }
-
-            var response = await _developerAccountApi.ListCharacterStylesAsync(new AssetListRequest
-            {
-                Params = new AssetListQueryParams
-                {
-                    ApplicationId = settings.ApplicationId,
-                    Type = "baseModel"
-                }
-            });
-
-            var imageApi = new ImageApi();
-
-            _characterStyles = (
-                await Task.WhenAll(response.Data.Select(async asset =>
-                    {
-                        var data = CharacterStyleTemplateCache.Data;
-
-                        var stylesCache =
-                            data?.FirstOrDefault(template => template.CharacterStyleId == asset.Id);
-
-                        var obj = new ObjectInput();
-
-                        if (stylesCache == null)
-                            return new CharacterStyle()
-                            {
-                                Id = asset.Id,
-                                Image = await imageApi.DownloadImageAsync(asset.IconUrl),
-                                ObjectInput = obj,
-                                GlbUrl = asset.GlbUrl
-                            };
-
-                        obj.Init(stylesCache.Id);
-
-                        return new CharacterStyle()
-                        {
-                            Id = asset.Id,
-                            Image = await imageApi.DownloadImageAsync(asset.IconUrl),
-                            ObjectInput = obj,
-                            GlbUrl = asset.GlbUrl
-                        };
-                    }
-                ))).ToList();
-
-            _loading = false;
+                var viewModel = new CharacterStyleViewModel();
+                var view = new CharacterStyleView(viewModel);
+                await view.Init(style);
+                return view;
+            }));
         }
 
-        public async Task Render()
+        public void Render()
         {
-            if (_loading)
+            if (_viewModel.Loading)
             {
                 using (new GUILayout.HorizontalScope())
                 {
@@ -115,7 +63,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Components
                 margin = new RectOffset(10, 10, 0, 0)
             });
 
-            if (!_loading && _characterStyles?.Count <= 0)
+            if (!_viewModel.Loading && _viewModel.CharacterStyles?.Count is null or 0)
             {
                 GUILayout.Label("You have no character styles setup for this application.",
                     new GUIStyle(GUI.skin.label)
@@ -153,7 +101,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Components
             {
                 var windowWidth = EditorGUIUtility.currentViewWidth - 18;
 
-                for (var x = 0; x < (_characterStyles.Count / 3) + 1; x++)
+                for (var x = 0; x < (_characterStyleViews?.Count / 3) + 1; x++)
                 {
                     using (new GUILayout.HorizontalScope(new GUIStyle()
                            {
@@ -164,7 +112,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Components
                         {
                             var index = x * 3 + y;
 
-                            if (_characterStyles.Count <= index || _characterStyles[index] == null)
+                            if (_characterStyleViews.Count <= index || _characterStyleViews[index] == null)
                             {
                                 using (new GUILayout.VerticalScope())
                                 {
@@ -173,8 +121,8 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Components
 
                                 continue;
                             }
-
-                            await new CharacterStyleView().Render(_characterStyles[index]);
+                            
+                            _characterStyleViews[index].Render();
                         }
                     }
                 }
