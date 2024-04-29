@@ -62,7 +62,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
             {
                 Loading = false;
                 Applications = new List<Application>();
-                Error = organizationListResponse.Error;
+                Error = applicationListResponse.Error;
                 return;
             }
 

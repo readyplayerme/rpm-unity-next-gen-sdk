@@ -100,7 +100,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Views
             {
                 var windowWidth = EditorGUIUtility.currentViewWidth - 18;
 
-                for (var x = 0; x < (_characterStyleViews?.Count / 3) + 1; x++)
+                for (var x = 0; x < (_characterStyleViews.Count / 3) + 1; x++)
                 {
                     using (new GUILayout.HorizontalScope(new GUIStyle()
                            {

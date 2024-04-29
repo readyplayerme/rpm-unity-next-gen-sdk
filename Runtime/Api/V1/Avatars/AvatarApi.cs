@@ -4,24 +4,24 @@ using GLTFast;
 using ReadyPlayerMe.Runtime.Api.Common;
 using ReadyPlayerMe.Runtime.Api.Common.Models;
 using ReadyPlayerMe.Runtime.Api.V1.Auth.Strategies;
-using ReadyPlayerMe.Runtime.Api.V1.Characters.Models;
+using ReadyPlayerMe.Runtime.Api.V1.Avatars.Models;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Runtime.Api.V1.Characters
+namespace ReadyPlayerMe.Runtime.Api.V1.Avatars
 {
-    public class CharacterApi : WebApiWithAuth
+    public class AvatarApi : WebApiWithAuth
     {
-        private const string Resource = "characters";
+        private const string Resource = "next-gen-avatars";
 
-        public CharacterApi()
+        public AvatarApi()
         {
             SetAuthenticationStrategy(new ApiKeyAuthStrategy());
         }
         
-        public virtual async Task<CharacterCreateResponse> CreateCharacterAsync(CharacterCreateRequest request)
+        public virtual async Task<AvatarCreateResponse> CreateAvatarAsync(AvatarCreateRequest request)
         {
-            return await Dispatch<CharacterCreateResponse, CharacterCreateRequestBody>(
-                new ApiRequest<CharacterCreateRequestBody>
+            return await Dispatch<AvatarCreateResponse, AvatarCreateRequestBody>(
+                new ApiRequest<AvatarCreateRequestBody>
                 {
                     Url = $"{Settings.ApiBaseUrl}/v1/{Resource}",
                     Method = UnityWebRequest.kHttpVerbPOST,
@@ -34,12 +34,12 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters
             );
         }
 
-        public virtual async Task<CharacterUpdateResponse> UpdateCharacterAsync(CharacterUpdateRequest request)
+        public virtual async Task<AvatarUpdateResponse> UpdateAvatarAsync(AvatarUpdateRequest request)
         {
-            return await Dispatch<CharacterUpdateResponse, CharacterUpdateRequestBody>(
-                new ApiRequest<CharacterUpdateRequestBody>()
+            return await Dispatch<AvatarUpdateResponse, AvatarUpdateRequestBody>(
+                new ApiRequest<AvatarUpdateRequestBody>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.CharacterId}",
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}",
                     Method = "PATCH",
                     Payload = request.Payload,
                     Headers = new Dictionary<string, string>()
@@ -50,13 +50,13 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Characters
             );
         }
         
-        public virtual async Task<GltfImport> PreviewCharacterAsync(CharacterPreviewRequest request)
+        public virtual async Task<GltfImport> PreviewAvatarAsync(AvatarPreviewRequest request)
         {
             var queryString = BuildQueryString(request.Params);
 
             var gltf = new GltfImport();
             
-            await gltf.Load($"{Settings.ApiBaseUrl}/v1/{Resource}/{request.CharacterId}/preview{queryString}");
+            await gltf.Load($"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}/preview{queryString}");
 
             return gltf;
         }
