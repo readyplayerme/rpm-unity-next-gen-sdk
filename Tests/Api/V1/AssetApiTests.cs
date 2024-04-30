@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             {
                 Params =
                 {
-                    OrganizationId = "63eba72b442b6965bf9f1ed2",
+                    ApplicationId = "63eba72b442b6965bf9f1ed2",
                     Type = "baseModel"
                 }
             };

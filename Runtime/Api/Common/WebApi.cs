@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ReadyPlayerMe.Runtime.Api.Common.Models;
 using UnityEngine.Networking;
 using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
 using UnityEngine;
@@ -13,12 +13,12 @@ namespace ReadyPlayerMe.Runtime.Api.Common
 {
     public abstract class WebApi
     {
-        private Settings settings;
-        protected Settings Settings => settings ??= Resources.Load<Settings>("Settings");
+        private Settings _settings;
+        protected Settings Settings => _settings ??= Resources.Load<Settings>("Settings");
 
-        protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(RequestData<TRequestBody> data)
+        protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data) where TResponse : ApiResponse, new()
         {
-            var payload = JsonConvert.SerializeObject(new ApiRequestPayload<TRequestBody>()
+            var payload = JsonConvert.SerializeObject(new ApiRequestBody<TRequestBody>()
                 {
                     Data = data.Payload
                 }, new JsonSerializerSettings
@@ -27,7 +27,7 @@ namespace ReadyPlayerMe.Runtime.Api.Common
                 }
             );
 
-            return await Dispatch<TResponse>(new RequestData<string>
+            return await Dispatch<TResponse>(new ApiRequest<string>
             {
                 Headers = data.Headers,
                 Method = data.Method,
@@ -36,7 +36,7 @@ namespace ReadyPlayerMe.Runtime.Api.Common
             });
         }
 
-        protected virtual async Task<TResponse> Dispatch<TResponse>(RequestData<string> data)
+        protected virtual async Task<TResponse> Dispatch<TResponse>(ApiRequest<string> data) where TResponse : ApiResponse, new()
         {
             using var request = new UnityWebRequest();
             request.url = data.Url;
@@ -67,7 +67,14 @@ namespace ReadyPlayerMe.Runtime.Api.Common
             if (request.result == UnityWebRequest.Result.Success)
                 return JsonConvert.DeserializeObject<TResponse>(request.downloadHandler.text);
 
-            throw new WebException($"{request.error}\n{request.downloadHandler.text}");
+            Debug.LogWarning($"{request.error} - {request.url}\n{request.downloadHandler.text}");
+
+            return new TResponse()
+            {
+                IsSuccess = false,
+                Status = request.responseCode,
+                Error = request.error
+            };
         }
 
         protected virtual string BuildQueryString(object queryParams)
@@ -92,11 +99,16 @@ namespace ReadyPlayerMe.Runtime.Api.Common
             return queryString.ToString();
         }
 
-        private string GetPropertyName(MemberInfo prop)
+        private static string GetPropertyName(MemberInfo prop)
         {
             return prop.GetCustomAttribute<JsonPropertyAttribute>() != null
                 ? prop.GetCustomAttribute<JsonPropertyAttribute>().PropertyName
                 : prop.Name;
+        }
+        
+        private class ApiRequestBody<T> {
+            [JsonProperty("data")]
+            public T Data { get; set; }
         }
     }
 }
