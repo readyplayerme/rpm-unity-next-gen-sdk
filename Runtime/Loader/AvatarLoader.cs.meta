@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Runtime/Loader/AvatarLoader.cs.meta
 guid: e79db5b052a895b47a3e5290ea568dfb
+========
+guid: f04d907489f91da4582c701b13c64453
+>>>>>>>> bdcdacdcadbfc9339dab88d4c16dc4fd8f5fa777:Runtime/Data/AvatarData.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

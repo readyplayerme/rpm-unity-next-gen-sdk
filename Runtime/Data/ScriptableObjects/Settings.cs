@@ -6,21 +6,6 @@ namespace ReadyPlayerMe.Runtime.Data.ScriptableObjects
     public class Settings : ScriptableObject
     {
         public string ApiBaseUrl = "https://api.readyplayer.me/v1/";
-
-        public string ApiBaseAuthUrl = "https://readyplayer.me/api/auth/";
-
-
-        public string ApplicationId = "";
-
-        /// <warning>
-        /// Setting this property locally means that your Ready Player Me API Key will be present in your game build.
-        /// It is our advice that this property should not be set, and instead you should set the ApiBaseUrl and ApiBaseAuthUrl to point
-        /// to your own backend server which then makes requests to the Ready Player Me API.
-        /// 
-        /// However, it is up to you whether having your API key appear in your build is an acceptable risk as a trade off for the
-        /// convenience of not having to run your own proxy backend server.
-        /// </warning>
-        [Header("Warning: Setting the API Key property can pose a security risk. See Setting.cs for more details.")]
-        public string ApiKey = "";
+        [TextArea(5, 10)] public string Token = "";
     }
 }
