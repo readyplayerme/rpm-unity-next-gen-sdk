@@ -28,11 +28,11 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Assets
             );
         }
         
-        public virtual async Task<AssetListResponse> ListAssetTypesAsync(AssetListRequest request)
+        public virtual async Task<AssetTypeListResponse> ListAssetTypesAsync(AssetTypeListRequest request)
         {
             var queryString = BuildQueryString(request.Params);
             
-            return await Dispatch<AssetListResponse>(new ApiRequest<string>()
+            return await Dispatch<AssetTypeListResponse>(new ApiRequest<string>()
                 {
                     Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/types{queryString}",
                     Method = UnityWebRequest.kHttpVerbGET,
