@@ -1,2 +1,2 @@
-# Ready Player Me Unity SDK Phoenix
+# Ready Player Me Next Gen Unity SDK
 

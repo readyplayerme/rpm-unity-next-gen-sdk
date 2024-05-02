@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using ReadyPlayerMe.Runtime.Api.Common;
+using ReadyPlayerMe.Runtime.Api.V1.Common.Models;
 
 namespace ReadyPlayerMe.Runtime.Api.V1.Assets.Models
 {

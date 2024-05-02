@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe.Runtime.Api.Common
+namespace ReadyPlayerMe.Runtime.Api.Common.Models
 {
-    public class RequestData<T>
+    public class ApiRequest<T>
     {
         public string Url { get; set; }
 
@@ -10,6 +10,6 @@ namespace ReadyPlayerMe.Runtime.Api.Common
         
         public T Payload { get; set; }
 
-        public Dictionary<string, string> Headers { get; set; }
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
     }
 }

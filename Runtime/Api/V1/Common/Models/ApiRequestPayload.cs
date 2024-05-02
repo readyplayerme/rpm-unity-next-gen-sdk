@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Runtime.Api.Common
+namespace ReadyPlayerMe.Runtime.Api.V1.Common.Models
 {
     public class ApiRequestPayload<T>
     {

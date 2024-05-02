@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Runtime.Api.V1.Characters.Models
+namespace ReadyPlayerMe.Runtime.Api.V1.Avatars.Models
 {
-    public class CharacterUpdateRequest
+    public class AvatarUpdateRequest
     {
-        public string CharacterId { get; set; }
+        public string AvatarId { get; set; }
 
-        public CharacterUpdateRequestBody Payload { get; set; } = new CharacterUpdateRequestBody();
+        public AvatarUpdateRequestBody Payload { get; set; } = new AvatarUpdateRequestBody();
     }
     
-    public class CharacterUpdateRequestBody
+    public class AvatarUpdateRequestBody
     {
         [JsonProperty("organizationId")]
         public string OrganizationId { get; set; }

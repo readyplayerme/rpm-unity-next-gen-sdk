@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Runtime.Api.V1.Image
+namespace ReadyPlayerMe.Runtime.Api.V1.Images
 {
     public class ImageApi
     {
