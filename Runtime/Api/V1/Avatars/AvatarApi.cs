@@ -50,6 +50,21 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Avatars
             );
         }
         
+        public virtual async Task<AvatarFindByIdResponse> FindAvatarByIdAsync(AvatarFindByIdRequest request)
+        {
+            return await Dispatch<AvatarFindByIdResponse>(
+                new ApiRequest<string>()
+                {
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}",
+                    Method = UnityWebRequest.kHttpVerbGET,
+                    Headers = new Dictionary<string, string>()
+                    {
+                        { "Content-Type", "application/json" },
+                    }
+                }
+            );
+        }
+        
         public virtual async Task<GltfImport> PreviewAvatarAsync(AvatarPreviewRequest request)
         {
             var queryString = BuildQueryString(request.Params);
