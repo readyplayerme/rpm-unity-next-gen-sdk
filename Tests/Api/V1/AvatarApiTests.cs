@@ -37,9 +37,18 @@ namespace ReadyPlayerMe.Tests.Api.V1
         public async Task Update_Avatar()
         {
             // Arrange
-            var request = new AvatarUpdateRequest()
+            var createRequest = new AvatarCreateRequest()
             {
-                AvatarId = "6628d1c497cb7a2453b807b1",
+                Payload = new AvatarCreateRequestBody
+                {
+                    ApplicationId = "6628c280ecb07cb9d9cd7238"
+                }
+            };
+            var createResponse = await avatarApi.CreateAvatarAsync(createRequest);
+            
+            var updateRequest = new AvatarUpdateRequest()
+            {
+                AvatarId = createResponse.Data.Id,
                 Payload = new AvatarUpdateRequestBody()
                 {
                     Assets = new Dictionary<string, string>
@@ -50,11 +59,11 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await avatarApi.UpdateAvatarAsync(request);
-            Debug.Log(response.Data.GlbUrl);
+            var updateResponse = await avatarApi.UpdateAvatarAsync(updateRequest);
+            Debug.Log(updateResponse.Data.GlbUrl);
             
             // Assert
-            Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
+            Assert.IsTrue(Uri.TryCreate(updateResponse.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
         [Test, RequiresPlayMode]
