@@ -9,6 +9,8 @@ namespace ReadyPlayerMe.Runtime.Loader
 {
     public class AvatarLoader
     {
+        private const string TEMPLATE_PATH = "Template/template_prefab";
+        
         public static Dictionary<string, AvatarData> loadedAvatars = new Dictionary<string, AvatarData>();
         
         private MeshTransfer meshTransfer = new MeshTransfer();
@@ -32,7 +34,7 @@ namespace ReadyPlayerMe.Runtime.Loader
             if (await gltf.Load(glbUrl))
             {
                 // Load template
-                GameObject template = Resources.Load<GameObject>("Template/template_prefab");
+                GameObject template = Resources.Load<GameObject>(TEMPLATE_PATH);
                 GameObject instance = UnityEngine.Object.Instantiate(template);
                 
                 // Load avatar
