@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Utils
+namespace ReadyPlayerMe.Runtime.Loader
 {
 	public class SkeletonBuilder
 	{

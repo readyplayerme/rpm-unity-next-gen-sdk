@@ -11,7 +11,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
 {
     public class AvatarApiTests
     {
-        private readonly AvatarApi avatarApi = new AvatarApi();
+        private readonly AvatarApi _avatarApi = new AvatarApi();
         
         [Test, Order(0)]
         public async Task Create_Avatar()
@@ -26,7 +26,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await avatarApi.CreateAvatarAsync(request);
+            var response = await _avatarApi.CreateAvatarAsync(request);
             Debug.Log(response.Data.GlbUrl);
             
             // Assert
@@ -50,7 +50,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await avatarApi.UpdateAvatarAsync(request);
+            var response = await _avatarApi.UpdateAvatarAsync(request);
             Debug.Log(response.Data.GlbUrl);
             
             // Assert
@@ -58,7 +58,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
         }
         
         [Test, RequiresPlayMode]
-        public async Task Preview_Avatar()
+        public void Preview_Avatar()
         {
             // Arrange
             var request = new AvatarPreviewRequest()
@@ -74,7 +74,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await avatarApi.PreviewAvatarAsync(request);
+            var response = _avatarApi.GenerateAvatarPreviewUrl(request);
             
             // Assert
             Assert.NotNull(response);

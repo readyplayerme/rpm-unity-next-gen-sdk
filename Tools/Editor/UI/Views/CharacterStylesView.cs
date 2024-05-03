@@ -41,7 +41,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Views
                     GUILayout.Label("Character styles loading...", new GUIStyle()
                     {
                         alignment = TextAnchor.MiddleCenter,
-                        normal = new GUIStyleState()
+                        normal = new GUIStyleState() 
                         {
                             textColor = Color.white
                         }
@@ -100,6 +100,9 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Views
             {
                 var windowWidth = EditorGUIUtility.currentViewWidth - 18;
 
+                if (_characterStyleViews == null)
+                    return;
+                
                 for (var x = 0; x < (_characterStyleViews.Count / 3) + 1; x++)
                 {
                     using (new GUILayout.HorizontalScope(new GUIStyle()

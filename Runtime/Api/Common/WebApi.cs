@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,7 +16,7 @@ namespace ReadyPlayerMe.Runtime.Api.Common
     public abstract class WebApi
     {
         private Settings _settings;
-        protected Settings Settings => _settings ??= Resources.Load<Settings>("Settings");
+        protected Settings Settings => _settings ??= Resources.Load<Settings>("ReadyPlayerMeSettings");
 
         protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data) where TResponse : ApiResponse, new()
         {
@@ -83,7 +85,7 @@ namespace ReadyPlayerMe.Runtime.Api.Common
                 .Where(prop => prop.GetValue(queryParams, null) != null)
                 .ToDictionary(
                     GetPropertyName,
-                    prop => prop.GetValue(queryParams, null).ToString());
+                    prop => prop.GetValue(queryParams, null));
 
             if (properties.Count == 0)
                 return string.Empty;
@@ -93,7 +95,17 @@ namespace ReadyPlayerMe.Runtime.Api.Common
 
             foreach (var (key, value) in properties)
             {
-                queryString.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value)}&");
+                if (value is IDictionary dictionary)
+                {
+                    foreach (DictionaryEntry entry in dictionary)
+                    {
+                        queryString.Append($"{Uri.EscapeDataString(entry.Key.ToString())}={Uri.EscapeDataString(entry.Value.ToString())}&");
+                    }
+                }
+                else
+                {
+                    queryString.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value.ToString())}&");
+                }
             }
 
             return queryString.ToString();

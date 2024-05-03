@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Runtime.Api.V1.Images;
+using ReadyPlayerMe.Runtime.Cache;
+using ReadyPlayerMe.Runtime.Cache.CharacterStyleTemplates;
 using ReadyPlayerMe.Runtime.Data.V1;
-using ReadyPlayerMe.Tools.Editor.Cache;
-using UnityEditor;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
@@ -20,13 +20,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
         public async Task Init(Asset characterStyle)
         {
             CharacterStyle = characterStyle;
-            
-            var data = CharacterStyleTemplateCache.Data;
-
-            var stylesCache =
-                data?.FirstOrDefault(template => template.CharacterStyleId == CharacterStyle.Id);
-            
-            CacheId = stylesCache?.Id;
+            CacheId = CharacterStyleTemplateCache.GetCacheId(CharacterStyle.Id);
 
             var imageApi = new ImageApi();
 
@@ -45,27 +39,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
 
         public void SaveTemplate(Object templateObject)
         {
-            var data = CharacterStyleTemplateCache.Data;
-            var matchInCache = data.FirstOrDefault(p => p.CharacterStyleId == CharacterStyle.Id);
-            var assetPath = AssetDatabase.GetAssetPath(templateObject);
-            var guid = AssetDatabase.AssetPathToGUID(assetPath);
-
-            if (matchInCache == null)
-            {
-                var template = new CharacterStyleTemplate
-                {
-                    Id = guid,
-                    CharacterStyleId = CharacterStyle.Id
-                };
-
-                data.Add(template);
-            }
-            else
-            {
-                matchInCache.Id = guid;
-            }
-
-            CharacterStyleTemplateCache.Data = data;
+            CharacterStyleTemplateCache.Save(templateObject.GameObject(), CharacterStyle.Id);
         }
     }
 }
