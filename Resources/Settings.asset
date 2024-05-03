@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ApiBaseUrl: https://api.readyplayer.me
   ApiBaseAuthUrl: https://readyplayer.me/api/auth
-  ApplicationId: 6628c280ecb07cb9d9cd7238
+  ApplicationId: 
   ApiKey: 

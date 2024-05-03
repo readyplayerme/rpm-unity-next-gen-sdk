@@ -11,10 +11,10 @@ namespace ReadyPlayerMe.Tests.Api.V1
 {
     public class AvatarApiTests
     {
-        private readonly AvatarApi characterApi = new AvatarApi();
+        private readonly AvatarApi avatarApi = new AvatarApi();
         
         [Test, Order(0)]
-        public async Task Create_Character()
+        public async Task Create_Avatar()
         {
             // Arrange
             var request = new AvatarCreateRequest()
@@ -26,7 +26,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await characterApi.CreateAvatarAsync(request);
+            var response = await avatarApi.CreateAvatarAsync(request);
             Debug.Log(response.Data.GlbUrl);
             
             // Assert
@@ -34,7 +34,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
         }
         
         [Test, RequiresPlayMode]
-        public async Task Update_Character()
+        public async Task Update_Avatar()
         {
             // Arrange
             var request = new AvatarUpdateRequest()
@@ -50,7 +50,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await characterApi.UpdateAvatarAsync(request);
+            var response = await avatarApi.UpdateAvatarAsync(request);
             Debug.Log(response.Data.GlbUrl);
             
             // Assert
@@ -58,7 +58,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
         }
         
         [Test, RequiresPlayMode]
-        public async Task Preview_Character()
+        public async Task Preview_Avatar()
         {
             // Arrange
             var request = new AvatarPreviewRequest()
@@ -74,7 +74,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await characterApi.PreviewAvatarAsync(request);
+            var response = await avatarApi.PreviewAvatarAsync(request);
             
             // Assert
             Assert.NotNull(response);
