@@ -2,8 +2,6 @@ using GLTFast;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using ReadyPlayerMe.Runtime.Data;
-using ReadyPlayerMe.Runtime.Utils;
 
 namespace ReadyPlayerMe.Runtime.Loader
 {
@@ -35,7 +33,7 @@ namespace ReadyPlayerMe.Runtime.Loader
             {
                 // Load template
                 GameObject template = Resources.Load<GameObject>(TEMPLATE_PATH);
-                GameObject instance = UnityEngine.Object.Instantiate(template);
+                GameObject instance = Object.Instantiate(template);
                 
                 // Load avatar
                 GameObject avatar = new GameObject("avatar");

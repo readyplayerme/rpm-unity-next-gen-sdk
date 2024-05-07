@@ -2,6 +2,7 @@ using UnityEngine;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 using System.Threading.Tasks;
+using ReadyPlayerMe.Runtime;
 using ReadyPlayerMe.Runtime.Data;
 using ReadyPlayerMe.Runtime.Loader;
 

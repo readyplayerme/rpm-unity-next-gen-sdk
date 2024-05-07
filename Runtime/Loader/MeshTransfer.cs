@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Utils
+namespace ReadyPlayerMe.Runtime.Loader
 {
     public class MeshTransfer
     {

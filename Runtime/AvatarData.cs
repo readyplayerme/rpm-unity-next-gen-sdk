@@ -1,10 +1,9 @@
 using UnityEngine;
-using ReadyPlayerMe.Runtime.Utils;
 
-namespace ReadyPlayerMe.Runtime.Data
+namespace ReadyPlayerMe.Runtime
 {
     /// <summary>
-    ///     This component is attached to the avatar game object to store avatar metadata.
+    ///  This component is attached to the avatar game object to store avatar metadata.
     /// </summary>
     public class AvatarData: MonoBehaviour
     {

@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Auth.Strategies
 
         public ApiKeyAuthStrategy()
         {
-            _settings = Resources.Load<Settings>("Settings");
+            _settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
         }
         
         public Task AddAuthToRequestAsync<T>(ApiRequest<T> request)
