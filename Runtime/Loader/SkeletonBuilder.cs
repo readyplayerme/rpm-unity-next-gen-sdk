@@ -1,10 +1,29 @@
+using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 
-namespace ReadyPlayerMe.Runtime.Utils
+namespace ReadyPlayerMe.Runtime.Loader
 {
 	public class SkeletonBuilder
 	{
+		[System.Serializable]
+		public class BoneGroup
+		{
+			[HideInInspector] public bool Foldout;
+			public string GroupName;
+			public Bone[] Bones;
+		}
+
+		[System.Serializable]
+		public class Bone
+		{
+			public string Name;
+			[HideInInspector] public Transform Transform;
+			public string BonePath;
+		}
+		
 		//A static dictionary containing the mapping from joint/bones names in the model
 		//to the names Unity uses for them internally.
 		//In this case they match the naming from the included Mixamo model on the left
@@ -159,6 +178,104 @@ namespace ReadyPlayerMe.Runtime.Utils
 			{
 				animator.avatar = avatar;
 			}
+		}
+
+		public void Build(BoneGroup[] boneGroups, Transform avatar, Transform skeletonRoot)
+		{
+			// get all transforms if only not null
+			Bone[] bones = boneGroups.SelectMany(bg => bg.Bones).Where(b => b.Transform != null).ToArray();
+			
+			// create skeleton
+			List<SkeletonBone> skeleton = new List<SkeletonBone>();
+			foreach (Bone abone in bones)
+			{
+				SkeletonBone bone = new SkeletonBone()
+				{
+					name = abone.Transform.name,
+					position = abone.Transform.localPosition,
+					rotation = abone.Transform.localRotation,
+					scale = abone.Transform.localScale
+				};
+
+				skeleton.Add(bone);
+			}
+			
+			// create human
+			List<HumanBone> human = new List<HumanBone>();
+			foreach (Bone abone in bones)
+			{
+				HumanBone bone = new HumanBone
+				{
+					boneName = abone.Transform.name,
+					humanName = abone.Name,
+					limit = new HumanLimit()
+				};
+				bone.limit.useDefaultValues = true;
+
+				human.Add(bone);
+			}
+			
+			HumanDescription description = new HumanDescription()
+			{
+				skeleton = skeleton.ToArray(),
+				human = human.ToArray()
+			};
+
+			Avatar animAvatar = AvatarBuilder.BuildHumanAvatar(skeletonRoot.gameObject, description);
+			
+			AssetDatabase.CreateAsset(animAvatar, "Assets/Avatar.asset");
+			
+			AvatarSkeletonDefinition definition = ScriptableObject.CreateInstance<AvatarSkeletonDefinition>();
+
+			foreach (var group in boneGroups)
+			{
+				foreach (var bone in group.Bones)
+				{
+					bone.BonePath = GetBonePath(bone.Transform, skeletonRoot);
+				}
+			}
+			
+			definition.rootBonePath = GetBonePath(skeletonRoot, avatar);
+			definition.boneGroups = boneGroups;
+			AssetDatabase.CreateAsset(definition, "Assets/AvatarSkeletonDefinition.asset");
+
+			Animator animator = skeletonRoot.GetComponent<Animator>();
+			if (animator != null)
+			{
+				animator.avatar = animAvatar;
+			}
+		}
+		
+		public void Load(AvatarSkeletonDefinition definition, BoneGroup[] boneGroups, ref Transform skeletonRoot)
+		{
+			foreach (var group in definition.boneGroups)
+			{
+				foreach (var bone in group.Bones)
+				{
+					Transform boneTransform = skeletonRoot.Find(bone.BonePath);
+					if (boneTransform != null)
+					{
+						boneGroups.First(bg => bg.GroupName == group.GroupName).Bones.First(b => b.Name == bone.Name).Transform = boneTransform;
+					}
+				}
+			}
+		}
+		
+		public string GetBonePath(Transform transform, Transform root)
+		{
+			if (transform == null)
+			{
+				return string.Empty;
+			}
+            
+			var path = transform.name;
+			while (transform.parent != null && transform.parent != root)
+			{
+				transform = transform.parent;
+				path = transform.name + "/" + path;
+			}
+
+			return path;
 		}
 	}
 }

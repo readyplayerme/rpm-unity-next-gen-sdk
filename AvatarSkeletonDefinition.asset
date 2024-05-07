@@ -1,0 +1,193 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 966d9cb691aa6414a82811f110a2b062, type: 3}
+  m_Name: AvatarSkeletonDefinition
+  m_EditorClassIdentifier: 
+  rootBonePath: Armature/root
+  boneGroups:
+  - Foldout: 0
+    GroupName: Left Leg
+    Bones:
+    - Name: LeftUpperLeg
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_l
+    - Name: LeftLowerLeg
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_l/calf_l
+    - Name: LeftFoot
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_l/calf_l/foot_l
+    - Name: LeftToes
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_l/calf_l/foot_l/ball_l
+  - Foldout: 1
+    GroupName: Right Leg
+    Bones:
+    - Name: RightUpperLeg
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_r
+    - Name: RightLowerLeg
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_r/calf_r
+    - Name: RightFoot
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_r/calf_r/foot_r
+    - Name: RightToes
+      Transform: {fileID: 0}
+      BonePath: pelvis/thigh_r/calf_r/foot_r/ball_r
+  - Foldout: 0
+    GroupName: Left Hand
+    Bones:
+    - Name: Left Index Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Index Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Index Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Little Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Little Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Little Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Middle Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Middle Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Middle Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Ring Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Ring Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Ring Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Thumb Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Thumb Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Left Thumb Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+  - Foldout: 0
+    GroupName: Left Arm
+    Bones:
+    - Name: LeftShoulder
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_l
+    - Name: LeftUpperArm
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l
+    - Name: LeftLowerArm
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l
+    - Name: LeftHand
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l
+  - Foldout: 0
+    GroupName: Right Hand
+    Bones:
+    - Name: Right Index Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Index Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Index Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Little Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Little Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Little Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Middle Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Middle Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Middle Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Ring Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Ring Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Ring Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Thumb Distal
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Thumb Intermediate
+      Transform: {fileID: 0}
+      BonePath: 
+    - Name: Right Thumb Proximal
+      Transform: {fileID: 0}
+      BonePath: 
+  - Foldout: 0
+    GroupName: Right Arm
+    Bones:
+    - Name: RightShoulder
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_r
+    - Name: RightUpperArm
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r
+    - Name: RightLowerArm
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r
+    - Name: RightHand
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r
+  - Foldout: 0
+    GroupName: Spine
+    Bones:
+    - Name: Hips
+      Transform: {fileID: 0}
+      BonePath: pelvis
+    - Name: Spine
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01
+    - Name: Chest
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02
+    - Name: UpperChest
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03
+    - Name: Neck
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/neck_01
+    - Name: Head
+      Transform: {fileID: 0}
+      BonePath: pelvis/spine_01/spine_02/spine_03/neck_01/head
