@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Runtime.Api.V1.Images;
-using ReadyPlayerMe.Runtime.Cache;
 using ReadyPlayerMe.Runtime.Cache.CharacterStyleTemplates;
 using ReadyPlayerMe.Runtime.Data.V1;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
@@ -39,7 +37,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
 
         public void SaveTemplate(Object templateObject)
         {
-            CharacterStyleTemplateCache.Save(templateObject.GameObject(), CharacterStyle.Id);
+            CharacterStyleTemplateCache.Save(templateObject, CharacterStyle.Id);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace ReadyPlayerMe.Runtime.Cache.CharacterStyleTemplates
     {
         private const string CharacterTemplatesDirectory = "Assets/Ready Player Me/Character Templates";
 
-        public static void Save(GameObject template, string id)
+        public static void Save(Object template, string id)
         {
             EnsureFoldersExist();
 
