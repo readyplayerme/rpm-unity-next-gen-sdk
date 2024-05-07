@@ -1,9 +1,7 @@
 using UnityEngine;
 using NUnit.Framework;
-using UnityEngine.TestTools;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Runtime;
-using ReadyPlayerMe.Runtime.Data;
 using ReadyPlayerMe.Runtime.Loader;
 
 namespace ReadyPlayerMe.Tests.Loader
@@ -14,7 +12,7 @@ namespace ReadyPlayerMe.Tests.Loader
         private string updatedGlbUrl = "https://files.readyplayer.me/character/glbUrl/6628d1c497cb7a2453b807b1/6628d1c497cb7a2453b807b1-1714039561609.glb";
         private string id = "6628d1c497cb7a2453b807b1";
         
-        [Test, RequiresPlayMode]
+        [Test]
         public async Task Load_Avatar_With_Valid_Glb_Url()
         {
             AvatarLoader avatarLoader = new AvatarLoader();
@@ -23,7 +21,7 @@ namespace ReadyPlayerMe.Tests.Loader
             Assert.IsNotNull(avatar);
         }
         
-        [Test, RequiresPlayMode]
+        [Test]
         public async Task Loaded_avatar_Has_AvatarData_Component()
         {
             AvatarLoader avatarLoader = new AvatarLoader();
@@ -34,7 +32,7 @@ namespace ReadyPlayerMe.Tests.Loader
             Assert.AreEqual(id, avatarData.Id);
         }
         
-        [Test, RequiresPlayMode]
+        [Test]
         public async Task Update_Avatar()
         {
             AvatarLoader avatarLoader = new AvatarLoader();

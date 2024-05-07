@@ -33,7 +33,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
-        [Test, RequiresPlayMode]
+        [Test]
         public async Task Update_Avatar()
         {
             // Arrange
@@ -57,7 +57,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
-        [Test, RequiresPlayMode]
+        [Test]
         public void Preview_Avatar()
         {
             // Arrange
