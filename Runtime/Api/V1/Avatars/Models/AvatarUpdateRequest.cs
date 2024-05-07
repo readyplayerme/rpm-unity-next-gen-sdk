@@ -12,9 +12,6 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Avatars.Models
     
     public class AvatarUpdateRequestBody
     {
-        [JsonProperty("organizationId")]
-        public string OrganizationId { get; set; }
-        
         [JsonProperty("assets")]
         public IDictionary<string, string> Assets { get; set; }
     }

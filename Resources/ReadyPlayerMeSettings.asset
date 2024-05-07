@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d6abe854d9daac4bb2b0d25d21e343c, type: 3}
-  m_Name: Settings
+  m_Name: ReadyPlayerMeSettings
   m_EditorClassIdentifier: 
-  ApiBaseUrl: https://api.readyplayer.me
+  _apiBaseUrl: https://api.readyplayer.me
   ApiBaseAuthUrl: https://readyplayer.me/api/auth
-  ApplicationId: 6628c280ecb07cb9d9cd7238
-  ApiKey: sk_live_X6lzSuq1XmzBTc3dqh9OLNOchK2NQN5hQHZP
+  ApplicationId: 
+  ApiKey: 
+  _apiProxyUrl: 

@@ -29,7 +29,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
             var assetApi  = new AssetApi();
             assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
 
-            var settings = Resources.Load<Settings>("Settings");
+            var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);

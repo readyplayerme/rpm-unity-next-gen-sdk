@@ -11,7 +11,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
 {
     public class AvatarApiTests
     {
-        private readonly AvatarApi avatarApi = new AvatarApi();
+        private readonly AvatarApi _avatarApi = new AvatarApi();
         
         [Test, Order(0)]
         public async Task Create_Avatar()
@@ -26,7 +26,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await avatarApi.CreateAvatarAsync(request);
+            var response = await _avatarApi.CreateAvatarAsync(request);
             Debug.Log(response.Data.GlbUrl);
             
             // Assert
@@ -37,18 +37,9 @@ namespace ReadyPlayerMe.Tests.Api.V1
         public async Task Update_Avatar()
         {
             // Arrange
-            var createRequest = new AvatarCreateRequest()
+            var request = new AvatarUpdateRequest()
             {
-                Payload = new AvatarCreateRequestBody
-                {
-                    ApplicationId = "6628c280ecb07cb9d9cd7238"
-                }
-            };
-            var createResponse = await avatarApi.CreateAvatarAsync(createRequest);
-            
-            var updateRequest = new AvatarUpdateRequest()
-            {
-                AvatarId = createResponse.Data.Id,
+                AvatarId = "6628d1c497cb7a2453b807b1",
                 Payload = new AvatarUpdateRequestBody()
                 {
                     Assets = new Dictionary<string, string>
@@ -59,15 +50,15 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var updateResponse = await avatarApi.UpdateAvatarAsync(updateRequest);
-            Debug.Log(updateResponse.Data.GlbUrl);
+            var response = await _avatarApi.UpdateAvatarAsync(request);
+            Debug.Log(response.Data.GlbUrl);
             
             // Assert
-            Assert.IsTrue(Uri.TryCreate(updateResponse.Data.GlbUrl, UriKind.Absolute, out _));
+            Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
         [Test, RequiresPlayMode]
-        public async Task Preview_Avatar()
+        public void Preview_Avatar()
         {
             // Arrange
             var request = new AvatarPreviewRequest()
@@ -83,7 +74,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             };
             
             // Act
-            var response = await avatarApi.PreviewAvatarAsync(request);
+            var response = _avatarApi.GenerateAvatarPreviewUrl(request);
             
             // Assert
             Assert.NotNull(response);

@@ -5,10 +5,10 @@ namespace ReadyPlayerMe.Runtime.Data.ScriptableObjects
     [CreateAssetMenu(fileName = "Settings", menuName = "Ready Player Me/Settings", order = 1)]
     public class Settings : ScriptableObject
     {
-        public string ApiBaseUrl = "https://api.readyplayer.me/v1/";
+        [SerializeField]
+        private string _apiBaseUrl = "https://api.readyplayer.me";
 
-        public string ApiBaseAuthUrl = "https://readyplayer.me/api/auth/";
-
+        public string ApiBaseAuthUrl = "https://readyplayer.me/api/auth";
 
         public string ApplicationId = "";
 
@@ -22,5 +22,10 @@ namespace ReadyPlayerMe.Runtime.Data.ScriptableObjects
         /// </warning>
         [Header("Warning: Setting the API Key property can pose a security risk. See Setting.cs for more details.")]
         public string ApiKey = "";
+
+        [SerializeField]
+        private string _apiProxyUrl = "";
+
+        public string ApiBaseUrl => string.IsNullOrEmpty(_apiProxyUrl) ? _apiBaseUrl : _apiProxyUrl;
     }
 }

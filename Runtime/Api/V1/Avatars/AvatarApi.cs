@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GLTFast;
 using ReadyPlayerMe.Runtime.Api.Common;
 using ReadyPlayerMe.Runtime.Api.Common.Models;
 using ReadyPlayerMe.Runtime.Api.V1.Auth.Strategies;
@@ -17,7 +16,7 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Avatars
         {
             SetAuthenticationStrategy(new ApiKeyAuthStrategy());
         }
-        
+
         public virtual async Task<AvatarCreateResponse> CreateAvatarAsync(AvatarCreateRequest request)
         {
             return await Dispatch<AvatarCreateResponse, AvatarCreateRequestBody>(
@@ -49,7 +48,7 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Avatars
                 }
             );
         }
-        
+
         public virtual async Task<AvatarFindByIdResponse> FindAvatarByIdAsync(AvatarFindByIdRequest request)
         {
             return await Dispatch<AvatarFindByIdResponse>(
@@ -64,16 +63,12 @@ namespace ReadyPlayerMe.Runtime.Api.V1.Avatars
                 }
             );
         }
-        
-        public virtual async Task<GltfImport> PreviewAvatarAsync(AvatarPreviewRequest request)
+
+        public virtual string GenerateAvatarPreviewUrl(AvatarPreviewRequest request)
         {
             var queryString = BuildQueryString(request.Params);
 
-            var gltf = new GltfImport();
-            
-            await gltf.Load($"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}/preview{queryString}");
-
-            return gltf;
+            return $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}/preview{queryString}";
         }
     }
 }
