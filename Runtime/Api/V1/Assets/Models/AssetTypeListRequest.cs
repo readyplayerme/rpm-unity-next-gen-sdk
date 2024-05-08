@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Runtime.Api.V1.Assets.Models
+namespace ReadyPlayerMe.Runtime.Api.V1
 {
     public class AssetTypeListRequest
     {

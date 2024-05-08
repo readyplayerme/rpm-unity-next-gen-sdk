@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime.Api.Common.Contracts;
-using ReadyPlayerMe.Runtime.Api.Common.Models;
-using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
+using ReadyPlayerMe.Runtime.Data;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Api.V1.Auth.Strategies
+namespace ReadyPlayerMe.Runtime.Api.V1
 {
     public class ApiKeyAuthStrategy : IAuthenticationStrategy
     {

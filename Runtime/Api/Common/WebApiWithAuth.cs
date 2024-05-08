@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime.Api.Common.Contracts;
-using ReadyPlayerMe.Runtime.Api.Common.Models;
 
-namespace ReadyPlayerMe.Runtime.Api.Common
+namespace ReadyPlayerMe.Runtime.Api
 {
     public abstract class WebApiWithAuth : WebApi
     {

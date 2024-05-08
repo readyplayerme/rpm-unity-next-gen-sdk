@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GLTFast;
-using ReadyPlayerMe.Runtime.Api.V1.Avatars;
-using ReadyPlayerMe.Runtime.Api.V1.Avatars.Models;
-using ReadyPlayerMe.Runtime.Cache.CharacterStyleTemplates;
+using ReadyPlayerMe.Runtime.Api.V1;
+using ReadyPlayerMe.Runtime.Cache;
 using UnityEngine;
 
 namespace ReadyPlayerMe.Runtime.Loader

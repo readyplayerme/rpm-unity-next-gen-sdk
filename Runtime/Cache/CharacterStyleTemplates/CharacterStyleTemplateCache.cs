@@ -3,7 +3,7 @@ using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Cache.CharacterStyleTemplates
+namespace ReadyPlayerMe.Runtime.Cache
 {
     public static class CharacterStyleTemplateCache
     {

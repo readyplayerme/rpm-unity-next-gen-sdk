@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime.Api.Common.Models;
 
-namespace ReadyPlayerMe.Runtime.Api.Common.Contracts
+namespace ReadyPlayerMe.Runtime.Api
 {
     public interface IAuthenticationStrategy
     {

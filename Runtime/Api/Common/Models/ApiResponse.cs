@@ -1,4 +1,4 @@
-﻿namespace ReadyPlayerMe.Runtime.Api.Common.Models
+﻿namespace ReadyPlayerMe.Runtime.Api
 {
     public abstract class ApiResponse
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe.Runtime.Api.Common.Models
+namespace ReadyPlayerMe.Runtime.Api
 {
     public class ApiRequest<T>
     {

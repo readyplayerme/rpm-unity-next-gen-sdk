@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using ReadyPlayerMe.Runtime.Api.Common.Models;
+using ReadyPlayerMe.Runtime.Data;
 using UnityEngine.Networking;
-using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Api.Common
+namespace ReadyPlayerMe.Runtime.Api
 {
     public abstract class WebApi
     {

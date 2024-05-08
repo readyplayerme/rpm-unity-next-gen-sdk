@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Data.ScriptableObjects
+namespace ReadyPlayerMe.Runtime.Data
 {
     public class Settings : ScriptableObject
     {

@@ -1,12 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime.Api.Common;
-using ReadyPlayerMe.Runtime.Api.Common.Models;
-using ReadyPlayerMe.Runtime.Api.V1.Auth.Strategies;
-using ReadyPlayerMe.Runtime.Api.V1.Avatars.Models;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Runtime.Api.V1.Avatars
+namespace ReadyPlayerMe.Runtime.Api.V1
 {
     public class AvatarApi : WebApiWithAuth
     {

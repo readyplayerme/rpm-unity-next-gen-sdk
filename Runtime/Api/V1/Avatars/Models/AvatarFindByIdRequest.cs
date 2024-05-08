@@ -1,4 +1,4 @@
-﻿namespace ReadyPlayerMe.Runtime.Api.V1.Avatars.Models
+﻿namespace ReadyPlayerMe.Runtime.Api.V1
 {
     public class AvatarFindByIdRequest
     {
