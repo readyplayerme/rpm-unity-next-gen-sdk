@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
         public bool Loading { get; private set; }
 
         public IList<Application> Applications { get; private set; } = new List<Application>();
-        
+
         public readonly AssetApi AssetApi;
         private readonly DeveloperAccountApi _developerAccountApi;
         public readonly Settings Settings;

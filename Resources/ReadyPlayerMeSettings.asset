@@ -16,4 +16,4 @@ MonoBehaviour:
   ApiBaseAuthUrl: https://readyplayer.me/api/auth
   ApplicationId: 
   ApiKey: 
-  _apiProxyUrl: 
+  ApiProxyUrl: 

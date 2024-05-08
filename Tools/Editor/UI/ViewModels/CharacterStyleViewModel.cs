@@ -9,7 +9,7 @@ namespace ReadyPlayerMe.Tools.Editor.UI.ViewModels
 {
     public class CharacterStyleViewModel
     {
-        private Asset CharacterStyle { get; set; }
+        public Asset CharacterStyle { get; set; }
         
         public string CacheId { get; private set; }
         

@@ -27,38 +27,48 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Views
 
         public void Render()
         {
-            using (new EditorGUILayout.VerticalScope())
+            using (new EditorGUILayout.HorizontalScope())
             {
-                using (new EditorGUILayout.HorizontalScope(new GUIStyle()
+                using (new EditorGUILayout.VerticalScope(new GUIStyle()
                        {
-                           normal = new GUIStyleState()
-                           {
-                               background = Texture2D.grayTexture,
-                           },
-                           margin = new RectOffset(5, 5, 5, 5)
+                           fixedWidth = 120
                        }))
                 {
-                    GUILayout.FlexibleSpace();
+                    using (new EditorGUILayout.HorizontalScope(new GUIStyle()
+                           {
+                               normal = new GUIStyleState()
+                               {
+                                   background = Texture2D.grayTexture,
+                               },
+                               margin = new RectOffset(5, 5, 5, 5),
+                           }))
+                    {
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(_viewModel.Image,
+                            new GUIStyle()
+                            {
+                                stretchWidth = true,
+                                stretchHeight = true,
+                                fixedWidth = 90,
+                                fixedHeight = 90,
+                                alignment = TextAnchor.MiddleCenter,
+                            });
+                        GUILayout.FlexibleSpace();
+                    }
 
-                    GUILayout.Label(_viewModel.Image,
-                        new GUIStyle()
-                        {
-                            stretchWidth = true,
-                            stretchHeight = true,
-                            fixedWidth = 120,
-                            fixedHeight = 120,
-                            alignment = TextAnchor.MiddleCenter,
-                        });
-                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Load Style"))
+                    {
+                        _viewModel.LoadStyleAsync();
+                    }
                 }
 
-                if (GUILayout.Button("Load Style"))
+                using (new EditorGUILayout.VerticalScope())
                 {
-                    _viewModel.LoadStyleAsync();
+                    GUILayout.Space(8);
+                    GUILayout.Label("ID: " + _viewModel.CharacterStyle.Id);
+                    GUILayout.Label("Template");
+                    _templateInput.Render(onChange: o => { _viewModel.SaveTemplate(o); });
                 }
-
-                GUILayout.Label("Template");
-                _templateInput.Render(onChange: o => { _viewModel.SaveTemplate(o); });
             }
         }
     }

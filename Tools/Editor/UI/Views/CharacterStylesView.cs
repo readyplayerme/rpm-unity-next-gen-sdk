@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Tools.Editor.UI.ViewModels;
-using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
@@ -98,34 +97,14 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Views
                        margin = new RectOffset(9, 9, 5, 5)
                    }))
             {
-                var windowWidth = EditorGUIUtility.currentViewWidth - 18;
-
                 if (_characterStyleViews == null)
                     return;
                 
-                for (var x = 0; x < (_characterStyleViews.Count / 3) + 1; x++)
+                foreach (var characterStyleView in _characterStyleViews)
                 {
-                    using (new GUILayout.HorizontalScope(new GUIStyle()
-                           {
-                               margin = new RectOffset(0, 0, 0, 10)
-                           }))
+                    using (new GUILayout.VerticalScope())
                     {
-                        for (var y = 0; y < 3; y++)
-                        {
-                            var index = x * 3 + y;
-
-                            if (_characterStyleViews.Count <= index || _characterStyleViews[index] == null)
-                            {
-                                using (new GUILayout.VerticalScope())
-                                {
-                                    EditorGUILayout.Space(windowWidth / 3);
-                                }
-
-                                continue;
-                            }
-                            
-                            _characterStyleViews[index].Render();
-                        }
+                        characterStyleView.Render();
                     }
                 }
             }
