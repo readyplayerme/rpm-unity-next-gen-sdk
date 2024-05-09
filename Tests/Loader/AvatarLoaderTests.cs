@@ -1,8 +1,6 @@
 using UnityEngine;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime;
-using ReadyPlayerMe.Runtime.Loader;
 
 namespace ReadyPlayerMe.Tests.Loader
 {
@@ -15,7 +13,7 @@ namespace ReadyPlayerMe.Tests.Loader
         [Test]
         public async Task Load_Avatar_With_Valid_Glb_Url()
         {
-            AvatarLoader avatarLoader = new AvatarLoader();
+            AvatarLoader.AvatarLoader avatarLoader = new AvatarLoader.AvatarLoader();
             GameObject avatar = await avatarLoader.LoadAvatar(glbUrl, id);
             
             Assert.IsNotNull(avatar);
@@ -24,7 +22,7 @@ namespace ReadyPlayerMe.Tests.Loader
         [Test]
         public async Task Loaded_avatar_Has_AvatarData_Component()
         {
-            AvatarLoader avatarLoader = new AvatarLoader();
+            AvatarLoader.AvatarLoader avatarLoader = new AvatarLoader.AvatarLoader();
             GameObject avatar = await avatarLoader.LoadAvatar(glbUrl, id);
             AvatarData avatarData = avatar.GetComponent<AvatarData>();
             
@@ -35,7 +33,7 @@ namespace ReadyPlayerMe.Tests.Loader
         [Test]
         public async Task Update_Avatar()
         {
-            AvatarLoader avatarLoader = new AvatarLoader();
+            AvatarLoader.AvatarLoader avatarLoader = new AvatarLoader.AvatarLoader();
             GameObject avatar = await avatarLoader.LoadAvatar(glbUrl, id);
             int avatarHashCode = avatar.GetHashCode();
 

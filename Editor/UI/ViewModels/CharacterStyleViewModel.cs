@@ -1,43 +1,59 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GLTFast;
-using ReadyPlayerMe.Runtime.Api.V1;
-using ReadyPlayerMe.Runtime.Cache;
-using ReadyPlayerMe.Runtime.Data.V1;
+using ReadyPlayerMe.Api.V1;
+using ReadyPlayerMe.Cache;
+using ReadyPlayerMe.Data.V1;
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class CharacterStyleViewModel
     {
         public Asset CharacterStyle { get; set; }
-        
+
         public string CacheId { get; private set; }
-        
+
         public Texture2D Image { get; private set; }
+
+        private CharacterStyleCache _characterStyleCache;
+        private CharacterStyleTemplateCache _characterStyleTemplateCache;
+        private FileApi _fileApi;
 
         public async Task Init(Asset characterStyle)
         {
+            _characterStyleCache = new CharacterStyleCache();
+            _characterStyleTemplateCache = new CharacterStyleTemplateCache();
+            
             CharacterStyle = characterStyle;
-            CacheId = CharacterStyleTemplateCache.GetCacheId(CharacterStyle.Id);
+            CacheId = _characterStyleTemplateCache.GetCacheId(CharacterStyle.Id);
 
-            var imageApi = new ImageApi();
-
-            Image = await imageApi.DownloadImageAsync(CharacterStyle.IconUrl);
+            _fileApi = new FileApi();
+            Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
         }
-        
+
         public async Task LoadStyleAsync()
         {
-            var gltf = new GltfImport(deferAgent: new UninterruptedDeferAgent());
-            await gltf.Load(CharacterStyle.GlbUrl);
+            try
+            {
+                var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterStyle.GlbUrl);
 
-            var gameObject = new GameObject();
-            gameObject.name = CharacterStyle.Id;
-            await gltf.InstantiateSceneAsync(gameObject.transform);
+                await _characterStyleCache.Save(bytes, CharacterStyle.Id);
+
+                var character = _characterStyleCache.Load(CharacterStyle.Id);
+                PrefabUtility.InstantiatePrefab(character); ;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
 
         public void SaveTemplate(Object templateObject)
         {
-            CharacterStyleTemplateCache.Save(templateObject, CharacterStyle.Id);
+            _characterStyleTemplateCache.Save(templateObject, CharacterStyle.Id);
         }
     }
 }

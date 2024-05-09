@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using ReadyPlayerMe.Data.V1;
 using ReadyPlayerMe.Editor.UI.Components;
 using ReadyPlayerMe.Editor.UI.ViewModels;
-using ReadyPlayerMe.Runtime.Data.V1;
 using UnityEditor;
 using UnityEngine;
 
@@ -58,7 +58,9 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
                     if (GUILayout.Button("Load Style"))
                     {
+#pragma warning disable CS4014
                         _viewModel.LoadStyleAsync();
+#pragma warning restore CS4014
                     }
                 }
 

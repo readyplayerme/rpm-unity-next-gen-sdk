@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEngine.TestTools;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using ReadyPlayerMe.Runtime.Api.V1;
+using ReadyPlayerMe.Api.V1;
 
 namespace ReadyPlayerMe.Tests.Api.V1
 {
