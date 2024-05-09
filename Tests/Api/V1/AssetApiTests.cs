@@ -1,8 +1,7 @@
 using UnityEngine;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Runtime.Api.V1.Assets;
-using ReadyPlayerMe.Runtime.Api.V1.Assets.Models;
+using ReadyPlayerMe.Api.V1;
 
 namespace ReadyPlayerMe.Tests.Api.V1
 {

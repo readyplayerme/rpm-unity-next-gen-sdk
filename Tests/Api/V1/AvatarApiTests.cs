@@ -4,8 +4,7 @@ using NUnit.Framework;
 using UnityEngine.TestTools;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using ReadyPlayerMe.Runtime.Api.V1.Avatars;
-using ReadyPlayerMe.Runtime.Api.V1.Avatars.Models;
+using ReadyPlayerMe.Api.V1;
 
 namespace ReadyPlayerMe.Tests.Api.V1
 {
@@ -33,7 +32,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
-        [Test, RequiresPlayMode]
+        [Test]
         public async Task Update_Avatar()
         {
             // Arrange
@@ -57,7 +56,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
-        [Test, RequiresPlayMode]
+        [Test]
         public void Preview_Avatar()
         {
             // Arrange
