@@ -1,4 +1,4 @@
-﻿using ReadyPlayerMe.Api.V1;
+using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;

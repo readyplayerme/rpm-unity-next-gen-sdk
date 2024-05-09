@@ -5,12 +5,12 @@ namespace ReadyPlayerMe.AvatarLoader
 {
 	public class SkeletonBuilder
 	{
-		//A static dictionary containing the mapping from joint/bones names in the model
-		//to the names Unity uses for them internally.
+		//A static dictionary containing the mapping from joint/bones names of standard Ready Player Me Avatars
+		//in the modelto the names Unity uses for them internally.
 		//In this case they match the naming from the included Mixamo model on the left
 		//and the Unity equivalent name on the right. 
 		//This does not need to be hard-coded. 
-		private Dictionary<string, string> HumanSkeletonNames = new Dictionary<string, string>()
+		private Dictionary<string, string> DefaultBoneNames = new Dictionary<string, string>()
 		{
 			{ "Spine1", "Chest" },
 			{ "Head", "Head" },
@@ -65,21 +65,32 @@ namespace ReadyPlayerMe.AvatarLoader
 			{ "Spine", "Spine" },
 			{ "Spine2", "UpperChest" }
 		};
-
-		/// Create a HumanDescription out of an avatar GameObject. 
+		
+		/// <summary>
+		/// Create a HumanDescription out of an avatar GameObject.
 		/// The HumanDescription is what is needed to create an Avatar object
-		/// using the AvatarBuilder API. This function takes care of 
+		/// using the AvatarBuilder API. This function takes care of
 		/// creating the HumanDescription by going through the avatar's
 		/// hierarchy, defining its T-Pose in the skeleton, and defining
-		/// the transform/bone mapping in the HumanBone array. 
-		private HumanDescription CreateHumanDescription(GameObject avatarRoot)
+		/// the transform/bone mapping in the HumanBone array.
+		/// </summary>
+		/// <param name="avatarRoot">Root of your avatar object</param>
+		/// <returns>A HumanDescription which can be fed to the AvatarBuilder API</returns>
+		public HumanDescription CreateHumanDescription(GameObject avatarRoot, Dictionary<string, string> bonesNames = null)
 		{
 			HumanDescription description = new HumanDescription()
 			{
+				armStretch = 0.05f,
+				feetSpacing = 0f,
+				hasTranslationDoF = false,
+				legStretch = 0.05f,
+				lowerArmTwist = 0.5f,
+				lowerLegTwist = 0.5f,
+				upperArmTwist = 0.5f,
+				upperLegTwist = 0.5f,
 				skeleton = CreateSkeleton(avatarRoot),
-				human = CreateHuman(avatarRoot),
+				human = CreateHuman(avatarRoot, bonesNames),
 			};
-
 			return description;
 		}
 
@@ -111,14 +122,14 @@ namespace ReadyPlayerMe.AvatarLoader
 		// This is where the various bones/joints get associated with the
 		// joint names that Unity understands. This is done using the
 		// static dictionary defined at the top. 
-		private HumanBone[] CreateHuman(GameObject avatarRoot)
+		private HumanBone[] CreateHuman(GameObject avatarRoot, Dictionary<string, string> boneNames)
 		{
 			List<HumanBone> human = new List<HumanBone>();
 
 			Transform[] avatarTransforms = avatarRoot.GetComponentsInChildren<Transform>();
 			foreach (Transform avatarTransform in avatarTransforms)
 			{
-				if (HumanSkeletonNames.TryGetValue(avatarTransform.name, out string humanName))
+				if (boneNames.TryGetValue(avatarTransform.name, out string humanName))
 				{
 					HumanBone bone = new HumanBone
 					{
@@ -131,7 +142,6 @@ namespace ReadyPlayerMe.AvatarLoader
 					human.Add(bone);
 				}
 			}
-
 			return human.ToArray();
 		}
 		
@@ -141,6 +151,7 @@ namespace ReadyPlayerMe.AvatarLoader
 		/// <param name="source">Avatar GameObject</param>
 		public void Build(GameObject source)
 		{
+			// TODO: These are RPM spesific bones, wont work with other characters
 			Transform leftArm = source.transform.Find("Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm");
 			Transform rightArm = source.transform.Find("Hips/Spine/Spine1/Spine2/RightShoulder/RightArm");
 			Transform lowerLeftArm = source.transform.Find("Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm/LeftForeArm");
@@ -153,7 +164,7 @@ namespace ReadyPlayerMe.AvatarLoader
 			lowerLeftArm.localRotation = Quaternion.Euler(0, 0, 0f);
 			lowerRightArm.localRotation = Quaternion.Euler(0, 0, 0f);
 
-			var description = CreateHumanDescription(source);
+			var description = CreateHumanDescription(source, DefaultBoneNames);
 			Avatar avatar = AvatarBuilder.BuildHumanAvatar(source, description);
 
 			Animator animator = source.GetComponent<Animator>();
