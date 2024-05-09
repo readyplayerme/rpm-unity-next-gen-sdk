@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace ReadyPlayerMe.Runtime.Data.ScriptableObjects
+namespace ReadyPlayerMe.Data
 {
 	[System.Serializable]
 	public class BoneGroup

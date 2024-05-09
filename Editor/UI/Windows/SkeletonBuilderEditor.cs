@@ -1,16 +1,16 @@
+using ReadyPlayerMe.AvatarLoader;
+using ReadyPlayerMe.Data;
 using UnityEditor;
 using UnityEngine;
-using ReadyPlayerMe.Runtime.Loader;
-using ReadyPlayerMe.Runtime.Data.ScriptableObjects;
 
-namespace ReadyPlayerMe.Tools.Editor.UI.Windows
+namespace ReadyPlayerMe.Editor.UI.Windows
 {
     public class SkeletonBuilderEditor : EditorWindow
     {
-        private Transform avatar;
-        private AvatarSkeletonDefinition skeletonDefinition;
+        private Transform _avatar;
+        private AvatarSkeletonDefinition _skeletonDefinition;
 
-        [MenuItem("Tools/Skeleton Builder")]
+        [MenuItem("Tools/Ready Player Me/Skeleton Builder")]
         public static void Generate()
         {
             var window = GetWindow<SkeletonBuilderEditor>("Skeleton Builder");
@@ -19,16 +19,16 @@ namespace ReadyPlayerMe.Tools.Editor.UI.Windows
 
         private void OnGUI()
         {
-            avatar = EditorGUILayout.ObjectField("Avatar", avatar, typeof(Transform), true) as Transform;
-            skeletonDefinition = EditorGUILayout.ObjectField("Definition", skeletonDefinition, typeof(AvatarSkeletonDefinition), true) as AvatarSkeletonDefinition;
+            _avatar = EditorGUILayout.ObjectField("Avatar", _avatar, typeof(Transform), true) as Transform;
+            _skeletonDefinition = EditorGUILayout.ObjectField("Definition", _skeletonDefinition, typeof(AvatarSkeletonDefinition), true) as AvatarSkeletonDefinition;
             
             if (GUILayout.Button("Test"))
             {
-                var animator = avatar.GetComponent<Animator>();
-                var skeleletonBuilder = new SkeletonBuilder();
-                HumanDescription description = skeleletonBuilder.CreateHumanDescription(avatar.gameObject, skeletonDefinition.GetHumanBones());
-                Avatar animAvatar = AvatarBuilder.BuildHumanAvatar(avatar.gameObject, description);
-                avatar.name = avatar.gameObject.name;
+                var animator = _avatar.GetComponent<Animator>();
+                var skeletonBuilder = new SkeletonBuilder();
+                HumanDescription description = skeletonBuilder.CreateHumanDescription(_avatar.gameObject, _skeletonDefinition.GetHumanBones());
+                Avatar animAvatar = AvatarBuilder.BuildHumanAvatar(_avatar.gameObject, description);
+                _avatar.name = _avatar.gameObject.name;
                 animator.avatar = animAvatar;
                 
                 AssetDatabase.CreateAsset(animAvatar, "Assets/Avatar.asset");
