@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using ReadyPlayerMe.Data.V1;
 
 namespace ReadyPlayerMe.Api.V1
 {

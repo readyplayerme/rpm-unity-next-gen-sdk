@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using ReadyPlayerMe.Data;
+using UnityEngine;
 
 namespace ReadyPlayerMe.Api.V1
 {
@@ -10,7 +12,7 @@ namespace ReadyPlayerMe.Api.V1
     public class AssetTypeListQueryParams
     {
         [JsonProperty("applicationId")] 
-        public string ApplicationId { get; set; }
+        public string ApplicationId { get; set; } = Resources.Load<Settings>("ReadyPlayerMeSettings").ApplicationId;
 
         [JsonProperty("type")] 
         public string Type { get; set; }

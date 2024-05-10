@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Cache;
+using ReadyPlayerMe.Data;
 using UnityEngine;
 
 namespace ReadyPlayerMe.AvatarLoader
@@ -11,14 +11,12 @@ namespace ReadyPlayerMe.AvatarLoader
         private readonly AvatarApi _avatarApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
-        private readonly CharacterDataCache<GameObject> _characterStyleTemplateCache;
 
         public SimpleAvatarLoader()
         {
             _avatarApi = new AvatarApi();
             _meshTransfer = new MeshTransfer();
             _skeletonBuilder = new SkeletonBuilder();
-            _characterStyleTemplateCache = new CharacterDataCache<GameObject>("Character Templates Links");
         }
 
         public async Task<GameObject> LoadAsync(string id, SimpleAvatarLoadConfig config = null)
@@ -46,7 +44,9 @@ namespace ReadyPlayerMe.AvatarLoader
 
             await gltf.InstantiateSceneAsync(avatar.transform);
 
-            var template = _characterStyleTemplateCache.Load(config.CharacterStyleId);
+            var template = Resources
+                .Load<CharacterStyleTemplateReference>($"Character Templates Links/{config.CharacterStyleId}")
+                .characterStyleTemplate;
 
             if (!template)
             {
@@ -56,9 +56,9 @@ namespace ReadyPlayerMe.AvatarLoader
 
                 return avatar;
             }
-            
+
             var instance = Object.Instantiate(template);
-            
+
             // Update skeleton and transfer mesh
             _skeletonBuilder.Build(instance);
             _meshTransfer.Transfer(avatar, instance);
