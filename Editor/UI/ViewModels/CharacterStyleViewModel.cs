@@ -55,7 +55,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
                 
                 SkeletonBuilder skeletonBuilder = new SkeletonBuilder();
-                skeletonBuilder.Build(instance, avatarSkeletonDefinition.GetHumanBones());
+                
+                skeletonBuilder.Build(instance, avatarSkeletonDefinition?.GetHumanBones());
             }
             catch (Exception e)
             {
