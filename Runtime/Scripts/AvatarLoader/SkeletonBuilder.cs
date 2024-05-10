@@ -173,5 +173,19 @@ namespace ReadyPlayerMe.AvatarLoader
 				animator.avatar = avatar;
 			}
 		}
+
+		public void Build(GameObject source, Dictionary<string, string> boneNames)
+		{
+			var description = CreateHumanDescription(source, boneNames);
+			Avatar animAvatar = AvatarBuilder.BuildHumanAvatar(source, description);
+			animAvatar.name = source.name;
+			
+			Animator animator = source.GetComponent<Animator>();
+			if (animator == null)
+			{
+				animator = source.AddComponent<Animator>();
+			}
+			animator.avatar = animAvatar;
+		}
 	}
 }
