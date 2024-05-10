@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Cache;
+using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Data.V1;
 using UnityEditor;
 using UnityEngine;
@@ -14,21 +15,26 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
     {
         public Asset CharacterStyle { get; set; }
 
-        public string CacheId { get; private set; }
+        public string TemplateCacheId { get; private set; }
+        public string AvatarBoneDefinitionCacheId { get; private set; }
 
         public Texture2D Image { get; private set; }
 
         private CharacterStyleCache _characterStyleCache;
-        private CharacterStyleTemplateCache _characterStyleTemplateCache;
+        private CharacterDataCache<GameObject> _characterStyleTemplateCache;
+        private CharacterDataCache<AvatarSkeletonDefinition> _characterAvatarBoneDefinitionCache;
+
         private FileApi _fileApi;
 
         public async Task Init(Asset characterStyle)
         {
             _characterStyleCache = new CharacterStyleCache();
-            _characterStyleTemplateCache = new CharacterStyleTemplateCache();
-            
+            _characterStyleTemplateCache = new CharacterDataCache<GameObject>("Character Templates Links");
+            _characterAvatarBoneDefinitionCache = new CharacterDataCache<AvatarSkeletonDefinition>("Character Avatar Bone Definitions");
+                
             CharacterStyle = characterStyle;
-            CacheId = _characterStyleTemplateCache.GetCacheId(CharacterStyle.Id);
+            TemplateCacheId = _characterStyleTemplateCache.GetCacheId(CharacterStyle.Id);
+            AvatarBoneDefinitionCacheId = _characterAvatarBoneDefinitionCache.GetCacheId(CharacterStyle.Id);
 
             _fileApi = new FileApi();
             Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
@@ -51,9 +57,14 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             }
         }
 
-        public void SaveTemplate(Object templateObject)
+        public void SaveTemplate(GameObject templateObject)
         {
             _characterStyleTemplateCache.Save(templateObject, CharacterStyle.Id);
+        }
+        
+        public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject)
+        {
+            _characterAvatarBoneDefinitionCache.Save(avatarBoneDefinitionObject, CharacterStyle.Id);
         }
     }
 }

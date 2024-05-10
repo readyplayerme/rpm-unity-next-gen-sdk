@@ -11,14 +11,14 @@ namespace ReadyPlayerMe.AvatarLoader
         private readonly AvatarApi _avatarApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
-        private readonly CharacterStyleTemplateCache _characterStyleTemplateCache;
+        private readonly CharacterDataCache<GameObject> _characterStyleTemplateCache;
 
         public SimpleAvatarLoader()
         {
             _avatarApi = new AvatarApi();
             _meshTransfer = new MeshTransfer();
             _skeletonBuilder = new SkeletonBuilder();
-            _characterStyleTemplateCache = new CharacterStyleTemplateCache();
+            _characterStyleTemplateCache = new CharacterDataCache<GameObject>("Character Templates Links");
         }
 
         public async Task<GameObject> LoadAsync(string id, SimpleAvatarLoadConfig config = null)

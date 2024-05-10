@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using ReadyPlayerMe.Data;
+using System.Threading.Tasks;
 using ReadyPlayerMe.Data.V1;
 using ReadyPlayerMe.Editor.UI.Components;
 using ReadyPlayerMe.Editor.UI.ViewModels;
@@ -10,19 +11,22 @@ namespace ReadyPlayerMe.Editor.UI.Views
     public class CharacterStyleView
     {
         private readonly CharacterStyleViewModel _viewModel;
-        private readonly ObjectInput _templateInput;
+        private readonly ObjectInput<GameObject> _templateInput;
+        private readonly ObjectInput<AvatarSkeletonDefinition> _avatarBoneDefinitionInput;
 
         public CharacterStyleView(CharacterStyleViewModel viewModel)
         {
             _viewModel = viewModel;
-            _templateInput = new ObjectInput();
+            _templateInput = new ObjectInput<GameObject>();
+            _avatarBoneDefinitionInput = new ObjectInput<AvatarSkeletonDefinition>();
         }
 
         public async Task Init(Asset characterStyle)
         {
             await _viewModel.Init(characterStyle);
 
-            _templateInput.Init(_viewModel.CacheId);
+            _templateInput.Init(_viewModel.TemplateCacheId);
+            _avatarBoneDefinitionInput.Init(_viewModel.AvatarBoneDefinitionCacheId);
         }
 
         public void Render()
@@ -70,6 +74,8 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     GUILayout.Label("ID: " + _viewModel.CharacterStyle.Id);
                     GUILayout.Label("Template");
                     _templateInput.Render(onChange: o => { _viewModel.SaveTemplate(o); });
+                    GUILayout.Label("Test Avatar");
+                    _avatarBoneDefinitionInput.Render(onChange: o => { _viewModel.SaveAvatarBoneDefinition(o); });
                 }
             }
         }
