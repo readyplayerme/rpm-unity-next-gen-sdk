@@ -45,7 +45,7 @@ namespace ReadyPlayerMe.AvatarLoader
             await gltf.InstantiateSceneAsync(avatar.transform);
 
             var template = Resources
-                .Load<CharacterStyleTemplateReference>($"Character Templates Links/{config.CharacterStyleId}")
+                .Load<CharacterStyleTemplateReference>($"Character Templates Links/{config.CharacterStyleId}")?
                 .characterStyleTemplate;
 
             if (!template)
