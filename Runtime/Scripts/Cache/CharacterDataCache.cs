@@ -24,7 +24,7 @@ namespace ReadyPlayerMe.Cache
             AssetDatabase.Refresh();
         }
 
-        public GameObject Load(string characterStyleId)
+        public T Load(string characterStyleId)
         {
             var text = AssetDatabase.LoadAssetAtPath<TextAsset>(
                 $"{CacheDirectory}/{characterStyleId}.txt");
@@ -34,7 +34,7 @@ namespace ReadyPlayerMe.Cache
 
             var path = AssetDatabase.GUIDToAssetPath(text.text);
 
-            return AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            return AssetDatabase.LoadAssetAtPath<T>(path);
         }
         
         public string GetCacheId(string id)

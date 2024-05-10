@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Api.V1;
+using ReadyPlayerMe.AvatarLoader;
 using ReadyPlayerMe.Cache;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Data.V1;
@@ -49,7 +50,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 await _characterStyleCache.Save(bytes, CharacterStyle.Id);
 
                 var character = _characterStyleCache.Load(CharacterStyle.Id);
-                PrefabUtility.InstantiatePrefab(character); ;
+                var avatarSkeletonDefinition = _characterAvatarBoneDefinitionCache.Load(CharacterStyle.Id);
+
+                var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
+                
+                SkeletonBuilder skeletonBuilder = new SkeletonBuilder();
+                skeletonBuilder.Build(instance, avatarSkeletonDefinition.GetHumanBones());
             }
             catch (Exception e)
             {
