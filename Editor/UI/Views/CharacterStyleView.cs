@@ -74,7 +74,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 {
                     GUILayout.Space(8);
                     GUILayout.Label("ID: " + _viewModel.CharacterStyle.Id);
-                    GUILayout.Label("Template");
+                    GUILayout.Label("Style Template Prefab");
                     _templateInput.Render(onChange: o => { _viewModel.SaveTemplate(o); });
                     GUILayout.Label("Test Avatar");
                     _avatarBoneDefinitionInput.Render(onChange: o => { _viewModel.SaveAvatarBoneDefinition(o); });

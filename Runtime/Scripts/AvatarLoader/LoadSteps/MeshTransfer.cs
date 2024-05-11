@@ -56,6 +56,8 @@ namespace ReadyPlayerMe.AvatarLoader
                     skinnedMeshRenderer.sharedMesh.RecalculateBounds();
                 }
             }
+            
+            rootBone.SetAsLastSibling();
         }
         
         /// Get bones from the target armature
