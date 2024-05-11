@@ -37,7 +37,9 @@ namespace ReadyPlayerMe.AvatarLoader
             }
 
             var template = GetTemplate(templateId);
-            return await _avatarLoader.PreviewAsync(id, assets, template);
+            var templateInstance = template != null ? Object.Instantiate(template) : null;
+            
+            return await _avatarLoader.PreviewAsync(id, assets, templateInstance);
         }
 
         public virtual async Task<GameObject> LoadAsync(string id, string templateId = null)
