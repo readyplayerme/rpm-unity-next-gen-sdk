@@ -73,6 +73,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public void SaveTemplate(GameObject templateObject)
         {
+            if (templateObject == null)
+            {
+                _characterStyleTemplateScriptableObjectCacheWriter.Delete(CharacterStyle.Id);
+                return;
+            }
+
             var template = ScriptableObject.CreateInstance<CharacterStyleTemplateReference>();
             template.characterStyleTemplate = templateObject;
             template.cacheId = FindAssetGuid(templateObject);

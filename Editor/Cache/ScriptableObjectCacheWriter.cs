@@ -6,6 +6,13 @@ namespace ReadyPlayerMe.Editor.Cache
     public class ScriptableObjectCacheWriter<T> : CacheWriterBase where T : ScriptableObject
     {
         public ScriptableObjectCacheWriter(string name) : base(name) { }
+
+        public void Delete(string id)
+        {
+            AssetDatabase.DeleteAsset($"{CacheDirectory}/{id}.asset");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
         
         public void Save(T cache, string id)
         {
