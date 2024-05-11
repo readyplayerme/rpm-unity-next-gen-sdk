@@ -49,6 +49,8 @@ namespace ReadyPlayerMe.AvatarLoader
             foreach (Renderer renderer in sourceRenderers)
             {
                 renderer.gameObject.transform.SetParent(targetArmature);
+                renderer.gameObject.transform.localPosition = Vector3.zero;
+                renderer.gameObject.transform.localEulerAngles = Vector3.zero;
 
                 if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
                 {
