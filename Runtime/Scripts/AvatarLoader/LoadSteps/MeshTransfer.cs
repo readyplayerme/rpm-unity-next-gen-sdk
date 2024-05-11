@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe.AvatarLoader
 {
@@ -6,7 +8,7 @@ namespace ReadyPlayerMe.AvatarLoader
     {
         private const string ARMATURE_NAME = "Armature";
         private const string HIPS_BONE_NAME = "Hips";
-        
+
         /// <summary>
         ///     Transfer meshes from source to target GameObject
         /// </summary>
@@ -16,10 +18,10 @@ namespace ReadyPlayerMe.AvatarLoader
         {
             Transform targetArmature = target.transform.Find(ARMATURE_NAME) ?? target.transform;
             Transform sourceArmature = source.transform.Find(ARMATURE_NAME) ?? source.transform;
-            
+
             RemoveMeshes(targetArmature);
             TransferMeshes(targetArmature, sourceArmature);
-            
+
             Object.Destroy(source);
         }
 
@@ -37,12 +39,12 @@ namespace ReadyPlayerMe.AvatarLoader
                 }
             }
         }
-        
+
         /// Set meshes from source armature to target armature
         private void TransferMeshes(Transform targetArmature, Transform sourceArmature)
         {
             Transform rootBone = targetArmature.Find(HIPS_BONE_NAME);
-            Transform[] bones = GetBones(targetArmature);
+            Transform[] bones = rootBone != null ? GetBones(targetArmature) : Array.Empty<Transform>();
             Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
             foreach (Renderer renderer in sourceRenderers)
             {
@@ -52,14 +54,14 @@ namespace ReadyPlayerMe.AvatarLoader
                 {
                     skinnedMeshRenderer.rootBone = rootBone;
                     skinnedMeshRenderer.bones = bones;
-              
+
                     skinnedMeshRenderer.sharedMesh.RecalculateBounds();
                 }
             }
-            
+
             rootBone.SetAsLastSibling();
         }
-        
+
         /// Get bones from the target armature
         private Transform[] GetBones(Transform targetArmature)
         {
