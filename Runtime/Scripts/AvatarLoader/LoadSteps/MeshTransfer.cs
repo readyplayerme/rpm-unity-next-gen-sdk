@@ -59,7 +59,8 @@ namespace ReadyPlayerMe.AvatarLoader
                 }
             }
 
-            rootBone.SetAsLastSibling();
+            if (rootBone != null)
+                rootBone.SetAsLastSibling();
         }
 
         /// Get bones from the target armature
