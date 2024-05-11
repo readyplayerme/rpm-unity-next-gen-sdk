@@ -24,7 +24,7 @@ namespace ReadyPlayerMe.AvatarLoader
         )
         {
             if (string.IsNullOrEmpty(templateId))
-                templateId = assets["baseModel"];
+                assets.TryGetValue("baseModel", out templateId);
 
             if (templateId == null)
             {
