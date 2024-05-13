@@ -11,6 +11,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
     {
         private readonly ApplicationManagementViewModel _viewModel;
         private readonly SelectInput _selectInput;
+        private readonly TextInput _textInput;
         private readonly CharacterStylesView _characterStylesView;
 
         private Vector2 _scrollPosition = Vector2.zero;
@@ -19,6 +20,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
         {
             _viewModel = viewModel;
             _selectInput = new SelectInput();
+            _textInput = new TextInput();
 
             var characterStylesViewModel = new CharacterStylesViewModel(viewModel.AssetApi, viewModel.Settings);
             _characterStylesView = new CharacterStylesView(characterStylesViewModel);
@@ -39,6 +41,8 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     .ToArray(),
                 _viewModel.Settings.ApplicationId
             );
+            
+            _textInput.Init(_viewModel.Settings.ApiKey);
 
             await _characterStylesView.InitAsync();
         }
@@ -95,6 +99,9 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 _selectInput.Render(async (applicationId) =>
                 {
                     _viewModel.Settings.ApplicationId = applicationId;
+                    EditorUtility.SetDirty(_viewModel.Settings);
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
 
                     await _characterStylesView.InitAsync();
                 });
@@ -143,8 +150,14 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
                 GUILayout.Space(5);
 
-                _viewModel.Settings.ApiKey = EditorGUILayout.TextField("API Key", _viewModel.Settings.ApiKey);
-                
+                _textInput.Render("Api Key", (value) =>
+                {
+                    _viewModel.Settings.ApiKey = value;
+                    EditorUtility.SetDirty(_viewModel.Settings);
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                });
+
                 GUILayout.Space(5);
                 
                 EditorGUILayout.HelpBox(

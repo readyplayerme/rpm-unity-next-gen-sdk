@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Cache
+namespace ReadyPlayerMe.Editor.Cache
 {
-    public class CharacterStyleCache : CacheBase
+    public class GlbCache : CacheWriterBase
     {
-        public CharacterStyleCache() : base("Character Templates") {}
+        public GlbCache(string name) : base(name) {}
 
         public async Task Save(byte[] bytes, string id)
         {
@@ -15,16 +15,13 @@ namespace ReadyPlayerMe.Cache
             await File.WriteAllBytesAsync(path, bytes);
                 
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-
+            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
         
         public GameObject Load(string id)
         {
-            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"{CacheDirectory}/{id}.glb");
-
-            return asset;
+            return AssetDatabase.LoadAssetAtPath<GameObject>($"{CacheDirectory}/{id}.glb");
         }
     }
 }

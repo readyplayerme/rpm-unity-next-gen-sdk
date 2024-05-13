@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Data.V1
+namespace ReadyPlayerMe.Api.V1
 {
     public class Avatar
     {

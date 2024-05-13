@@ -1,17 +1,18 @@
 ﻿using System.IO;
-using UnityEngine.TextCore.Text;
 using AssetDatabase = UnityEditor.AssetDatabase;
+using TextAsset = UnityEngine.TextCore.Text.TextAsset;
 
-namespace ReadyPlayerMe.Cache
+namespace ReadyPlayerMe.Editor.Cache
 {
-    public abstract class CacheBase
+    public abstract class CacheWriterBase
     {
-        private const string BaseDirectory = "Assets/Ready Player Me/Resources/";
+        public const string BaseDirectory = "Assets/Ready Player Me/Resources/";
+        
         private readonly string _name;
 
         protected string CacheDirectory => BaseDirectory + _name;
 
-        protected CacheBase(string name)
+        protected CacheWriterBase(string name)
         {
             _name = name;
 
