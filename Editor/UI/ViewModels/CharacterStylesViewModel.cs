@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Data.V1;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {

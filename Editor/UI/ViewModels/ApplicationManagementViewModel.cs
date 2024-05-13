@@ -5,6 +5,7 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models;
+using UnityEditor;
 using Application = ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models.Application;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
@@ -69,7 +70,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             Applications = applicationListResponse.Data?.ToList() ?? new List<Application>();
 
             if (Applications.FirstOrDefault(p => p.Id == Settings.ApplicationId) == null)
+            {
                 Settings.ApplicationId = string.Empty;
+                EditorUtility.SetDirty(Settings);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
 
             Loading = false;
         }

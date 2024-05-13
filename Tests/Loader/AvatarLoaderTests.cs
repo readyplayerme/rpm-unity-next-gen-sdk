@@ -13,8 +13,8 @@ namespace ReadyPlayerMe.Tests.Loader
         [Test]
         public async Task Load_Avatar_With_Valid_Glb_Url()
         {
-            AvatarLoader.AvatarLoader avatarLoader = new AvatarLoader.AvatarLoader();
-            GameObject avatar = await avatarLoader.LoadAvatar(glbUrl, id);
+            AvatarLoader.ManagedAvatarLoader managedAvatarLoader = new AvatarLoader.ManagedAvatarLoader();
+            GameObject avatar = await managedAvatarLoader.LoadAvatar(glbUrl, id);
             
             Assert.IsNotNull(avatar);
         }
@@ -22,8 +22,8 @@ namespace ReadyPlayerMe.Tests.Loader
         [Test]
         public async Task Loaded_avatar_Has_AvatarData_Component()
         {
-            AvatarLoader.AvatarLoader avatarLoader = new AvatarLoader.AvatarLoader();
-            GameObject avatar = await avatarLoader.LoadAvatar(glbUrl, id);
+            AvatarLoader.ManagedAvatarLoader managedAvatarLoader = new AvatarLoader.ManagedAvatarLoader();
+            GameObject avatar = await managedAvatarLoader.LoadAvatar(glbUrl, id);
             AvatarData avatarData = avatar.GetComponent<AvatarData>();
             
             Assert.IsNotNull(avatarData);
@@ -33,11 +33,11 @@ namespace ReadyPlayerMe.Tests.Loader
         [Test]
         public async Task Update_Avatar()
         {
-            AvatarLoader.AvatarLoader avatarLoader = new AvatarLoader.AvatarLoader();
-            GameObject avatar = await avatarLoader.LoadAvatar(glbUrl, id);
+            AvatarLoader.ManagedAvatarLoader managedAvatarLoader = new AvatarLoader.ManagedAvatarLoader();
+            GameObject avatar = await managedAvatarLoader.LoadAvatar(glbUrl, id);
             int avatarHashCode = avatar.GetHashCode();
 
-            GameObject updatedAvatar = await avatarLoader.LoadAvatar(updatedGlbUrl, id);
+            GameObject updatedAvatar = await managedAvatarLoader.LoadAvatar(updatedGlbUrl, id);
             int updatedAvatarHashCode = updatedAvatar.GetHashCode();
             
             Assert.AreEqual(avatarHashCode, updatedAvatarHashCode);

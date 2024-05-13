@@ -1,73 +1,77 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GLTFast;
+using ReadyPlayerMe.Api.V1;
 using UnityEngine;
 
 namespace ReadyPlayerMe.AvatarLoader
 {
     public class AvatarLoader
     {
-        private const string TEMPLATE_PATH = "Template/template_prefab";
-        
-        public static Dictionary<string, AvatarData> loadedAvatars = new Dictionary<string, AvatarData>();
-        
-        private MeshTransfer meshTransfer = new MeshTransfer();
-        private SkeletonBuilder skeletonBuilder = new SkeletonBuilder();
-        
-        public async Task<GameObject> LoadAvatar(string glbUrl, string id)
+        private readonly AvatarApi _avatarApi;
+        private readonly MeshTransfer _meshTransfer;
+        private readonly SkeletonBuilder _skeletonBuilder;
+
+        public AvatarLoader()
         {
-            loadedAvatars.TryGetValue(id, out AvatarData avatarData);
-            
-            if(avatarData != null)
-            {
-                return await UpdateAvatar(glbUrl, avatarData.gameObject);
-            }
-            
-            return await CreateAvatar(glbUrl, id);
+            _avatarApi = new AvatarApi();
+            _meshTransfer = new MeshTransfer();
+            _skeletonBuilder = new SkeletonBuilder();
         }
-        
-        private async Task<GameObject> CreateAvatar(string glbUrl, string id)
+
+        public async Task<GameObject> PreviewAsync(string id, Dictionary<string, string> assets, GameObject template = null)
         {
-            var gltf = new GltfImport();
-            if (await gltf.Load(glbUrl))
+            var previewUrl = _avatarApi.GenerateAvatarPreviewUrl(new AvatarPreviewRequest()
             {
-                // Load template
-                GameObject template = Resources.Load<GameObject>(TEMPLATE_PATH);
-                GameObject instance = Object.Instantiate(template);
+                AvatarId = id,
+                Params = new AvatarPreviewQueryParams()
+                {
+                    Assets = assets
+                }
+            });
                 
-                // Load avatar
-                GameObject avatar = new GameObject("avatar");
-                await gltf.InstantiateSceneAsync(avatar.transform);
-                
-                // Update skeleton and transfer mesh
-                skeletonBuilder.Build(instance);
-                meshTransfer.Transfer(avatar, instance);
-                
-                // Set avatar data
-                AvatarData data = instance.AddComponent<AvatarData>();
-                data.Initialize(id);
-                instance.name = data.Id;
-                loadedAvatars.Add(data.Id, data);
-                
-                return instance;
-            }
-            
-            return null;
+            return await LoadAsync(id, template, previewUrl);
         }
-        
-        private async Task<GameObject> UpdateAvatar(string glbUrl, GameObject original)
+
+        public async Task<GameObject> LoadAsync(string id, GameObject template = null, string loadFrom = null)
         {
-            var gltf = new GltfImport();
-            if (await gltf.Load(glbUrl))
+            if (string.IsNullOrEmpty(loadFrom))
             {
-                GameObject avatar = new GameObject("temp_avatar");
-                await gltf.InstantiateSceneAsync(avatar.transform);
-                meshTransfer.Transfer(avatar, original);
-                
-                Object.Destroy(avatar);
+                var avatarResponse = await _avatarApi.FindAvatarByIdAsync(new AvatarFindByIdRequest()
+                {
+                    AvatarId = id,
+                });
+
+                loadFrom = avatarResponse.Data.GlbUrl;
             }
 
-            return original;
+            var gltf = new GltfImport();
+
+            if (!await gltf.Load(loadFrom))
+                return null;
+
+            var avatar = new GameObject(id);
+
+            await gltf.InstantiateSceneAsync(avatar.transform);
+
+            if (template == null)
+                return InitAvatar(avatar, id);
+
+            // Update skeleton and transfer mesh
+            _skeletonBuilder.Build(instance);
+            _meshTransfer.Transfer(avatar, template);
+
+            return InitAvatar(template, id);
+        }
+
+        protected virtual GameObject InitAvatar(GameObject avatar, string id)
+        {
+            var avatarData = avatar.GetComponent<AvatarData>();
+
+            if (avatarData == null)
+                avatarData = avatar.AddComponent<AvatarData>();
+
+            return avatarData.Initialize(id);
         }
     }
 }
