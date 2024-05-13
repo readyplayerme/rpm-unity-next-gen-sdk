@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ReadyPlayerMe.AvatarLoader
@@ -145,38 +146,11 @@ namespace ReadyPlayerMe.AvatarLoader
 			return human.ToArray();
 		}
 		
-		/// <summary>
-		///		Applies a skeleton to the given Avatar GameObject.
-		/// </summary>
-		/// <param name="source">Avatar GameObject</param>
-		public void Build(GameObject source)
+		public void Build(GameObject source, Dictionary<string, string> boneNames = null)
 		{
-			// TODO: These are RPM spesific bones, wont work with other characters
-			Transform leftArm = source.transform.Find("Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm");
-			Transform rightArm = source.transform.Find("Hips/Spine/Spine1/Spine2/RightShoulder/RightArm");
-			Transform lowerLeftArm = source.transform.Find("Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm/LeftForeArm");
-			Transform lowerRightArm = source.transform.Find("Hips/Spine/Spine1/Spine2/RightShoulder/RightArm/RightForeArm");
-
-			Debug.Log(source.name);
-			
-			leftArm.localRotation = Quaternion.Euler(0, 10, -45f);
-			rightArm.localRotation = Quaternion.Euler(0, -10, 45f);
-			lowerLeftArm.localRotation = Quaternion.Euler(0, 0, 0f);
-			lowerRightArm.localRotation = Quaternion.Euler(0, 0, 0f);
-
-			var description = CreateHumanDescription(source, DefaultBoneNames);
-			Avatar avatar = AvatarBuilder.BuildHumanAvatar(source, description);
-
-			Animator animator = source.GetComponent<Animator>();
-			if (animator != null)
-			{
-				animator.avatar = avatar;
-			}
-		}
-
-		public void Build(GameObject source, Dictionary<string, string> boneNames)
-		{
-			var description = CreateHumanDescription(source, boneNames);
+			SetTPose(source, boneNames ?? DefaultBoneNames);
+				
+			var description = CreateHumanDescription(source, boneNames?? DefaultBoneNames);
 			Avatar animAvatar = AvatarBuilder.BuildHumanAvatar(source, description);
 			animAvatar.name = source.name;
 			
@@ -186,6 +160,47 @@ namespace ReadyPlayerMe.AvatarLoader
 				animator = source.AddComponent<Animator>();
 			}
 			animator.avatar = animAvatar;
+		}
+
+		private void SetTPose(GameObject source, Dictionary<string, string> boneNames)
+		{
+			var map = boneNames.ToDictionary(x => x.Value, x => x.Key);
+			
+			Transform leftArm = FindChildByName(source.transform, map["LeftUpperArm"]);
+			Transform rightArm = FindChildByName(source.transform, map["RightUpperArm"]);
+			Transform lowerLeftArm = FindChildByName(source.transform, map["LeftLowerArm"]);
+			Transform lowerRightArm = FindChildByName(source.transform, map["RightLowerArm"]);
+			
+			RotateArm(leftArm, lowerLeftArm, Vector3.left);
+			RotateArm(rightArm, lowerRightArm, Vector3.right);
+		}
+		
+		private void RotateArm(Transform upperArm, Transform lowerArm, Vector3 direction)
+		{
+			Vector3 leftArmActualDirection = lowerArm.position - upperArm.position;
+			Vector3 leftArmExpectedDirection = upperArm.position - upperArm.position + direction;
+        
+			upperArm.rotation = Quaternion.FromToRotation(leftArmActualDirection, leftArmExpectedDirection) * upperArm.rotation;
+		}
+		
+		private Transform FindChildByName(Transform parent, string childName)
+		{
+			foreach (Transform child in parent)
+			{
+				if(child.name == childName)
+				{
+					return child;
+				}
+				else
+				{
+					Transform found = FindChildByName(child, childName);
+					if (found != null)
+					{
+						return found;
+					}
+				}
+			}
+			return null;
 		}
 	}
 }
