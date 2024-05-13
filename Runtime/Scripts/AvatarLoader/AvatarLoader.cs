@@ -58,7 +58,7 @@ namespace ReadyPlayerMe.AvatarLoader
                 return InitAvatar(avatar, id);
 
             // Update skeleton and transfer mesh
-            _skeletonBuilder.Build(instance);
+            _skeletonBuilder.Build(template);
             _meshTransfer.Transfer(avatar, template);
 
             return InitAvatar(template, id);
