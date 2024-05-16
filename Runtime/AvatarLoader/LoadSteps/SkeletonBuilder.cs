@@ -168,8 +168,8 @@ namespace ReadyPlayerMe.AvatarLoader
 			
 			Transform leftArm = FindChildByName(source.transform, map["LeftUpperArm"]);
 			Transform rightArm = FindChildByName(source.transform, map["RightUpperArm"]);
-			Transform lowerLeftArm = FindChildByName(source.transform, map["LeftLowerArm"]);
-			Transform lowerRightArm = FindChildByName(source.transform, map["RightLowerArm"]);
+			Transform lowerLeftArm = FindChildByName(source.transform, map["LeftHand"]);
+			Transform lowerRightArm = FindChildByName(source.transform, map["RightHand"]);
 			
 			RotateArm(leftArm, lowerLeftArm, Vector3.left);
 			RotateArm(rightArm, lowerRightArm, Vector3.right);
