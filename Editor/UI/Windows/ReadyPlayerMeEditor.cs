@@ -2,7 +2,7 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
-using ReadyPlayerMe.Editor.Cache;
+using ReadyPlayerMe.Editor.EditorPrefs;
 using ReadyPlayerMe.Editor.UI.ViewModels;
 using ReadyPlayerMe.Editor.UI.Views;
 using UnityEditor;
@@ -26,15 +26,19 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         {
             var developerAuthApi = new DeveloperAuthApi();
             var developerAccountApi = new DeveloperAccountApi();
-            var assetApi  = new AssetApi();
+            var assetApi = new AssetApi();
             assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
-
             var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
 
-            var projectDetailsViewModel = new ApplicationManagementViewModel(assetApi, developerAccountApi, settings);
+            var projectDetailsViewModel = new ApplicationManagementViewModel(
+                assetApi,
+                developerAccountApi,
+                settings,
+                Repaint
+            );
             _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
 
             if (DeveloperAuthCache.Exists())
@@ -45,10 +49,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         {
             if (!DeveloperAuthCache.Exists())
             {
-                _developerLoginView.Render(async () =>
-                {
-                    await _applicationManagementView.Init();
-                });
+                _developerLoginView.Render(async () => { await _applicationManagementView.Init(); });
                 return;
             }
 

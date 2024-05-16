@@ -1,6 +1,7 @@
 using UnityEngine;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using ReadyPlayerMe.Data;
 
 namespace ReadyPlayerMe.Tests.Loader
 {

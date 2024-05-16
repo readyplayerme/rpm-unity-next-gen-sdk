@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEditor;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe.Editor.UI.Components
@@ -12,13 +11,15 @@ namespace ReadyPlayerMe.Editor.UI.Components
         public void Init(string objectId)
         {
             var assetPath = AssetDatabase.GUIDToAssetPath(objectId);
-            
+
             Value = AssetDatabase.LoadAssetAtPath<T>(assetPath);
         }
 
-        public void Render(Action<T> onChange)
+        public void Render(Action<T> onChange, string label = null)
         {
-            var newValue = EditorGUILayout.ObjectField(Value, typeof(T), false) as T;
+            var newValue = string.IsNullOrEmpty(label)
+                ? EditorGUILayout.ObjectField(Value, typeof(T), false) as T
+                : EditorGUILayout.ObjectField(label, Value, typeof(T), false) as T;
 
             if (newValue == Value)
                 return;

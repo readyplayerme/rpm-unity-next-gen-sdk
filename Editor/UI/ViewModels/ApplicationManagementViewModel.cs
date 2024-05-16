@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
@@ -19,18 +20,22 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public IList<Application> Applications { get; private set; } = new List<Application>();
 
         public readonly AssetApi AssetApi;
-        private readonly DeveloperAccountApi _developerAccountApi;
         public readonly Settings Settings;
+        public readonly Action Repaint;
+
+        private readonly DeveloperAccountApi _developerAccountApi;
 
         public ApplicationManagementViewModel(
             AssetApi assetApi,
             DeveloperAccountApi developerAccountApi,
-            Settings settings
+            Settings settings,
+            Action repaint
         )
         {
             AssetApi = assetApi;
-            _developerAccountApi = developerAccountApi;
             Settings = settings;
+            Repaint = repaint;
+            _developerAccountApi = developerAccountApi;
         }
 
         public async Task Init()

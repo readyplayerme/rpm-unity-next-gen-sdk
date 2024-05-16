@@ -6,7 +6,6 @@ using ReadyPlayerMe.Editor.Cache;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
@@ -14,17 +13,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
     {
         public Asset CharacterStyle { get; private set; }
 
-        public string TemplateCacheId { get; private set; }
-
         public string AvatarBoneDefinitionCacheId { get; private set; }
 
         public Texture2D Image { get; private set; }
 
-        private ScriptableObjectCacheWriter<CharacterStyleTemplateReference>
-            _characterStyleTemplateScriptableObjectCacheWriter;
-
-        private ScriptableObjectCacheWriter<AvatarSkeletonDefinition>
-            _avatarSkeletonDefinitionScriptableObjectCacheWriter;
+        private ObjectCache<AvatarSkeletonDefinition>
+            _avatarSkeletonDefinitionObjectCache;
 
         private GlbCache _characterStyleCache;
 
@@ -32,19 +26,13 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public async Task Init(Asset characterStyle)
         {
-            _characterStyleTemplateScriptableObjectCacheWriter =
-                new ScriptableObjectCacheWriter<CharacterStyleTemplateReference>("Character Templates Links");
-
-            _avatarSkeletonDefinitionScriptableObjectCacheWriter =
-                new ScriptableObjectCacheWriter<AvatarSkeletonDefinition>("Character Avatar Bone Definitions");
+            _avatarSkeletonDefinitionObjectCache =
+                new ObjectCache<AvatarSkeletonDefinition>("Character Avatar Bone Definitions");
 
             _characterStyleCache = new GlbCache("Character Templates");
 
             CharacterStyle = characterStyle;
-            
-            TemplateCacheId = Resources
-                .Load<CharacterStyleTemplateReference>($"Character Templates Links/{CharacterStyle.Id}")?.cacheId;
-            
+
             AvatarBoneDefinitionCacheId = Resources
                 .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}")?.cacheId;
 
@@ -59,22 +47,18 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             await _characterStyleCache.Save(bytes, CharacterStyle.Id);
 
             var character = _characterStyleCache.Load(CharacterStyle.Id);
+            var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
+            var skeletonBuilder = new SkeletonBuilder();
+            var avatarSkeletonDefinition = Resources
+                .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}");
 
-                var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
-                
-                SkeletonBuilder skeletonBuilder = new SkeletonBuilder();
+            if (avatarSkeletonDefinition == null)
+                return;
 
-                var avatarSkeletonDefinition = Resources
-                    .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}");
-
-                if (avatarSkeletonDefinition == null)
-                    return;
-
-                
-                skeletonBuilder.Build(instance, avatarSkeletonDefinition?.GetHumanBones());
+            skeletonBuilder.Build(instance, avatarSkeletonDefinition?.GetHumanBones());
         }
 
-        public void SaveTemplate(GameObject templateObject)
+        /* public void SaveTemplate(GameObject templateObject)
         {
             if (templateObject == null)
             {
@@ -86,31 +70,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             template.characterStyleTemplate = templateObject;
             template.cacheId = FindAssetGuid(templateObject);
             _characterStyleTemplateScriptableObjectCacheWriter.Save(template, CharacterStyle.Id);
-        }
+        } */
 
         public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject)
         {
-            avatarBoneDefinitionObject.cacheId = FindAssetGuid(avatarBoneDefinitionObject);
-            _avatarSkeletonDefinitionScriptableObjectCacheWriter.Save(avatarBoneDefinitionObject, CharacterStyle.Id);
-        }
-
-        private string FindAssetGuid(Object asset)
-        {
-            var guids = new NativeArray<GUID>(new GUID[1]
-                {
-                    GUID.Generate(),
-                },
-                Allocator.Temp
-            );
-
-            AssetDatabase.InstanceIDsToGUIDs(
-                new NativeArray<int>(new int[] { asset.GetInstanceID() }, Allocator.Temp),
-                guids
-            );
-
-            Debug.Log(guids[0]);
-
-            return guids[0].ToString();
+            avatarBoneDefinitionObject.cacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject);
+            _avatarSkeletonDefinitionObjectCache.Save(avatarBoneDefinitionObject, CharacterStyle.Id);
         }
     }
 }
