@@ -19,8 +19,9 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public IList<Application> Applications { get; private set; } = new List<Application>();
 
         public readonly AssetApi AssetApi;
-        private readonly DeveloperAccountApi _developerAccountApi;
         public readonly Settings Settings;
+
+        private readonly DeveloperAccountApi _developerAccountApi;
 
         public ApplicationManagementViewModel(
             AssetApi assetApi,
@@ -29,8 +30,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         )
         {
             AssetApi = assetApi;
-            _developerAccountApi = developerAccountApi;
             Settings = settings;
+            _developerAccountApi = developerAccountApi;
         }
 
         public async Task Init()

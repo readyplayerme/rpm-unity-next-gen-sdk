@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.Auth.Models;
 using ReadyPlayerMe.Editor.Cache;
+using ReadyPlayerMe.Editor.EditorPrefs;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {

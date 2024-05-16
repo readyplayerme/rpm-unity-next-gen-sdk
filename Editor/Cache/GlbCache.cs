@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ReadyPlayerMe.Editor.Cache
 {
-    public class GlbCache : CacheWriterBase
+    public class GlbCache : Cache
     {
         public GlbCache(string name) : base(name) {}
 
