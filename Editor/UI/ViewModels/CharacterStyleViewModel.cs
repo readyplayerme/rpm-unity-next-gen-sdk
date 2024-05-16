@@ -60,18 +60,17 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             var character = _characterStyleCache.Load(CharacterStyle.Id);
 
-                var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
-                
-                SkeletonBuilder skeletonBuilder = new SkeletonBuilder();
+            var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
+            
+            SkeletonBuilder skeletonBuilder = new SkeletonBuilder();
 
-                var avatarSkeletonDefinition = Resources
-                    .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}");
+            var avatarSkeletonDefinition = Resources
+                .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}");
 
-                if (avatarSkeletonDefinition == null)
-                    return;
-
-                
-                skeletonBuilder.Build(instance, avatarSkeletonDefinition?.GetHumanBones());
+            if (avatarSkeletonDefinition == null)
+                return;
+            
+            skeletonBuilder.Build(instance, avatarSkeletonDefinition?.GetHumanBones());
         }
 
         public void SaveTemplate(GameObject templateObject)

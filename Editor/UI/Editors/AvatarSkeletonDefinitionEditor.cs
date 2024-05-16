@@ -27,7 +27,11 @@ namespace ReadyPlayerMe.Editor.UI.Editors
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
+            
+            // a field for Root
+            SerializedProperty rootProp = serializedObject.FindProperty("Root");
+            EditorGUILayout.PropertyField(rootProp);
+            
             for (int i = 0; i < boneGroupsProp.arraySize; i++)
             {
                 SerializedProperty boneGroupProp = boneGroupsProp.GetArrayElementAtIndex(i);

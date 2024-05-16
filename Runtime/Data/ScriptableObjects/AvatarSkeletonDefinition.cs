@@ -16,6 +16,8 @@ namespace ReadyPlayerMe.Data
     {
 	    public string cacheId;
 	    
+	    public string Root = "Armature";
+	    
 	    public BoneGroup[] BoneGroups = {
 		    new BoneGroup() {
 			    GroupName = "Spine",

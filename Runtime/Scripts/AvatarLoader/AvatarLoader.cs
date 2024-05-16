@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using GLTFast;
 using ReadyPlayerMe.Api.V1;
+using ReadyPlayerMe.Data;
 using UnityEngine;
 
 namespace ReadyPlayerMe.AvatarLoader
@@ -35,6 +36,8 @@ namespace ReadyPlayerMe.AvatarLoader
 
         public async Task<GameObject> LoadAsync(string id, GameObject template = null, string loadFrom = null)
         {
+            string baseModelId = null;
+            
             if (string.IsNullOrEmpty(loadFrom))
             {
                 var avatarResponse = await _avatarApi.FindAvatarByIdAsync(new AvatarFindByIdRequest()
@@ -43,6 +46,7 @@ namespace ReadyPlayerMe.AvatarLoader
                 });
 
                 loadFrom = avatarResponse.Data.GlbUrl;
+                baseModelId = avatarResponse.Data.CreatedByApplicationId;
             }
 
             var gltf = new GltfImport();
@@ -58,8 +62,9 @@ namespace ReadyPlayerMe.AvatarLoader
                 return InitAvatar(avatar, id);
 
             // Update skeleton and transfer mesh
-            _skeletonBuilder.Build(template);
-            _meshTransfer.Transfer(avatar, template);
+            var avatarSkeletonDefinition = Resources.Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{baseModelId}");
+            _skeletonBuilder.Build(template, avatarSkeletonDefinition.GetHumanBones());
+            _meshTransfer.Transfer(avatar, template, avatarSkeletonDefinition);
 
             return InitAvatar(template, id);
         }
