@@ -36,8 +36,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
             var projectDetailsViewModel = new ApplicationManagementViewModel(
                 assetApi,
                 developerAccountApi,
-                settings,
-                Repaint
+                settings
             );
             _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
 
