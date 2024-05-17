@@ -12,10 +12,6 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public string Error = string.Empty;
         public string Tag = string.Empty;
-        
-        public CreateCharacterTemplateViewModel()
-        {
-        }
 
         public void Create()
         {
