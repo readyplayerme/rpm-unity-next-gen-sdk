@@ -86,7 +86,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 return;
             }
 
-            GUILayout.Label("Here you can configure the in-game templates for each of your character styles",
+            GUILayout.Label("Here you can import your character styles from Studio.",
                 new GUIStyle(GUI.skin.label)
                 {
                     margin = new RectOffset(9, 10, 0, 0)
