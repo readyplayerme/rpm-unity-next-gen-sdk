@@ -652,7 +652,7 @@ ModelImporter:
     - name: mixamorig:LeftArm
       parentName: mixamorig:LeftShoulder
       position: {x: -2.3980816e-16, y: 0.2658329, z: 1.1368684e-15}
-      rotation: {x: -0.3942017, y: 0.030236643, z: 0.07024796, w: -0.9158363}
+      rotation: {x: -0.03950342, y: -0.0062030246, z: 0.097726, w: -0.9944097}
       scale: {x: 1.0000001, y: 0.9999997, z: 1.0000001}
     - name: mixamorig:LeftForeArm
       parentName: mixamorig:LeftArm

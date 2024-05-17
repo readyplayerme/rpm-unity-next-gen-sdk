@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53554de4364f493458b82cedd55f62c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avatarTemplate: {fileID: 352654010526997672, guid: 04c717559fd52724c91cdb9dbf30a419, type: 3}
+  avatarTemplate: {fileID: 1809311767088125189, guid: 1f821bcba4a9f9048aa819dee4d639fa, type: 3}
 --- !u!4 &827434905
 Transform:
   m_ObjectHideFlags: 0

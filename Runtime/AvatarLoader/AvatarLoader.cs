@@ -63,7 +63,11 @@ namespace ReadyPlayerMe.AvatarLoader
 
             // Update skeleton and transfer mesh
             var avatarSkeletonDefinition = Resources.Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{baseModelId}");
-            _skeletonBuilder.Build(template, avatarSkeletonDefinition.GetHumanBones());
+            var animator = template.GetComponent<Animator>();
+            if (animator.avatar == null)
+            {
+                _skeletonBuilder.Build(template, avatarSkeletonDefinition.GetHumanBones());
+            }
             _meshTransfer.Transfer(avatar, template, avatarSkeletonDefinition);
 
             return InitAvatar(template, id);

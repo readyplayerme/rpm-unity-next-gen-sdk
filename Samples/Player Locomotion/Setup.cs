@@ -19,7 +19,7 @@ public class Setup : MonoBehaviour
                 ApplicationId = "6628c280ecb07cb9d9cd7238",
                 Assets = new Dictionary<string, string>
                 {
-                    { "baseModel",  "662bbf40959f805bb0731bb8"}
+                    { "baseModel",  "6644b977fd829d77ca263be2"}
                 }
             }
         };
@@ -28,8 +28,10 @@ public class Setup : MonoBehaviour
         
         AvatarLoader avatarLoader = new AvatarLoader();
         
-        var instance = Object.Instantiate(avatarTemplate); 
+        var instance = Object.Instantiate(avatarTemplate);
+        instance.SetActive(false);
         await avatarLoader.LoadAsync(response.Data.Id, instance);
+        instance.SetActive(true);
         
         // Update avatar
         var updateRequest = new AvatarUpdateRequest()
@@ -44,7 +46,6 @@ public class Setup : MonoBehaviour
             }
         };
         var updateResponse = await avatarApi.UpdateAvatarAsync(updateRequest);
-        
         
         await avatarLoader.LoadAsync(updateResponse.Data.Id, instance);
     }

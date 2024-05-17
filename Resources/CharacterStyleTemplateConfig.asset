@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CharacterStyleTemplateConfig
   m_EditorClassIdentifier: 
   templates:
-  - cacheId: c34fea8b40adb4546823a2132b3402cc
-    template: {fileID: 8769608929990874882, guid: c34fea8b40adb4546823a2132b3402cc, type: 3}
+  - cacheId: 1f821bcba4a9f9048aa819dee4d639fa
+    template: {fileID: 1809311767088125189, guid: 1f821bcba4a9f9048aa819dee4d639fa, type: 3}
     tags:
-    - 662a428cd616cca37c9f3b10
-    id: 1746986f52e9f124b8e56509cb468f34
+    - 6644b977fd829d77ca263be2
+    id: 781975d0a0d274b44aaff84964b93e9b
