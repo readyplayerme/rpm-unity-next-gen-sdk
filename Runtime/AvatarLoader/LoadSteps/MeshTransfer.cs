@@ -9,9 +9,6 @@ namespace ReadyPlayerMe.AvatarLoader
 {
     public class MeshTransfer
     {
-        private const string ARMATURE_NAME = "Armature";
-        private const string HIPS_BONE_NAME = "Hips";
-        
         private Transform[] bones;
         
         /// <summary>
@@ -21,7 +18,7 @@ namespace ReadyPlayerMe.AvatarLoader
         /// <param name="target">Avatar model existing in the scene</param>
         public void Transfer(GameObject source, GameObject target, AvatarSkeletonDefinition definition = null)
         {
-            Transform rootBone = target.GetComponentsInChildren<Transform>().First(t => t.name == definition.Root);
+            Transform rootBone = target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition.Root) ?? target.transform;
             
             var bones = GetBones(target.transform);
             RemoveMeshes(target.transform);
