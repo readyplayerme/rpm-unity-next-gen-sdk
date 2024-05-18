@@ -3,7 +3,6 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.AvatarLoader;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Cache;
-using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,7 +16,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public Texture2D Image { get; private set; }
 
-        private ObjectCache<AvatarSkeletonDefinition>
+        private ObjectCache<ObjectReference>
             _avatarSkeletonDefinitionObjectCache;
 
         private GlbCache _characterStyleCache;
@@ -27,14 +26,14 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public async Task Init(Asset characterStyle)
         {
             _avatarSkeletonDefinitionObjectCache =
-                new ObjectCache<AvatarSkeletonDefinition>("Character Avatar Bone Definitions");
+                new ObjectCache<ObjectReference>("Character Avatar Bone Definitions");
 
             _characterStyleCache = new GlbCache("Character Templates");
 
             CharacterStyle = characterStyle;
 
             AvatarBoneDefinitionCacheId = Resources
-                .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}")?.cacheId;
+                .Load<ObjectReference>($"Character Avatar Bone Definitions/{CharacterStyle.Id}")?.cacheId;
 
             _fileApi = new FileApi();
             Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
@@ -60,8 +59,15 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject)
         {
-            avatarBoneDefinitionObject.cacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject);
-            _avatarSkeletonDefinitionObjectCache.Import(avatarBoneDefinitionObject, CharacterStyle.Id);
+            if (avatarBoneDefinitionObject == null)
+            {
+                _avatarSkeletonDefinitionObjectCache.Delete(CharacterStyle.Id);
+                return;
+            }
+
+            var reference = ScriptableObject.CreateInstance<ObjectReference>();
+            reference.cacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject);
+            _avatarSkeletonDefinitionObjectCache.Save(reference, CharacterStyle.Id);
         }
     }
 }

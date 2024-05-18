@@ -14,17 +14,14 @@ namespace ReadyPlayerMe.Editor.Cache
             AssetDatabase.Refresh();
         }
         
-        public void Import(T cache, string id)
+        public void Save(T cache, string id)
         {
             AssetDatabase.DeleteAsset($"{CacheDirectory}/{id}.asset");
             
             if (cache == null)
                 return;
 
-            var guid = FindAssetGuid(cache);
-            var path = AssetDatabase.GUIDToAssetPath(guid);
-
-            AssetDatabase.CopyAsset(path, $"{CacheDirectory}/{id}.asset");
+            AssetDatabase.CreateAsset(cache, $"{CacheDirectory}/{id}.asset");
             EditorUtility.SetDirty(cache);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
