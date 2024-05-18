@@ -61,7 +61,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject)
         {
             avatarBoneDefinitionObject.cacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject);
-            _avatarSkeletonDefinitionObjectCache.Save(avatarBoneDefinitionObject, CharacterStyle.Id);
+            _avatarSkeletonDefinitionObjectCache.Import(avatarBoneDefinitionObject, CharacterStyle.Id);
         }
     }
 }
