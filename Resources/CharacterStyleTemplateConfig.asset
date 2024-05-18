@@ -12,9 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d454932519364ad697e678bd99295ce7, type: 3}
   m_Name: CharacterStyleTemplateConfig
   m_EditorClassIdentifier: 
-  templates:
-  - cacheId: c34fea8b40adb4546823a2132b3402cc
-    template: {fileID: 8769608929990874882, guid: c34fea8b40adb4546823a2132b3402cc, type: 3}
-    tags:
-    - 662a428cd616cca37c9f3b10
-    id: 1746986f52e9f124b8e56509cb468f34
+  templates: []
