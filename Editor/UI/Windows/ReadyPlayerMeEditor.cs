@@ -2,6 +2,7 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
+using ReadyPlayerMe.Editor.Cache;
 using ReadyPlayerMe.Editor.EditorPrefs;
 using ReadyPlayerMe.Editor.UI.ViewModels;
 using ReadyPlayerMe.Editor.UI.Views;
@@ -28,7 +29,12 @@ namespace ReadyPlayerMe.Editor.UI.Windows
             var developerAccountApi = new DeveloperAccountApi();
             var assetApi = new AssetApi();
             assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
-            var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
+
+            var settingsCache = new ScriptableObjectCache<Settings>();
+            var settings = settingsCache.Init("ReadyPlayerMeSettings");
+
+            var templateCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
+            templateCache.Init("CharacterStyleTemplateConfig");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
@@ -38,8 +44,8 @@ namespace ReadyPlayerMe.Editor.UI.Windows
                 developerAccountApi,
                 settings
             );
-            _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
 
+            _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
             if (DeveloperAuthCache.Exists())
                 await _applicationManagementView.Init();
         }
