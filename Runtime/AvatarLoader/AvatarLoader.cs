@@ -62,13 +62,38 @@ namespace ReadyPlayerMe.AvatarLoader
                 return InitAvatar(avatar, id);
 
             // Update skeleton and transfer mesh
-            var avatarSkeletonDefinition = Resources.Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{baseModelId}");
+            var avatarSkeletonDefinition = Resources.Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{template.name}");
             var animator = template.GetComponent<Animator>();
             if (animator.avatar == null)
             {
                 _skeletonBuilder.Build(template, avatarSkeletonDefinition.GetHumanBones());
             }
             _meshTransfer.Transfer(avatar, template, avatarSkeletonDefinition);
+
+            return InitAvatar(template, id);
+        }
+        
+        // TODO: this is a way around
+        public async Task<GameObject> LoadAsync(string id, GameObject template, AvatarSkeletonDefinition definition)
+        {
+            var avatarResponse = await _avatarApi.FindAvatarByIdAsync(new AvatarFindByIdRequest()
+            {
+                AvatarId = id,
+            });
+            
+            var gltf = new GltfImport();
+            await gltf.Load(avatarResponse.Data.GlbUrl);
+            
+            var avatar = new GameObject(id);
+            await gltf.InstantiateSceneAsync(avatar.transform);
+
+            // Update skeleton and transfer mesh
+            var animator = template.GetComponent<Animator>();
+            if (animator.avatar == null)
+            {
+                _skeletonBuilder.Build(template, definition.GetHumanBones());
+            }
+            _meshTransfer.Transfer(avatar, template, definition);
 
             return InitAvatar(template, id);
         }
