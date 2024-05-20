@@ -15,6 +15,7 @@ namespace ReadyPlayerMe.Api
     {
         private Settings _settings;
         protected Settings Settings => _settings ??= Resources.Load<Settings>("ReadyPlayerMeSettings");
+        protected bool LogWarnings = true;
 
         protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data)
             where TResponse : ApiResponse, new()
@@ -68,8 +69,9 @@ namespace ReadyPlayerMe.Api
 
             if (request.result == UnityWebRequest.Result.Success)
                 return JsonConvert.DeserializeObject<TResponse>(request.downloadHandler.text);
-
-            Debug.LogWarning($"{request.error} - {request.url}\n{request.downloadHandler.text}");
+            
+            if (LogWarnings)
+                Debug.LogWarning($"Request failed - {request.error} - {request.url}\n{request.downloadHandler.text}");
 
             return new TResponse()
             {

@@ -1,1 +1,0 @@
-This folder is managed by the Ready Player Me SDK, and you should not make manual changes.

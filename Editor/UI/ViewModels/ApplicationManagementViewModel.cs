@@ -60,7 +60,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 }
             });
 
-            if (!applicationListResponse.IsSuccess)
+            if (!applicationListResponse.IsSuccess || !string.IsNullOrEmpty(applicationListResponse.Error))
             {
                 Loading = false;
                 Applications = new List<Application>();
@@ -70,7 +70,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             Applications = applicationListResponse.Data?.ToList() ?? new List<Application>();
 
-            if (Applications.FirstOrDefault(p => p.Id == Settings.ApplicationId) == null)
+            if (Applications?.FirstOrDefault(p => p.Id == Settings.ApplicationId) == null)
             {
                 Settings.ApplicationId = string.Empty;
                 EditorUtility.SetDirty(Settings);

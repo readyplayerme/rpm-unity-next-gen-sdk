@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ReadyPlayerMe.Data;
 using UnityEditor;
@@ -23,18 +24,20 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 return;
             }
 
-            Template.id = GUID.Generate().ToString();
-            Template.cacheId = Cache.Cache.FindAssetGuid(Template.template);
-            Template.tags = new List<string>()
+            var newTemplate = new CharacterStyleTemplate();
+            newTemplate.template = Template.template;
+            newTemplate.id = Guid.NewGuid().ToString();
+            newTemplate.cacheId = Cache.Cache.FindAssetGuid(Template.template);
+            newTemplate.tags = new List<string>()
             {
                 Tag
             };
 
             var templateConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
             var templateList = templateConfig.templates.ToList();
-            
-            templateList.Add(Template);
+            templateList.Add(newTemplate);
             templateConfig.templates = templateList.ToArray();
+            
             EditorUtility.SetDirty(templateConfig);
             AssetDatabase.Refresh();
         }

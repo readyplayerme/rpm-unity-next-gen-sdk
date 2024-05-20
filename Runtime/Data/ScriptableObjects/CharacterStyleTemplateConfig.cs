@@ -6,7 +6,7 @@ namespace ReadyPlayerMe.Data
 {
     public class CharacterStyleTemplateConfig : ScriptableObject
     {
-        public CharacterStyleTemplate[] templates;
+        public CharacterStyleTemplate[] templates = Array.Empty<CharacterStyleTemplate>();
     }
 
     [Serializable]

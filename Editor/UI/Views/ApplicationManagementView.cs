@@ -75,7 +75,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
             var characterStyleTemplateConfig =
                 Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
 
-            if (_characterTemplateViews.Count != characterStyleTemplateConfig.templates.Length)
+            if (_characterTemplateViews.Count != characterStyleTemplateConfig.templates?.Length)
                 RefreshTemplateView(characterStyleTemplateConfig);
 
             using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);

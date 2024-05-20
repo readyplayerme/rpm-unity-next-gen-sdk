@@ -59,8 +59,6 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
                     if (GUILayout.Button("Load Style"))
                     {
-                        Debug.Log("here 2");
-                        
 #pragma warning disable CS4014
                         _viewModel.LoadStyleAsync();
 #pragma warning restore CS4014
