@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 966d9cb691aa6414a82811f110a2b062, type: 3}
-  m_Name: MySkeletonDefinition
+  m_Name: Test Skeleton Definition
   m_EditorClassIdentifier: 
   cacheId: 
   Root: root
