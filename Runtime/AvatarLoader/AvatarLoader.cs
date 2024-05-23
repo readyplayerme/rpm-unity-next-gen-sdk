@@ -20,7 +20,8 @@ namespace ReadyPlayerMe.AvatarLoader
             _skeletonBuilder = new SkeletonBuilder();
         }
 
-        public async Task<GameObject> PreviewAsync(string id, Dictionary<string, string> assets, GameObject template = null)
+        public async Task<GameObject> PreviewAsync(string id, Dictionary<string, string> assets,
+            GameObject template = null)
         {
             var previewUrl = _avatarApi.GenerateAvatarPreviewUrl(new AvatarPreviewRequest()
             {
@@ -30,20 +31,29 @@ namespace ReadyPlayerMe.AvatarLoader
                     Assets = assets
                 }
             });
-                
+
             return await LoadAsync(id, template, previewUrl);
         }
 
-        public async Task<GameObject> LoadAsync(string id, GameObject template = null, string loadFrom = null)
+        public async Task<GameObject> LoadAsync(
+            string id,
+            GameObject template = null,
+            string loadFrom = null,
+            string styleId = null
+        )
         {
-            if (string.IsNullOrEmpty(loadFrom))
+            if (string.IsNullOrEmpty(loadFrom) || string.IsNullOrEmpty(styleId))
             {
                 var avatarResponse = await _avatarApi.FindAvatarByIdAsync(new AvatarFindByIdRequest()
                 {
                     AvatarId = id,
                 });
 
-                loadFrom = avatarResponse.Data.GlbUrl;
+                if (string.IsNullOrEmpty(loadFrom))
+                    loadFrom = avatarResponse.Data.GlbUrl;
+                
+                if (string.IsNullOrEmpty(styleId))
+                    styleId = avatarResponse.Data.Assets["baseModel"];
             }
 
             var gltf = new GltfImport();
@@ -58,8 +68,14 @@ namespace ReadyPlayerMe.AvatarLoader
             if (template == null)
                 return InitAvatar(avatar, id);
 
+            var avatarSkeletonDefinition = Resources
+                .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{styleId}");
+
             // Update skeleton and transfer mesh
-            _skeletonBuilder.Build(template);
+            _skeletonBuilder.Build(template, avatarSkeletonDefinition != null
+                ? avatarSkeletonDefinition.GetHumanBones()
+                : null
+            );
             _meshTransfer.Transfer(avatar, template);
 
             return InitAvatar(template, id);

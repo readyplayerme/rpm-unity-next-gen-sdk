@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using Unity.Collections;
-using UnityEditor;
 using UnityEngine;
 using AssetDatabase = UnityEditor.AssetDatabase;
 using TextAsset = UnityEngine.TextCore.Text.TextAsset;
@@ -9,8 +7,8 @@ namespace ReadyPlayerMe.Editor.Cache
 {
     public abstract class Cache
     {
-        public const string BaseDirectory = "Assets/Ready Player Me/Resources/";
-        
+        private const string BaseDirectory = "Assets/Ready Player Me/Resources/";
+
         private readonly string _name;
 
         protected string CacheDirectory => BaseDirectory + _name;
@@ -46,22 +44,17 @@ namespace ReadyPlayerMe.Editor.Cache
         {
             File.WriteAllText($"{directory}/{name}", content);
         }
-        
+
         public static string FindAssetGuid(Object asset)
         {
-            var guids = new NativeArray<GUID>(new GUID[1]
-                {
-                    GUID.Generate(),
-                },
-                Allocator.Temp
-            );
+            if (asset == null)
+                return string.Empty;
 
-            AssetDatabase.InstanceIDsToGUIDs(
-                new NativeArray<int>(new int[] { asset.GetInstanceID() }, Allocator.Temp),
-                guids
-            );
+            var assetPath = AssetDatabase.GetAssetPath(asset);
 
-            return guids[0].ToString();
+            return string.IsNullOrEmpty(assetPath)
+                ? string.Empty
+                : AssetDatabase.AssetPathToGUID(assetPath);
         }
     }
 }
