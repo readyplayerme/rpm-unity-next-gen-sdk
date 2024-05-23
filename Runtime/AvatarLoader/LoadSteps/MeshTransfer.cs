@@ -10,7 +10,7 @@ namespace ReadyPlayerMe.AvatarLoader
     public class MeshTransfer
     {
         private Transform[] bones;
-        
+
         /// <summary>
         ///     Transfer meshes from source to target GameObject
         /// </summary>
@@ -18,8 +18,10 @@ namespace ReadyPlayerMe.AvatarLoader
         /// <param name="target">Avatar model existing in the scene</param>
         public void Transfer(GameObject source, GameObject target, AvatarSkeletonDefinition definition = null)
         {
-            Transform rootBone = target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ?? target.transform;
-            
+            Transform rootBone =
+                target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
+                target.transform;
+
             var bones = GetBones(target.transform);
             RemoveMeshes(target.transform);
             TransferMeshes(target.transform, source.transform, rootBone, bones);
@@ -33,13 +35,14 @@ namespace ReadyPlayerMe.AvatarLoader
             Renderer[] renderers = GetRenderers(targetArmature);
             foreach (Renderer renderer in renderers)
             {
-                // TODO: Check attachment component and skip
-                Object.Destroy(renderer.gameObject);
+                if (!renderer.gameObject.TryGetComponent<AvatarTemplateAttachment>(out _))
+                    Object.Destroy(renderer.gameObject);
             }
         }
 
         /// Set meshes from source armature to target armature
-        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone, Transform[] bones)
+        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone,
+            Transform[] bones)
         {
             Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
             foreach (Renderer renderer in sourceRenderers)
@@ -68,14 +71,14 @@ namespace ReadyPlayerMe.AvatarLoader
             Transform[] bones = sampleMesh.bones;
             return bones;
         }
-        
+
         private Renderer[] GetRenderers(Transform targetArmature)
         {
             List<Renderer> renderers = new List<Renderer>();
             GetRenderersRecursive(targetArmature, renderers);
             return renderers.ToArray();
         }
-        
+
         private void GetRenderersRecursive(Transform parent, List<Renderer> renderers)
         {
             // Ignore from AvatarTemplateAttachment
@@ -83,7 +86,7 @@ namespace ReadyPlayerMe.AvatarLoader
             {
                 return;
             }
-            
+
             foreach (Transform child in parent)
             {
                 Renderer renderer = child.GetComponent<Renderer>();
@@ -91,6 +94,7 @@ namespace ReadyPlayerMe.AvatarLoader
                 {
                     renderers.Add(renderer);
                 }
+
                 GetRenderersRecursive(child, renderers);
             }
         }
