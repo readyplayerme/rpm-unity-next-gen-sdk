@@ -72,8 +72,9 @@ namespace ReadyPlayerMe.AvatarLoader
                 .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{styleId}");
 
             // Update skeleton and transfer mesh
-            var animator = template.GetComponent<Animator>();
-            if (animator.avatar == null)
+            template.TryGetComponent<Animator>(out var animator);
+            var animationAvatar = animator != null ? animator.avatar : null;
+            if (animationAvatar == null)
             {
                 _skeletonBuilder.Build(template, avatarSkeletonDefinition != null
                     ? avatarSkeletonDefinition.GetHumanBones()
