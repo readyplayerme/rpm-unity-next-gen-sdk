@@ -29,32 +29,41 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
         public void Render()
         {
-            _viewModel.IsOpen = EditorGUILayout.Foldout(_viewModel.IsOpen, "ID: " + _viewModel.CharacterStyleTemplate.id);
+            var hasTag = _viewModel.CharacterStyleTemplate.tags.Count > 0 &&
+                         !string.IsNullOrEmpty(_viewModel.CharacterStyleTemplate.tags[0]);
+
+            _viewModel.IsOpen = EditorGUILayout.Foldout(_viewModel.IsOpen,
+                hasTag
+                    ? _viewModel.CharacterStyleTemplate.tags[0]
+                    : _viewModel.CharacterStyleTemplate.id
+            );
 
             if (!_viewModel.IsOpen)
                 return;
-            
+
             using (new EditorGUILayout.HorizontalScope())
             {
                 using (new EditorGUILayout.VerticalScope())
                 {
+                    GUILayout.Label($"ID: {_viewModel.CharacterStyleTemplate.id}");
                     _templateInput.Render(onChange: o => { _viewModel.SaveTemplate(o); }, "Template");
                     _tagInput.Render("Tag", onChange: o => { _viewModel.SaveTag(o); });
 
                     GUILayout.Space(2);
-                    
+
                     GUI.backgroundColor = Color.red;
                     if (GUILayout.Button("Delete"))
                     {
-                        var templateConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
+                        var templateConfig =
+                            Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
                         templateConfig.templates = templateConfig.templates
                             .Where(p => p.id != _viewModel.CharacterStyleTemplate.id)
                             .ToArray();
-                        
+
                         EditorUtility.SetDirty(templateConfig);
                         AssetDatabase.Refresh();
                     }
-                    
+
                     GUILayout.Space(8);
 
                     GUI.backgroundColor = Color.white;

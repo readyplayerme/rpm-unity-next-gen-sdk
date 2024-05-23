@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         private DeveloperLoginView _developerLoginView;
         private ApplicationManagementView _applicationManagementView;
 
-        [MenuItem("Tools/Ready Player Me/Project Settings")]
+        [MenuItem("Tools/Ready Player Me")]
         public static void Generate()
         {
             var window = GetWindow<ReadyPlayerMeEditor>("Ready Player Me");
