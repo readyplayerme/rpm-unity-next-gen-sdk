@@ -1,26 +1,28 @@
 using System;
 using UnityEngine;
+using ReadyPlayerMe.Data;
+using System.Collections.Generic;
+using System.Linq;
 using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe.AvatarLoader
 {
     public class MeshTransfer
     {
-        private const string ARMATURE_NAME = "Armature";
-        private const string HIPS_BONE_NAME = "Hips";
-
+        private Transform[] bones;
+        
         /// <summary>
         ///     Transfer meshes from source to target GameObject
         /// </summary>
         /// <param name="source">New avatar model</param>
         /// <param name="target">Avatar model existing in the scene</param>
-        public void Transfer(GameObject source, GameObject target)
+        public void Transfer(GameObject source, GameObject target, AvatarSkeletonDefinition definition = null)
         {
-            Transform targetArmature = target.transform.Find(ARMATURE_NAME) ?? target.transform;
-            Transform sourceArmature = source.transform.Find(ARMATURE_NAME) ?? source.transform;
-
-            RemoveMeshes(targetArmature);
-            TransferMeshes(targetArmature, sourceArmature);
+            Transform rootBone = target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ?? target.transform;
+            
+            var bones = GetBones(target.transform);
+            RemoveMeshes(target.transform);
+            TransferMeshes(target.transform, source.transform, rootBone, bones);
 
             Object.Destroy(source);
         }
@@ -28,23 +30,17 @@ namespace ReadyPlayerMe.AvatarLoader
         /// Remove all meshes from the target armature
         private void RemoveMeshes(Transform targetArmature)
         {
-            int childCount = targetArmature.childCount;
-
-            for (int i = 0; i < childCount; i++)
+            Renderer[] renderers = GetRenderers(targetArmature);
+            foreach (Renderer renderer in renderers)
             {
-                Transform mesh = targetArmature.GetChild(i);
-                if (targetArmature.GetChild(i).name != HIPS_BONE_NAME)
-                {
-                    Object.Destroy(mesh.gameObject);
-                }
+                // TODO: Check attachment component and skip
+                Object.Destroy(renderer.gameObject);
             }
         }
 
         /// Set meshes from source armature to target armature
-        private void TransferMeshes(Transform targetArmature, Transform sourceArmature)
+        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone, Transform[] bones)
         {
-            Transform rootBone = targetArmature.Find(HIPS_BONE_NAME);
-            Transform[] bones = rootBone != null ? GetBones(targetArmature) : Array.Empty<Transform>();
             Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
             foreach (Renderer renderer in sourceRenderers)
             {
@@ -71,6 +67,32 @@ namespace ReadyPlayerMe.AvatarLoader
             SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
             Transform[] bones = sampleMesh.bones;
             return bones;
+        }
+        
+        private Renderer[] GetRenderers(Transform targetArmature)
+        {
+            List<Renderer> renderers = new List<Renderer>();
+            GetRenderersRecursive(targetArmature, renderers);
+            return renderers.ToArray();
+        }
+        
+        private void GetRenderersRecursive(Transform parent, List<Renderer> renderers)
+        {
+            // Ignore from AvatarTemplateAttachment
+            if (parent.GetComponent<AvatarTemplateAttachment>() != null)
+            {
+                return;
+            }
+            
+            foreach (Transform child in parent)
+            {
+                Renderer renderer = child.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderers.Add(renderer);
+                }
+                GetRenderersRecursive(child, renderers);
+            }
         }
     }
 }

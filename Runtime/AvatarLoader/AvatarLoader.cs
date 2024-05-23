@@ -51,7 +51,7 @@ namespace ReadyPlayerMe.AvatarLoader
 
                 if (string.IsNullOrEmpty(loadFrom))
                     loadFrom = avatarResponse.Data.GlbUrl;
-                
+
                 if (string.IsNullOrEmpty(styleId))
                     styleId = avatarResponse.Data.Assets["baseModel"];
             }
@@ -72,10 +72,14 @@ namespace ReadyPlayerMe.AvatarLoader
                 .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{styleId}");
 
             // Update skeleton and transfer mesh
-            _skeletonBuilder.Build(template, avatarSkeletonDefinition != null
-                ? avatarSkeletonDefinition.GetHumanBones()
-                : null
-            );
+            var animator = template.GetComponent<Animator>();
+            if (animator.avatar == null)
+            {
+                _skeletonBuilder.Build(template, avatarSkeletonDefinition != null
+                    ? avatarSkeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
             _meshTransfer.Transfer(avatar, template);
 
             return InitAvatar(template, id);
