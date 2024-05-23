@@ -13,7 +13,7 @@ namespace ReadyPlayerMe.Api.V1
     public class AvatarCreateRequestBody
     {
         [JsonProperty("applicationId")]
-        public string ApplicationId { get; set; } = Resources.Load<Settings>("ReadyPlayerMeSettings").ApplicationId;
+        public string ApplicationId { get; set; } = Resources.Load<Settings>("ReadyPlayerMeSettings")?.ApplicationId;
 
         [JsonProperty("assets")]
         public IDictionary<string, string> Assets { get; set; }
