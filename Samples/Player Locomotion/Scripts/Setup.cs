@@ -7,7 +7,6 @@ using ReadyPlayerMe.AvatarLoader;
 
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private GameObject avatarTemplate;
     [SerializeField] private AvatarSkeletonDefinition definition;
     
     [SerializeField] private Button storeButton;
@@ -18,6 +17,7 @@ public class Setup : MonoBehaviour
     private AvatarLoader avatarLoader;
     private GameObject instance;
     private string avatarId;
+    private GameObject template;
     
     async void Start()
     {
@@ -41,10 +41,11 @@ public class Setup : MonoBehaviour
         
         avatarLoader = new AvatarLoader();
         
-        instance = Instantiate(avatarTemplate);
+        template = TemplateLoader.GetByTag("Mine").template;
+        instance = Instantiate(template);
         instance.SetActive(false);
         
-        await avatarLoader.LoadAsync(response.Data.Id, instance, definition);
+        await avatarLoader.LoadAsync(avatarId, instance, definition);
         instance.SetActive(true);
     }
 
