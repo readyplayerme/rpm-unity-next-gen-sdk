@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
-using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Collections.Generic;
 using ReadyPlayerMe.AvatarLoader;
 
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private AvatarSkeletonDefinition definition;
+    [SerializeField] private string baseModelId;
+    [SerializeField] private string templateTag;
     
     [SerializeField] private Button storeButton;
     [SerializeField] private ScrollRect scrollView;
@@ -31,7 +31,7 @@ public class Setup : MonoBehaviour
                 ApplicationId = "6628c280ecb07cb9d9cd7238",
                 Assets = new Dictionary<string, string>
                 {
-                    { "baseModel",  "6644b977fd829d77ca263be2"}
+                    { "baseModel",  baseModelId } //"6644b977fd829d77ca263be2"
                 }
             }
         };
@@ -41,11 +41,11 @@ public class Setup : MonoBehaviour
         
         avatarLoader = new AvatarLoader();
         
-        template = TemplateLoader.GetByTag("Mine").template;
+        template = TemplateLoader.GetByTag(templateTag).template;
         instance = Instantiate(template);
         instance.SetActive(false);
         
-        await avatarLoader.LoadAsync(avatarId, instance, definition);
+        await avatarLoader.LoadAsync(avatarId, instance);
         instance.SetActive(true);
     }
 
@@ -64,7 +64,7 @@ public class Setup : MonoBehaviour
         };
         var updateResponse = await avatarApi.UpdateAvatarAsync(updateRequest);
         
-        await avatarLoader.LoadAsync(updateResponse.Data.Id, instance, definition);
+        await avatarLoader.LoadAsync(updateResponse.Data.Id, instance);
     }
 
     public async void LoadStore()

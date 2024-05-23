@@ -18,7 +18,7 @@ namespace ReadyPlayerMe.AvatarLoader
         /// <param name="target">Avatar model existing in the scene</param>
         public void Transfer(GameObject source, GameObject target, AvatarSkeletonDefinition definition = null)
         {
-            Transform rootBone = target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition.Root) ?? target.transform;
+            Transform rootBone = target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ?? target.transform;
             
             var bones = GetBones(target.transform);
             RemoveMeshes(target.transform);
