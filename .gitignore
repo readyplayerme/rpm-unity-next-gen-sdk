@@ -62,3 +62,6 @@ crashlytics-build.properties
 # Samples meta files 
 **/Samples~.meta
 **/Samples.meta
+
+# ready player me generated files
+/Ready Player Me
