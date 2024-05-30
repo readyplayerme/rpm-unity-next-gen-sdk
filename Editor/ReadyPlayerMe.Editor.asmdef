@@ -2,7 +2,8 @@
   "name": "ReadyPlayerMe.Editor",
   "rootNamespace": "",
   "references": [
-    "glTFast"
+    "glTFast",
+    "ReadyPlayerMe.Runtime"
   ],
   "includePlatforms": [
     "Editor"
