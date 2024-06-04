@@ -70,6 +70,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             };
 
             var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
+
+            // NOTE: This API Key is a special key made for the demo account, it has minimal read only permissions for the demo organizations.
             settings.ApiKey = "sk_live_303Y8tHtKmYTzK9eWo4og7I1eptXrE2eCc9n";
             settings.ApplicationId = "665e05a50c62c921e5a6ab84";
 
@@ -82,7 +84,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 var matchingAssets = AssetDatabase.FindAssets("RPM_Character_Skeleton_Definition");
                 var assetPath = AssetDatabase.GUIDToAssetPath(matchingAssets[0]);
                 var asset = AssetDatabase.LoadAssetAtPath<AvatarSkeletonDefinition>(assetPath);
-                
+
                 links.Add(new AvatarSkeletonDefinitionLink()
                 {
                     characterStyleId = "665e05e758e847063761c985",
