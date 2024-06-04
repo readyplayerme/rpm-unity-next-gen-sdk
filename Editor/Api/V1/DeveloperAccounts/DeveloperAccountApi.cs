@@ -10,7 +10,7 @@ namespace ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts
     {
         public DeveloperAccountApi()
         {
-            // LogWarnings = false;
+            LogWarnings = false;
             SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
         }
 
