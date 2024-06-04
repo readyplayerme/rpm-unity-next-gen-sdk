@@ -6,10 +6,7 @@ using ReadyPlayerMe.AvatarLoader;
 
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private string baseModelId;
     [SerializeField] private string templateTag;
-    
-    [SerializeField] private Button storeButton;
     [SerializeField] private ScrollRect scrollView;
     [SerializeField] private StoreItem storeItemPrefab;
 
@@ -21,30 +18,26 @@ public class Setup : MonoBehaviour
     
     async void Start()
     {
-        storeButton.onClick.AddListener(LoadStore);
-        
+        LoadStore();
+
         avatarApi = new AvatarApi();
-        var request = new AvatarCreateRequest()
-        {
-            Payload = new AvatarCreateRequestBody
-            {
-                ApplicationId = "6628c280ecb07cb9d9cd7238",
-                Assets = new Dictionary<string, string>
-                {
-                    { "baseModel",  baseModelId } //"6644b977fd829d77ca263be2"
-                }
-            }
-        };
-        
+        var request = new AvatarCreateRequest();
+
         var response = await avatarApi.CreateAvatarAsync(request);
         avatarId = response.Data.Id;
         
         avatarLoader = new AvatarLoader();
         
-        template = TemplateLoader.GetByTag(templateTag).template;
+        template = TemplateLoader.GetByTag(templateTag)?.template;
+
+        if (!template)
+        {
+            Debug.LogError("No template found with tag '" + templateTag + "'. Either create one, or sign out, and sign in with the demo account to play this sample.");
+            return;
+        }
+
         instance = Instantiate(template);
         instance.SetActive(false);
-        
         await avatarLoader.LoadAsync(avatarId, instance);
         instance.SetActive(true);
     }
@@ -67,15 +60,13 @@ public class Setup : MonoBehaviour
         await avatarLoader.LoadAsync(updateResponse.Data.Id, instance);
     }
 
-    public async void LoadStore()
+    private async void LoadStore()
     {
-        AssetApi assetApi = new AssetApi();
+        var assetApi = new AssetApi();
         var response = await assetApi.ListAssetsAsync(new AssetListRequest()
         {
             Params =  new AssetListQueryParams()
             {
-                ApplicationId = "6628c280ecb07cb9d9cd7238",
-                Type = "top"
             }
         });
 

@@ -73,26 +73,6 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             settings.ApiKey = "sk_live_303Y8tHtKmYTzK9eWo4og7I1eptXrE2eCc9n";
             settings.ApplicationId = "665e05a50c62c921e5a6ab84";
 
-            var characterStyleConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
-            var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterStyleTemplate>();
-            var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains("RPM"));
-            if (existingTemplate == null)
-            {
-                var matchingTemplates = AssetDatabase.FindAssets("RPM_Character_Template");
-                var templatePath = AssetDatabase.GUIDToAssetPath(matchingTemplates[0]);
-                var templateAsset = AssetDatabase.LoadAssetAtPath<GameObject>(templatePath);
-
-                templates.Add(new CharacterStyleTemplate()
-                {
-                    id = Guid.NewGuid().ToString(),
-                    cacheId = matchingTemplates[0],
-                    tags = new List<string>() { "RPM" },
-                    template = templateAsset
-                });
-            }
-            
-            characterStyleConfig.templates = templates.ToArray();
-
             var avatarDefinition = Resources.Load<AvatarSkeletonDefinitionConfig>("AvatarSkeletonDefinitionConfig");
 
             var links = avatarDefinition.definitionLinks?.ToList() ?? new List<AvatarSkeletonDefinitionLink>();
@@ -115,7 +95,6 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             EditorUtility.SetDirty(settings);
             EditorUtility.SetDirty(avatarDefinition);
-            EditorUtility.SetDirty(characterStyleConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
