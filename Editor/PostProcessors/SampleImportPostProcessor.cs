@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Cache;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,7 +19,8 @@ namespace ReadyPlayerMe.Editor.PostProcessors
         {
             if (importedAssets.FirstOrDefault(p => p.Contains("Character Clothing Example")) != null)
             {
-                var characterStyleConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
+                var characterStyleConfigCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
+                var characterStyleConfig = characterStyleConfigCache.Init("CharacterStyleTemplateConfig");
                 var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterStyleTemplate>();
                 var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains("RPM"));
                 if (existingTemplate == null)
