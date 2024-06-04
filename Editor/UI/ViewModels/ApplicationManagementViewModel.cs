@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models;
+using ReadyPlayerMe.Editor.EditorPrefs;
 using UnityEditor;
 using Application = ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models.Application;
 
@@ -39,6 +41,11 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             Error = null;
             Loading = true;
 
+            if (DeveloperAuthCache.Data.IsDemo)
+                _developerAccountApi.SetAuthenticationStrategy(new ApiKeyAuthStrategy());
+            else
+                _developerAccountApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
+            
             var organizationListResponse =
                 await _developerAccountApi.ListOrganizationsAsync(new OrganizationListRequest());
 

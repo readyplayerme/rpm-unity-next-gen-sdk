@@ -9,6 +9,8 @@ namespace ReadyPlayerMe.Editor.EditorPrefs
         public string RefreshToken { get; set; }
         
         public string Name { get; set; }
+
+        public bool IsDemo { get; set; }
     }
     
     public static class DeveloperAuthCache

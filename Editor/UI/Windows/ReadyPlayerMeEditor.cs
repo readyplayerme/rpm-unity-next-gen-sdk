@@ -35,6 +35,9 @@ namespace ReadyPlayerMe.Editor.UI.Windows
 
             var templateCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
             templateCache.Init("CharacterStyleTemplateConfig");
+            
+            var avatarDefinitionCache = new ScriptableObjectCache<AvatarSkeletonDefinitionConfig>();
+            avatarDefinitionCache.Init("AvatarSkeletonDefinitionConfig");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);

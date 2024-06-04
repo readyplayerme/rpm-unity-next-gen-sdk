@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.AvatarLoader;
 using ReadyPlayerMe.Data;
@@ -16,7 +17,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public Texture2D Image { get; private set; }
 
-        private ObjectCache<AvatarSkeletonDefinition>
+        private AvatarSkeletonDefinitionConfig
             _avatarSkeletonDefinitionObjectCache;
 
         private GlbCache _characterStyleCache;
@@ -26,13 +27,14 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public async Task Init(Asset characterStyle)
         {
             _avatarSkeletonDefinitionObjectCache =
-                new ObjectCache<AvatarSkeletonDefinition>("Character Avatar Bone Definitions");
+                Resources.Load<AvatarSkeletonDefinitionConfig>("AvatarSkeletonDefinitionConfig");
 
-            _characterStyleCache = new GlbCache("Character Templates");
+                _characterStyleCache = new GlbCache("Character Templates");
 
             CharacterStyle = characterStyle;
 
-            AvatarBoneDefinitionCacheId = _avatarSkeletonDefinitionObjectCache.GetCacheId(characterStyle.Id);
+            AvatarBoneDefinitionCacheId = _avatarSkeletonDefinitionObjectCache.definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == characterStyle.Id)?.definitionCacheId;
 
             _fileApi = new FileApi();
             Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
@@ -56,15 +58,27 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             skeletonBuilder.Build(instance, avatarSkeletonDefinition.GetHumanBones());
         }
 
-        public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject) 
-        { 
-            if (avatarBoneDefinitionObject == null)
+        public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject)
+        {
+            var skeletonDefinitionConfig =
+                Resources.Load<AvatarSkeletonDefinitionConfig>("AvatarSkeletonDefinitionConfig");
+            var definitionList = skeletonDefinitionConfig.definitionLinks.ToList();
+            var existingDefinitions = definitionList
+                .Where(p => p.characterStyleId != CharacterStyle.Id)
+                .ToList();
+
+            var definition = new AvatarSkeletonDefinitionLink()
             {
-                _avatarSkeletonDefinitionObjectCache.ExportFromResources(CharacterStyle.Id);
-                return;
-            }
-            
-            _avatarSkeletonDefinitionObjectCache.ImportToResources(avatarBoneDefinitionObject, CharacterStyle.Id);
+                definition = avatarBoneDefinitionObject,
+                characterStyleId = CharacterStyle.Id,
+                definitionCacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject)
+            };
+
+            existingDefinitions.Add(definition);
+            skeletonDefinitionConfig.definitionLinks = existingDefinitions.ToArray();
+
+            EditorUtility.SetDirty(skeletonDefinitionConfig);
+            AssetDatabase.Refresh();
         }
     }
 }
