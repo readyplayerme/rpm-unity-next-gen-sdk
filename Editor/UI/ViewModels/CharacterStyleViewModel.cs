@@ -66,15 +66,19 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             var existingDefinitions = definitionList
                 .Where(p => p.characterStyleId != CharacterStyle.Id)
                 .ToList();
-
-            var definition = new AvatarSkeletonDefinitionLink()
+            
+            if (avatarBoneDefinitionObject != null)
             {
-                definition = avatarBoneDefinitionObject,
-                characterStyleId = CharacterStyle.Id,
-                definitionCacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject)
-            };
+                var definition = new AvatarSkeletonDefinitionLink()
+                {
+                    definition = avatarBoneDefinitionObject,
+                    characterStyleId = CharacterStyle.Id,
+                    definitionCacheId = Cache.Cache.FindAssetGuid(avatarBoneDefinitionObject)
+                };
 
-            existingDefinitions.Add(definition);
+                existingDefinitions.Add(definition);
+            }
+
             skeletonDefinitionConfig.definitionLinks = existingDefinitions.ToArray();
 
             EditorUtility.SetDirty(skeletonDefinitionConfig);
