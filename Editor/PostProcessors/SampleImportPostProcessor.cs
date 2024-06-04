@@ -16,9 +16,7 @@ namespace ReadyPlayerMe.Editor.PostProcessors
             string[] movedFromAssetPaths
             )
         {
-            Debug.Log(string.Join(',', importedAssets));
-
-            if (importedAssets.Contains("Character Clothing Example"))
+            if (importedAssets.FirstOrDefault(p => p.Contains("Character Clothing Example")) != null)
             {
                 var characterStyleConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
                 var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterStyleTemplate>();
