@@ -11,8 +11,8 @@ namespace ReadyPlayerMe.Data
 		public string[] BonesValues;
 	}
 
-	[CreateAssetMenu(fileName = "AvatarSkeletonDefinition", menuName = "Ready Player Me/Avatar Skeleton Definition", order = 1)]
-	public class AvatarSkeletonDefinition : ScriptableObject
+	[CreateAssetMenu(fileName = "SkeletonDefinition", menuName = "Ready Player Me/Skeleton Definition", order = 1)]
+	public class SkeletonDefinition : ScriptableObject
 	{
 		public string cacheId;
 

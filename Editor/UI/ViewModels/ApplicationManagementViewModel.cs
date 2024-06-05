@@ -6,7 +6,7 @@ using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models;
-using ReadyPlayerMe.Editor.EditorPrefs;
+using ReadyPlayerMe.Editor.Cache.EditorPrefs;
 using UnityEditor;
 using Application = ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models.Application;
 

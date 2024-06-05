@@ -1,11 +1,10 @@
-using System;
-using UnityEngine;
-using ReadyPlayerMe.Data;
 using System.Collections.Generic;
 using System.Linq;
+using ReadyPlayerMe.Data;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ReadyPlayerMe.AvatarLoader
+namespace ReadyPlayerMe.CharacterLoader
 {
     public class MeshTransfer
     {
@@ -14,9 +13,9 @@ namespace ReadyPlayerMe.AvatarLoader
         /// <summary>
         ///     Transfer meshes from source to target GameObject
         /// </summary>
-        /// <param name="source">New avatar model</param>
-        /// <param name="target">Avatar model existing in the scene</param>
-        public void Transfer(GameObject source, GameObject target, AvatarSkeletonDefinition definition = null)
+        /// <param name="source">New character model</param>
+        /// <param name="target">Character model existing in the scene</param>
+        public void Transfer(GameObject source, GameObject target, SkeletonDefinition definition = null)
         {
             Transform rootBone =
                 target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
@@ -35,7 +34,7 @@ namespace ReadyPlayerMe.AvatarLoader
             Renderer[] renderers = GetRenderers(targetArmature);
             foreach (Renderer renderer in renderers)
             {
-                if (!renderer.gameObject.TryGetComponent<AvatarTemplateAttachment>(out _))
+                if (!renderer.gameObject.TryGetComponent<TemplateAttachment>(out _))
                     Object.Destroy(renderer.gameObject);
             }
         }
@@ -81,8 +80,8 @@ namespace ReadyPlayerMe.AvatarLoader
 
         private void GetRenderersRecursive(Transform parent, List<Renderer> renderers)
         {
-            // Ignore from AvatarTemplateAttachment
-            if (parent.GetComponent<AvatarTemplateAttachment>() != null)
+            // Ignore from TemplateAttachment
+            if (parent.GetComponent<TemplateAttachment>() != null)
             {
                 return;
             }

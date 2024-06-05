@@ -2,9 +2,9 @@
 
 namespace ReadyPlayerMe.Api.V1
 {
-    public class AvatarCreateResponse : ApiResponse
+    public class CharacterFindByIdResponse : ApiResponse
     {
         [JsonProperty("data")]
-        public Avatar Data { get; set; }
+        public Character Data { get; set; }
     }
 }
