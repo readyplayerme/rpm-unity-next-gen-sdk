@@ -4,19 +4,19 @@ using UnityEngine.Networking;
 
 namespace ReadyPlayerMe.Api.V1
 {
-    public class AvatarApi : WebApiWithAuth
+    public class CharacterApi : WebApiWithAuth
     {
-        private const string Resource = "next-gen-avatars";
+        private const string Resource = "characters";
 
-        public AvatarApi()
+        public CharacterApi()
         {
             SetAuthenticationStrategy(new ApiKeyAuthStrategy());
         }
 
-        public virtual async Task<AvatarCreateResponse> CreateAvatarAsync(AvatarCreateRequest request)
+        public virtual async Task<CharacterCreateResponse> CreateAsync(CharacterCreateRequest request)
         {
-            return await Dispatch<AvatarCreateResponse, AvatarCreateRequestBody>(
-                new ApiRequest<AvatarCreateRequestBody>
+            return await Dispatch<CharacterCreateResponse, CharacterCreateRequestBody>(
+                new ApiRequest<CharacterCreateRequestBody>
                 {
                     Url = $"{Settings.ApiBaseUrl}/v1/{Resource}",
                     Method = UnityWebRequest.kHttpVerbPOST,
@@ -29,12 +29,12 @@ namespace ReadyPlayerMe.Api.V1
             );
         }
 
-        public virtual async Task<AvatarUpdateResponse> UpdateAvatarAsync(AvatarUpdateRequest request)
+        public virtual async Task<CharacterUpdateResponse> UpdateAsync(CharacterUpdateRequest request)
         {
-            return await Dispatch<AvatarUpdateResponse, AvatarUpdateRequestBody>(
-                new ApiRequest<AvatarUpdateRequestBody>()
+            return await Dispatch<CharacterUpdateResponse, CharacterUpdateRequestBody>(
+                new ApiRequest<CharacterUpdateRequestBody>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}",
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}",
                     Method = "PATCH",
                     Payload = request.Payload,
                     Headers = new Dictionary<string, string>()
@@ -45,12 +45,12 @@ namespace ReadyPlayerMe.Api.V1
             );
         }
 
-        public virtual async Task<AvatarFindByIdResponse> FindAvatarByIdAsync(AvatarFindByIdRequest request)
+        public virtual async Task<CharacterFindByIdResponse> FindByIdAsync(CharacterFindByIdRequest request)
         {
-            return await Dispatch<AvatarFindByIdResponse>(
+            return await Dispatch<CharacterFindByIdResponse>(
                 new ApiRequest<string>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}",
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}",
                     Method = UnityWebRequest.kHttpVerbGET,
                     Headers = new Dictionary<string, string>()
                     {
@@ -60,11 +60,11 @@ namespace ReadyPlayerMe.Api.V1
             );
         }
 
-        public virtual string GenerateAvatarPreviewUrl(AvatarPreviewRequest request)
+        public virtual string GeneratePreviewUrl(CharacterPreviewRequest request)
         {
             var queryString = BuildQueryString(request.Params);
 
-            return $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.AvatarId}/preview{queryString}";
+            return $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}/preview{queryString}";
         }
     }
 }

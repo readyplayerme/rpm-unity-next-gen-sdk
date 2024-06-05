@@ -4,8 +4,8 @@ using UnityEditor;
 
 namespace ReadyPlayerMe.Editor.UI.Editors
 {
-    [CustomEditor(typeof(AvatarSkeletonDefinition))]
-    public class AvatarSkeletonDefinitionEditor : UnityEditor.Editor
+    [CustomEditor(typeof(SkeletonDefinition))]
+    public class SkeletonDefinitionEditor : UnityEditor.Editor
     {
         private SerializedProperty boneGroupsProp;
 

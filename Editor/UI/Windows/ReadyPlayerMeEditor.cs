@@ -3,7 +3,7 @@ using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Editor.Cache;
-using ReadyPlayerMe.Editor.EditorPrefs;
+using ReadyPlayerMe.Editor.Cache.EditorPrefs;
 using ReadyPlayerMe.Editor.UI.ViewModels;
 using ReadyPlayerMe.Editor.UI.Views;
 using UnityEditor;
@@ -36,8 +36,8 @@ namespace ReadyPlayerMe.Editor.UI.Windows
             var templateCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
             templateCache.Init("CharacterStyleTemplateConfig");
             
-            var avatarDefinitionCache = new ScriptableObjectCache<AvatarSkeletonDefinitionConfig>();
-            avatarDefinitionCache.Init("AvatarSkeletonDefinitionConfig");
+            var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();
+            skeletonDefinitionCache.Init("SkeletonDefinitionConfig");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace ReadyPlayerMe.Api.V1
 {
-    public class Avatar
+    public class Character
     {
         [JsonProperty("_id")]
         public string Id { get; set; }

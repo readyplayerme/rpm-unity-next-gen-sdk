@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace ReadyPlayerMe.Api.V1
 {
-    public class AvatarCreateRequest
+    public class CharacterCreateRequest
     {
-        public AvatarCreateRequestBody Payload { get; set; } = new AvatarCreateRequestBody();
+        public CharacterCreateRequestBody Payload { get; set; } = new CharacterCreateRequestBody();
     }
 
-    public class AvatarCreateRequestBody
+    public class CharacterCreateRequestBody
     {
         [JsonProperty("applicationId")]
         public string ApplicationId { get; set; } = Resources.Load<Settings>("ReadyPlayerMeSettings")?.ApplicationId;

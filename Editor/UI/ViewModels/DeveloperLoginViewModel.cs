@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.Auth.Models;
-using ReadyPlayerMe.Editor.EditorPrefs;
+using ReadyPlayerMe.Editor.Cache.EditorPrefs;
 using UnityEditor;
 using UnityEngine;
 
@@ -75,17 +75,17 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             settings.ApiKey = "sk_live_303Y8tHtKmYTzK9eWo4og7I1eptXrE2eCc9n";
             settings.ApplicationId = "665e05a50c62c921e5a6ab84";
 
-            var avatarDefinition = Resources.Load<AvatarSkeletonDefinitionConfig>("AvatarSkeletonDefinitionConfig");
+            var skeletonDefinitionConfig = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
 
-            var links = avatarDefinition.definitionLinks?.ToList() ?? new List<AvatarSkeletonDefinitionLink>();
+            var links = skeletonDefinitionConfig.definitionLinks?.ToList() ?? new List<SkeletonDefinitionLink>();
             var existingLink = links.FirstOrDefault(p => p.characterStyleId == "665e05e758e847063761c985");
             if (existingLink == null)
             {
                 var matchingAssets = AssetDatabase.FindAssets("RPM_Character_Skeleton_Definition");
                 var assetPath = AssetDatabase.GUIDToAssetPath(matchingAssets[0]);
-                var asset = AssetDatabase.LoadAssetAtPath<AvatarSkeletonDefinition>(assetPath);
+                var asset = AssetDatabase.LoadAssetAtPath<SkeletonDefinition>(assetPath);
 
-                links.Add(new AvatarSkeletonDefinitionLink()
+                links.Add(new SkeletonDefinitionLink()
                 {
                     characterStyleId = "665e05e758e847063761c985",
                     definitionCacheId = matchingAssets[0],
@@ -93,10 +93,10 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 });
             }
 
-            avatarDefinition.definitionLinks = links.ToArray();
+            skeletonDefinitionConfig.definitionLinks = links.ToArray();
 
             EditorUtility.SetDirty(settings);
-            EditorUtility.SetDirty(avatarDefinition);
+            EditorUtility.SetDirty(skeletonDefinitionConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Api.V1;
 using System.Collections.Generic;
-using ReadyPlayerMe.AvatarLoader;
+using ReadyPlayerMe.CharacterLoader;
 
 public class Setup : MonoBehaviour
 {
@@ -10,44 +10,33 @@ public class Setup : MonoBehaviour
     [SerializeField] private ScrollRect scrollView;
     [SerializeField] private StoreItem storeItemPrefab;
 
-    private AvatarApi avatarApi;
-    private AvatarLoader avatarLoader;
-    private GameObject instance;
-    private string avatarId;
-    private GameObject template;
-    
-    async void Start()
+    private CharacterApi _characterApi;
+    private CharacterLoader _characterLoader;
+    private GameObject _instance;
+    private string _characterId;
+    private GameObject _template;
+
+    private async void Start()
     {
         LoadStore();
 
-        avatarApi = new AvatarApi();
-        var request = new AvatarCreateRequest();
-
-        var response = await avatarApi.CreateAvatarAsync(request);
-        avatarId = response.Data.Id;
+        _characterApi = new CharacterApi();
         
-        avatarLoader = new AvatarLoader();
+        var request = new CharacterCreateRequest();
+        var response = await _characterApi.CreateAsync(request);
+        _characterId = response.Data.Id;
         
-        template = TemplateLoader.GetByTag(templateTag)?.template;
+        _characterLoader = new CharacterLoader();
 
-        if (!template)
-        {
-            Debug.LogError("No template found with tag '" + templateTag + "'. Either create one, or sign out, and sign in with the demo account to play this sample.");
-            return;
-        }
-
-        instance = Instantiate(template);
-        instance.SetActive(false);
-        await avatarLoader.LoadAsync(avatarId, instance);
-        instance.SetActive(true);
+        await _characterLoader.LoadAsync(_characterId, templateTag);
     }
 
     private async void UpdateOutfit(Asset asset)
     {
-        var updateRequest = new AvatarUpdateRequest()
+        var updateRequest = new CharacterUpdateRequest()
         {
-            AvatarId = avatarId,
-            Payload = new AvatarUpdateRequestBody()
+            Id = _characterId,
+            Payload = new CharacterUpdateRequestBody()
             {
                 Assets = new Dictionary<string, string>
                 {
@@ -55,9 +44,9 @@ public class Setup : MonoBehaviour
                 }
             }
         };
-        var updateResponse = await avatarApi.UpdateAvatarAsync(updateRequest);
+        var updateResponse = await _characterApi.UpdateAsync(updateRequest);
         
-        await avatarLoader.LoadAsync(updateResponse.Data.Id, instance);
+        await _characterLoader.LoadAsync(updateResponse.Data.Id, _instance);
     }
 
     private async void LoadStore()

@@ -11,19 +11,19 @@ namespace ReadyPlayerMe.Editor.UI.Views
     public class CharacterStyleView
     {
         private readonly CharacterStyleViewModel _viewModel;
-        private readonly ObjectInput<AvatarSkeletonDefinition> _avatarBoneDefinitionInput;
+        private readonly ObjectInput<SkeletonDefinition> _boneDefinitionInput;
 
         public CharacterStyleView(CharacterStyleViewModel viewModel)
         {
             _viewModel = viewModel;
-            _avatarBoneDefinitionInput = new ObjectInput<AvatarSkeletonDefinition>();
+            _boneDefinitionInput = new ObjectInput<SkeletonDefinition>();
         }
 
         public async Task Init(Asset characterStyle)
         {
             await _viewModel.Init(characterStyle);
             
-            _avatarBoneDefinitionInput.Init(_viewModel.AvatarBoneDefinitionCacheId);
+            _boneDefinitionInput.Init(_viewModel.BoneDefinitionCacheId);
         }
 
         public void Render()
@@ -69,8 +69,8 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 {
                     GUILayout.Space(8);
                     EditorGUILayout.SelectableLabel("ID: " + _viewModel.CharacterStyle.Id);
-                    GUILayout.Label("Avatar Skeleton Definition");
-                    _avatarBoneDefinitionInput.Render(onChange: o => { _viewModel.SaveAvatarBoneDefinition(o); });
+                    GUILayout.Label("Skeleton Definition");
+                    _boneDefinitionInput.Render(onChange: o => { _viewModel.SaveBoneDefinition(o); });
                 }
             }
         }
