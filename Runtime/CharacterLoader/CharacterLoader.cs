@@ -39,6 +39,18 @@ namespace ReadyPlayerMe.CharacterLoader
             GameObject template = null
         )
         {
+            assets.TryGetValue("baseModel", out var styleId);
+
+            if (string.IsNullOrEmpty(styleId))
+            {
+                var characterResponse = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+                {
+                    Id = id,
+                });
+
+                styleId = characterResponse.Data.Assets["baseModel"];
+            }
+
             var previewUrl = _characterApi.GeneratePreviewUrl(new CharacterPreviewRequest()
             {
                 Id = id,
@@ -48,10 +60,25 @@ namespace ReadyPlayerMe.CharacterLoader
                 }
             });
 
-            return await LoadAsync(id, template, previewUrl);
+            return await LoadAsync(id, styleId, previewUrl, template);
         }
 
-        public virtual async Task<CharacterData> LoadAsync(string id, string templateTagOrId = null)
+        public virtual async Task<CharacterData> LoadAsync(string id)
+        {
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = id,
+            });
+
+            return await LoadAsync(
+                response.Data.Id,
+                response.Data.Assets["baseModel"],
+                response.Data.GlbUrl,
+                null
+            );
+        }
+
+        public virtual async Task<CharacterData> LoadAsync(string id, string templateTagOrId)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -61,30 +88,21 @@ namespace ReadyPlayerMe.CharacterLoader
             var template = GetTemplate(templateTagOrId);
             var templateInstance = template != null ? Object.Instantiate(template) : null;
 
-            return await LoadAsync(response.Data.Id, templateInstance, response.Data.GlbUrl);
+            return await LoadAsync(
+                response.Data.Id,
+                response.Data.Assets["baseModel"],
+                response.Data.GlbUrl,
+                templateInstance
+            );
         }
 
         public virtual async Task<CharacterData> LoadAsync(
             string id,
-            GameObject template = null,
-            string loadFrom = null,
-            string styleId = null
+            string styleId,
+            string loadFrom,
+            GameObject template
         )
         {
-            if (string.IsNullOrEmpty(loadFrom) || string.IsNullOrEmpty(styleId))
-            {
-                var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
-                {
-                    Id = id,
-                });
-
-                if (string.IsNullOrEmpty(loadFrom))
-                    loadFrom = response.Data.GlbUrl;
-
-                if (string.IsNullOrEmpty(styleId))
-                    styleId = response.Data.Assets["baseModel"];
-            }
-
             var gltf = new GltfImport();
 
             if (!await gltf.Load(loadFrom))

@@ -6,13 +6,13 @@ using ReadyPlayerMe.CharacterLoader;
 
 public class Setup : MonoBehaviour
 {
+    [SerializeField] private string styleId;
     [SerializeField] private string templateTag;
     [SerializeField] private ScrollRect scrollView;
     [SerializeField] private StoreItem storeItemPrefab;
 
     private CharacterApi _characterApi;
-    private CharacterLoader _characterLoader;
-    private GameObject _instance;
+    private CharacterManager _characterManager;
     private string _characterId;
     private GameObject _template;
 
@@ -21,14 +21,27 @@ public class Setup : MonoBehaviour
         LoadStore();
 
         _characterApi = new CharacterApi();
-        
-        var request = new CharacterCreateRequest();
-        var response = await _characterApi.CreateAsync(request);
-        _characterId = response.Data.Id;
-        
-        _characterLoader = new CharacterLoader();
 
-        await _characterLoader.LoadAsync(_characterId, templateTag);
+        var payload = string.IsNullOrEmpty(styleId)
+            ? new CharacterCreateRequestBody()
+            : new CharacterCreateRequestBody()
+            {
+                Assets = new Dictionary<string, string>()
+                {
+                    { "baseModel", styleId }
+                }
+            };
+
+        var request = new CharacterCreateRequest()
+        {
+            Payload = payload
+        };
+        var response = await _characterApi.CreateAsync(request);
+
+        _characterId = response.Data.Id;
+        _characterManager = new CharacterManager();
+
+        await _characterManager.LoadCharacter(_characterId, templateTag);
     }
 
     private async void UpdateOutfit(Asset asset)
@@ -45,8 +58,8 @@ public class Setup : MonoBehaviour
             }
         };
         var updateResponse = await _characterApi.UpdateAsync(updateRequest);
-        
-        await _characterLoader.LoadAsync(updateResponse.Data.Id, _instance);
+
+        await _characterManager.LoadCharacter(updateResponse.Data.Id);
     }
 
     private async void LoadStore()
@@ -54,8 +67,9 @@ public class Setup : MonoBehaviour
         var assetApi = new AssetApi();
         var response = await assetApi.ListAssetsAsync(new AssetListRequest()
         {
-            Params =  new AssetListQueryParams()
+            Params = new AssetListQueryParams()
             {
+                ExcludeTypes = "baseModel"
             }
         });
 

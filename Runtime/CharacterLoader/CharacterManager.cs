@@ -12,33 +12,34 @@ namespace ReadyPlayerMe.CharacterLoader
         private readonly CharacterLoader _characterLoader = new CharacterLoader();
         private readonly MeshTransfer _meshTransfer = new MeshTransfer();
 
-        public async Task<CharacterData> LoadCharacter(string glbUrl, string id)
+        public async Task<CharacterData> LoadCharacter(string id, string templateTagOrId = null)
         {
             Characters.TryGetValue(id, out var characterData);
 
             if (characterData != null)
             {
-                return await Update(glbUrl, id, characterData);
+                return await Update(id, characterData);
             }
 
-            return await Create(glbUrl, id);
+            return await Create(id, templateTagOrId);
         }
 
-        private async Task<CharacterData> Create(string glbUrl, string id)
+        private async Task<CharacterData> Create(string id, string templateTagOrId)
         {
-            var data = await _characterLoader.LoadAsync(id, loadFrom: glbUrl);
+            var data = await _characterLoader.LoadAsync(id, templateTagOrId);
 
             Characters.Add(id, data);
 
             return data;
         }
 
-        private async Task<CharacterData> Update(string glbUrl, string id, CharacterData original)
+        private async Task<CharacterData> Update(string id, CharacterData original)
         {
-            var data = await _characterLoader.LoadAsync(id, loadFrom: glbUrl);
+            var data = await _characterLoader.LoadAsync(id);
 
             _meshTransfer.Transfer(data.gameObject, original.gameObject);
             Object.Destroy(data.gameObject);
+
 
             return original;
         }
