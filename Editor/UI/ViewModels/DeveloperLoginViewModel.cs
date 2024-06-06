@@ -13,6 +13,9 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class DeveloperLoginViewModel
     {
+        private const string DemoProxyURL = "https://api.readyplayer.me/demo";
+        private const string DemoApplicationId = "665e05a50c62c921e5a6ab84";
+        
         private readonly DeveloperAuthApi _developerAuthApi;
 
         public string Username { get; set; }
@@ -40,6 +43,15 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                     Password = Password
                 }
             });
+            
+            var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
+            
+            if (settings.ApiProxyUrl == DemoProxyURL)
+                settings.ApiProxyUrl = string.Empty;
+            
+            EditorUtility.SetDirty(settings);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
 
             if (!response.IsSuccess)
             {
@@ -70,10 +82,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             };
 
             var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
-
-            // NOTE: This API Key is a special key made for the demo account, it has minimal read only permissions for the demo organizations.
-            settings.ApiKey = "sk_live_303Y8tHtKmYTzK9eWo4og7I1eptXrE2eCc9n";
-            settings.ApplicationId = "665e05a50c62c921e5a6ab84";
+            settings.ApiProxyUrl = DemoProxyURL;
+            settings.ApplicationId = DemoApplicationId;
 
             var skeletonDefinitionConfig = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
 
