@@ -59,6 +59,34 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     }
                 });
             }
+            
+            EditorGUILayout.Space(10);
+            
+            if (GUILayout.Button("Use Demo Account", new GUIStyle(GUI.skin.button)
+                {
+                    margin = new RectOffset(12, 12, 0, 0)
+                }))
+            {
+
+#pragma warning disable CS4014
+                _viewModel.SignInToDemoAccount(onSuccess: onLogin);
+#pragma warning restore CS4014
+            }
+            
+            if (!string.IsNullOrEmpty(_viewModel.Error))
+            {
+                GUILayout.Label(_viewModel.Error, new GUIStyle()
+                {
+                    normal = new GUIStyleState()
+                    {
+                        textColor = Color.red
+                    },
+                    margin = new RectOffset()
+                    {
+                        left = 12, 
+                    }
+                });
+            }
         }
     }
 }

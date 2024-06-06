@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.AvatarLoader;
+using ReadyPlayerMe.CharacterLoader;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Cache;
 using UnityEditor;
@@ -12,12 +13,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
     {
         public Asset CharacterStyle { get; private set; }
 
-        public string AvatarBoneDefinitionCacheId { get; private set; }
+        public string BoneDefinitionCacheId { get; private set; }
 
         public Texture2D Image { get; private set; }
 
-        private ObjectCache<AvatarSkeletonDefinition>
-            _avatarSkeletonDefinitionObjectCache;
+        private SkeletonDefinitionConfig
+            _skeletonDefinitionObjectCache;
 
         private GlbCache _characterStyleCache;
 
@@ -25,14 +26,15 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public async Task Init(Asset characterStyle)
         {
-            _avatarSkeletonDefinitionObjectCache =
-                new ObjectCache<AvatarSkeletonDefinition>("Character Avatar Bone Definitions");
+            _skeletonDefinitionObjectCache =
+                Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
 
             _characterStyleCache = new GlbCache("Character Templates");
 
             CharacterStyle = characterStyle;
 
-            AvatarBoneDefinitionCacheId = _avatarSkeletonDefinitionObjectCache.GetCacheId(characterStyle.Id);
+            BoneDefinitionCacheId = _skeletonDefinitionObjectCache.definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == characterStyle.Id)?.definitionCacheId;
 
             _fileApi = new FileApi();
             Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
@@ -47,24 +49,41 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             var character = _characterStyleCache.Load(CharacterStyle.Id);
             var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
             var skeletonBuilder = new SkeletonBuilder();
-            var avatarSkeletonDefinition = Resources
-                .Load<AvatarSkeletonDefinition>($"Character Avatar Bone Definitions/{CharacterStyle.Id}");
+            var skeletonDefinition = _skeletonDefinitionObjectCache.definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == CharacterStyle.Id)?
+                .definition;
 
-            if (avatarSkeletonDefinition == null)
+            if (skeletonDefinition == null)
                 return;
 
-            skeletonBuilder.Build(instance, avatarSkeletonDefinition.GetHumanBones());
+            skeletonBuilder.Build(instance, skeletonDefinition.GetHumanBones());
         }
 
-        public void SaveAvatarBoneDefinition(AvatarSkeletonDefinition avatarBoneDefinitionObject) 
-        { 
-            if (avatarBoneDefinitionObject == null)
+        public void SaveBoneDefinition(SkeletonDefinition skeletonDefinitionObject)
+        {
+            var skeletonDefinitionConfig =
+                Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
+            var definitionList = skeletonDefinitionConfig.definitionLinks.ToList();
+            var existingDefinitions = definitionList
+                .Where(p => p.characterStyleId != CharacterStyle.Id)
+                .ToList();
+
+            if (skeletonDefinitionObject != null)
             {
-                _avatarSkeletonDefinitionObjectCache.ExportFromResources(CharacterStyle.Id);
-                return;
+                var definition = new SkeletonDefinitionLink()
+                {
+                    definition = skeletonDefinitionObject,
+                    characterStyleId = CharacterStyle.Id,
+                    definitionCacheId = Cache.Cache.FindAssetGuid(skeletonDefinitionObject)
+                };
+
+                existingDefinitions.Add(definition);
             }
-            
-            _avatarSkeletonDefinitionObjectCache.ImportToResources(avatarBoneDefinitionObject, CharacterStyle.Id);
+
+            skeletonDefinitionConfig.definitionLinks = existingDefinitions.ToArray();
+
+            EditorUtility.SetDirty(skeletonDefinitionConfig);
+            AssetDatabase.Refresh();
         }
     }
 }

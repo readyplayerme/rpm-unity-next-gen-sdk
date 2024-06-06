@@ -25,5 +25,12 @@
     "email": "info@readyplayer.me",
     "url": "https://readyplayer.me"
   },
-  "samples": []
+  "samples": [
+    {
+      "displayName": "Character Clothing Example",
+      "description": "A working example of a character that can equip clothing",
+      "path": "Samples~/Player Locomotion"
+
+    }
+  ]
 }

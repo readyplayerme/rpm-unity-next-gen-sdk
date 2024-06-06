@@ -2,59 +2,54 @@ using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Api.V1;
 using System.Collections.Generic;
-using ReadyPlayerMe.AvatarLoader;
+using ReadyPlayerMe.CharacterLoader;
 
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private string baseModelId;
+    [SerializeField] private string styleId;
     [SerializeField] private string templateTag;
-    
-    [SerializeField] private Button storeButton;
     [SerializeField] private ScrollRect scrollView;
     [SerializeField] private StoreItem storeItemPrefab;
 
-    private AvatarApi avatarApi;
-    private AvatarLoader avatarLoader;
-    private GameObject instance;
-    private string avatarId;
-    private GameObject template;
-    
-    async void Start()
+    private CharacterApi _characterApi;
+    private CharacterManager _characterManager;
+    private string _characterId;
+    private GameObject _template;
+
+    private async void Start()
     {
-        storeButton.onClick.AddListener(LoadStore);
-        
-        avatarApi = new AvatarApi();
-        var request = new AvatarCreateRequest()
-        {
-            Payload = new AvatarCreateRequestBody
+        LoadStore();
+
+        _characterApi = new CharacterApi();
+
+        var payload = string.IsNullOrEmpty(styleId)
+            ? new CharacterCreateRequestBody()
+            : new CharacterCreateRequestBody()
             {
-                ApplicationId = "6628c280ecb07cb9d9cd7238",
-                Assets = new Dictionary<string, string>
+                Assets = new Dictionary<string, string>()
                 {
-                    { "baseModel",  baseModelId } //"6644b977fd829d77ca263be2"
+                    { "baseModel", styleId }
                 }
-            }
+            };
+
+        var request = new CharacterCreateRequest()
+        {
+            Payload = payload
         };
-        
-        var response = await avatarApi.CreateAvatarAsync(request);
-        avatarId = response.Data.Id;
-        
-        avatarLoader = new AvatarLoader();
-        
-        template = TemplateLoader.GetByTag(templateTag).template;
-        instance = Instantiate(template);
-        instance.SetActive(false);
-        
-        await avatarLoader.LoadAsync(avatarId, instance);
-        instance.SetActive(true);
+        var response = await _characterApi.CreateAsync(request);
+
+        _characterId = response.Data.Id;
+        _characterManager = new CharacterManager();
+
+        await _characterManager.LoadCharacter(_characterId, templateTag);
     }
 
     private async void UpdateOutfit(Asset asset)
     {
-        var updateRequest = new AvatarUpdateRequest()
+        var updateRequest = new CharacterUpdateRequest()
         {
-            AvatarId = avatarId,
-            Payload = new AvatarUpdateRequestBody()
+            Id = _characterId,
+            Payload = new CharacterUpdateRequestBody()
             {
                 Assets = new Dictionary<string, string>
                 {
@@ -62,20 +57,19 @@ public class Setup : MonoBehaviour
                 }
             }
         };
-        var updateResponse = await avatarApi.UpdateAvatarAsync(updateRequest);
-        
-        await avatarLoader.LoadAsync(updateResponse.Data.Id, instance);
+        var updateResponse = await _characterApi.UpdateAsync(updateRequest);
+
+        await _characterManager.LoadCharacter(updateResponse.Data.Id);
     }
 
-    public async void LoadStore()
+    private async void LoadStore()
     {
-        AssetApi assetApi = new AssetApi();
+        var assetApi = new AssetApi();
         var response = await assetApi.ListAssetsAsync(new AssetListRequest()
         {
-            Params =  new AssetListQueryParams()
+            Params = new AssetListQueryParams()
             {
-                ApplicationId = "6628c280ecb07cb9d9cd7238",
-                Type = "top"
+                ExcludeTypes = "baseModel"
             }
         });
 

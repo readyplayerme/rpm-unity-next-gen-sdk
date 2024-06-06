@@ -56,6 +56,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     {
                         var templateConfig =
                             Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
+                        
                         templateConfig.templates = templateConfig.templates
                             .Where(p => p.id != _viewModel.CharacterStyleTemplate.id)
                             .ToArray();

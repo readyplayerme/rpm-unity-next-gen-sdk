@@ -2,7 +2,7 @@
 using ReadyPlayerMe.Api;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Editor.Cache;
-using ReadyPlayerMe.Editor.EditorPrefs;
+using ReadyPlayerMe.Editor.Cache.EditorPrefs;
 
 namespace ReadyPlayerMe.Editor.Api.V1.Auth
 {

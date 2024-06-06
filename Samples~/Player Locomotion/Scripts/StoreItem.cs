@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using ReadyPlayerMe.Api.V1;
 
 public class StoreItem : MonoBehaviour
@@ -10,12 +9,18 @@ public class StoreItem : MonoBehaviour
     [SerializeField] private Button button;
 
     private Asset asset;
+    private FileApi fileApi;
+
+    private void Awake()
+    {
+        fileApi = new FileApi();
+    }
 
     public void Init(Asset asset, Action<Asset> onButtonClicked = null)
     {
         this.asset = asset;
         
-        StartCoroutine(LoadImage(asset.IconUrl));
+        LoadImage(asset.IconUrl);
         
         if (onButtonClicked != null)
         {
@@ -23,11 +28,10 @@ public class StoreItem : MonoBehaviour
         }
     }
     
-    private IEnumerator LoadImage(string url)
+    private async void LoadImage(string url)
     {
-        var request = new WWW(url);
-        yield return request;
-        
-        image.sprite = Sprite.Create(request.texture, new Rect(0, 0, request.texture.width, request.texture.height), Vector2.zero);
+        var texture = await fileApi.DownloadImageAsync(url);
+
+        image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
     }
 }
