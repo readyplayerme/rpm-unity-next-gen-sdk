@@ -437,8 +437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53554de4364f493458b82cedd55f62c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  styleId: 6644b977fd829d77ca263be2
-  templateTag: PUBG
+  styleId: 
+  templateTag: RPM
   scrollView: {fileID: 1221574989}
   storeItemPrefab: {fileID: 1427272423103626659, guid: 2720719bf708136488332e0f27305e25, type: 3}
 --- !u!4 &827434905
