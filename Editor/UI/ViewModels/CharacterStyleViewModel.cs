@@ -22,6 +22,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         private GlbCache _characterStyleCache;
 
+        private FileApi _fileApi;
+
         public async Task Init(Asset characterStyle)
         {
             _skeletonDefinitionObjectCache =
@@ -33,13 +35,14 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             BoneDefinitionCacheId = _skeletonDefinitionObjectCache.definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == characterStyle.Id)?.definitionCacheId;
-            
-            Image = await FileApi.DownloadImageAsync(CharacterStyle.IconUrl);
+
+            _fileApi = new FileApi();
+            Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
         }
 
         public async Task LoadStyleAsync()
         {
-            var bytes = await FileApi.DownloadFileIntoMemoryAsync(CharacterStyle.GlbUrl);
+            var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterStyle.GlbUrl);
 
             await _characterStyleCache.Save(bytes, CharacterStyle.Id);
 
