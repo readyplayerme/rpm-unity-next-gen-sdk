@@ -30,7 +30,11 @@
       "displayName": "Character Clothing Example",
       "description": "A working example of a character that can equip clothing",
       "path": "Samples~/Player Locomotion"
-
+    },
+    {
+      "displayName": "Basic UI Sample",
+      "description": "A UI sample that show how to use Asset API of Ready Player Me SDK",
+      "path": "Samples~/Basic UI"
     }
   ]
 }
