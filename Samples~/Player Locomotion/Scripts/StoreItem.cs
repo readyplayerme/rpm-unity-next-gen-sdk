@@ -9,11 +9,9 @@ public class StoreItem : MonoBehaviour
     [SerializeField] private Button button;
 
     private Asset asset;
-    private FileApi fileApi;
 
     private void Awake()
     {
-        fileApi = new FileApi();
     }
 
     public void Init(Asset asset, Action<Asset> onButtonClicked = null)
@@ -30,7 +28,7 @@ public class StoreItem : MonoBehaviour
     
     private async void LoadImage(string url)
     {
-        var texture = await fileApi.DownloadImageAsync(url);
+        var texture = await FileApi.DownloadImageAsync(url);
 
         image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
     }
