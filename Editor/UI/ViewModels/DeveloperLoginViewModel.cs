@@ -91,7 +91,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             onSuccess();
         }
 
-        public async Task SignInToDemoAccount(Action onSuccess)
+        public void SignInToDemoAccount(Action onSuccess)
         {
             Loading = true;
 

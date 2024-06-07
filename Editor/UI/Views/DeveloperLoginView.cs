@@ -67,10 +67,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     margin = new RectOffset(12, 12, 0, 0)
                 }))
             {
-
-#pragma warning disable CS4014
                 _viewModel.SignInToDemoAccount(onSuccess: onLogin);
-#pragma warning restore CS4014
             }
             
             if (!string.IsNullOrEmpty(_viewModel.Error))
