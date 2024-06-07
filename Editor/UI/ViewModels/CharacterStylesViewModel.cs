@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Api.V1.Analytics;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
@@ -11,14 +12,16 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public bool Loading { get; private set; }
 
         public IList<Asset> CharacterStyles { get; private set; } = new List<Asset>();
-
+        
         private readonly AssetApi _assetApi;
         private readonly Settings _settings;
+        public readonly AnalyticsApi AnalyticsApi;
 
-        public CharacterStylesViewModel(AssetApi assetApi, Settings settings)
+        public CharacterStylesViewModel(AssetApi assetApi, Settings settings, AnalyticsApi analyticsApi)
         {
             _assetApi = assetApi;
             _settings = settings;
+            AnalyticsApi = analyticsApi;
         }
 
         public async Task Init()

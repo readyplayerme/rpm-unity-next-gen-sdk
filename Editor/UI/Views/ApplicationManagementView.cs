@@ -27,12 +27,12 @@ namespace ReadyPlayerMe.Editor.UI.Views
             _selectInput = new SelectInput();
             _textInput = new TextInput();
 
-            var characterStylesViewModel = new CharacterStylesViewModel(viewModel.AssetApi, viewModel.Settings);
+            var characterStylesViewModel = new CharacterStylesViewModel(viewModel.AssetApi, viewModel.Settings, _viewModel.AnalyticsApi);
             _characterStylesView = new CharacterStylesView(characterStylesViewModel);
             _characterTemplateViews = new List<CharacterTemplateView>();
 
             _createCharacterTemplateView =
-                new CreateCharacterTemplateView(new CreateCharacterTemplateViewModel());
+                new CreateCharacterTemplateView(new CreateCharacterTemplateViewModel(viewModel.AnalyticsApi));
         }
 
         public async Task Init()
@@ -66,7 +66,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
             {
                 var templateView = new CharacterTemplateView(new CharacterTemplateViewModel());
                 templateView.Init(template);
-                _characterTemplateViews.Add(templateView); 
+                _characterTemplateViews.Add(templateView);
             }
         }
 

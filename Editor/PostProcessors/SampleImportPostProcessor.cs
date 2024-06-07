@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Api.V1.Analytics;
+using ReadyPlayerMe.Editor.Api.V1.Analytics.Models;
 using ReadyPlayerMe.Editor.Cache;
 using UnityEditor;
 using UnityEngine;
@@ -43,6 +45,19 @@ namespace ReadyPlayerMe.Editor.PostProcessors
                 EditorUtility.SetDirty(characterStyleConfig);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
+
+                var analyticsApi = new AnalyticsApi();
+                analyticsApi.SendEvent(new AnalyticsEventRequest()
+                {
+                    Payload = new AnalyticsEventRequestBody()
+                    {
+                        Event = "next gen unity sdk action",
+                        Properties =
+                        {
+                            { "type", "Custom Clothing Sample Imported" }
+                        }
+                    }
+                });
             }
         }
     }

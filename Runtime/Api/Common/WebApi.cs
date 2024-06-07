@@ -69,7 +69,7 @@ namespace ReadyPlayerMe.Api
 
             if (request.result == UnityWebRequest.Result.Success)
                 return JsonConvert.DeserializeObject<TResponse>(request.downloadHandler.text);
-            
+
             if (LogWarnings)
                 Debug.LogWarning($"Request failed - {request.error} - {request.url}\n{request.downloadHandler.text}");
 

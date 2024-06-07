@@ -23,7 +23,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
             _characterStyleViews = await Task.WhenAll(_viewModel.CharacterStyles.Select(async style =>
             {
-                var viewModel = new CharacterStyleViewModel();
+                var viewModel = new CharacterStyleViewModel(_viewModel.AnalyticsApi);
                 var view = new CharacterStyleView(viewModel);
                 await view.Init(style);
                 return view;

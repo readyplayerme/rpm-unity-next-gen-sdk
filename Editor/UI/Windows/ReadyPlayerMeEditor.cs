@@ -1,5 +1,6 @@
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Api.V1.Analytics;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Editor.Cache;
@@ -28,6 +29,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
             var developerAuthApi = new DeveloperAuthApi();
             var developerAccountApi = new DeveloperAccountApi();
             var assetApi = new AssetApi();
+            var analyticsApi = new AnalyticsApi();
             assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
 
             var settingsCache = new ScriptableObjectCache<Settings>();
@@ -39,10 +41,11 @@ namespace ReadyPlayerMe.Editor.UI.Windows
             var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();
             skeletonDefinitionCache.Init("SkeletonDefinitionConfig");
 
-            var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi);
+            var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi, analyticsApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
 
             var projectDetailsViewModel = new ApplicationManagementViewModel(
+                analyticsApi,
                 assetApi,
                 developerAccountApi,
                 settings

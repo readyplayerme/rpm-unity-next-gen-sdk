@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Api.V1.Analytics;
+using ReadyPlayerMe.Editor.Api.V1.Analytics.Models;
 using ReadyPlayerMe.Editor.Api.V1.Auth;
 using ReadyPlayerMe.Editor.Api.V1.Auth.Models;
 using ReadyPlayerMe.Editor.Cache.EditorPrefs;
@@ -15,8 +17,9 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
     {
         private const string DemoProxyURL = "https://api.readyplayer.me/demo";
         private const string DemoApplicationId = "665e05a50c62c921e5a6ab84";
-        
+
         private readonly DeveloperAuthApi _developerAuthApi;
+        private readonly AnalyticsApi _analyticsApi;
 
         public string Username { get; set; }
 
@@ -26,9 +29,13 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public string Error { get; private set; }
 
-        public DeveloperLoginViewModel(DeveloperAuthApi developerAuthApi)
+        public DeveloperLoginViewModel(
+            DeveloperAuthApi developerAuthApi,
+            AnalyticsApi analyticsApi
+        )
         {
             _developerAuthApi = developerAuthApi;
+            _analyticsApi = analyticsApi;
         }
 
         public async Task SignIn(Action onSuccess)
@@ -43,12 +50,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                     Password = Password
                 }
             });
-            
+
             var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
-            
+
             if (settings.ApiProxyUrl == DemoProxyURL)
                 settings.ApiProxyUrl = string.Empty;
-            
+
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -66,6 +73,19 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 Token = response.Data.Token,
                 RefreshToken = response.Data.RefreshToken,
             };
+
+            _analyticsApi.SendEvent(new AnalyticsEventRequest()
+            {
+                Payload = new AnalyticsEventRequestBody()
+                {
+                    Event = "next gen unity sdk action",
+                    Properties =
+                    {
+                        { "type", "Sign In" },
+                        { "username", Username }
+                    }
+                }
+            });
 
             Loading = false;
             onSuccess();
@@ -109,6 +129,18 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             EditorUtility.SetDirty(skeletonDefinitionConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            _analyticsApi.SendEvent(new AnalyticsEventRequest()
+            {
+                Payload = new AnalyticsEventRequestBody()
+                {
+                    Event = "next gen unity sdk action",
+                    Properties =
+                    {
+                        { "type", "Sign In to Demo Account" },
+                    }
+                }
+            });
 
             Loading = false;
             onSuccess();

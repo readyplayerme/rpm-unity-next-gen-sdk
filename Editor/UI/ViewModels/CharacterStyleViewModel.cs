@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.CharacterLoader;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Api.V1.Analytics;
+using ReadyPlayerMe.Editor.Api.V1.Analytics.Models;
 using ReadyPlayerMe.Editor.Cache;
 using UnityEditor;
 using UnityEngine;
@@ -21,8 +23,15 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             _skeletonDefinitionObjectCache;
 
         private GlbCache _characterStyleCache;
-
-        private FileApi _fileApi;
+        
+        private readonly AnalyticsApi _analyticsApi;
+        private readonly FileApi _fileApi;
+        
+        public CharacterStyleViewModel(AnalyticsApi analyticsApi)
+        {
+            _fileApi = new FileApi();
+            _analyticsApi = analyticsApi;
+        }
 
         public async Task Init(Asset characterStyle)
         {
@@ -35,8 +44,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             BoneDefinitionCacheId = _skeletonDefinitionObjectCache.definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == characterStyle.Id)?.definitionCacheId;
-
-            _fileApi = new FileApi();
+            
             Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
         }
 
@@ -52,6 +60,19 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             var skeletonDefinition = _skeletonDefinitionObjectCache.definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == CharacterStyle.Id)?
                 .definition;
+            
+            _analyticsApi.SendEvent(new AnalyticsEventRequest()
+            {
+                Payload = new AnalyticsEventRequestBody()
+                {
+                    Event = "next gen unity sdk action",
+                    Properties =
+                    {
+                        { "type", "Import Character Style" },
+                        { "styleId", CharacterStyle.Id }
+                    }
+                }
+            });
 
             if (skeletonDefinition == null)
                 return;
@@ -84,6 +105,19 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             EditorUtility.SetDirty(skeletonDefinitionConfig);
             AssetDatabase.Refresh();
+            
+            _analyticsApi.SendEvent(new AnalyticsEventRequest()
+            {
+                Payload = new AnalyticsEventRequestBody()
+                {
+                    Event = "next gen unity sdk action",
+                    Properties =
+                    {
+                        { "type", "Save Skeleton Definition" },
+                        { "styleId", CharacterStyle.Id }
+                    }
+                }
+            });
         }
     }
 }
