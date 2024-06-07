@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using ReadyPlayerMe.Api.V1;
 
 namespace ReadyPlayerMe.Samples
@@ -21,17 +20,15 @@ namespace ReadyPlayerMe.Samples
             assetCategory.text = asset.Type;
             assetName.text = asset.Id;
             assetDescription.text = asset.Id;
-            StartCoroutine(LoadImageAsync(asset.IconUrl));
+            LoadImageAsync(asset.IconUrl);
         }
 
-        // TODO: Move this method to SDK
-        private IEnumerator LoadImageAsync(string url)
+        // Loads the image from the given URL asynchronously.
+        private async void LoadImageAsync(string url)
         {
-            WWW www = new WWW(url);
-
-            yield return www;
-            assetImage.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height),
-                Vector2.zero);
+            FileApi fileApi = new FileApi();
+            Texture2D texture = await fileApi.DownloadImageAsync(url);
+            assetImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
         }
     }
 }

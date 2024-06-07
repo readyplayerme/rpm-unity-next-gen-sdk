@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Samples.BasicUI
 
         private Pagination pagination;
 
-        // Subscribe to the button click events
+        // Subscribe to the button events
         private void Start()
         {
             prevButton.onClick.AddListener(() => ChangePage(-1));

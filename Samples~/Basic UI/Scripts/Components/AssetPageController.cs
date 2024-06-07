@@ -36,6 +36,7 @@ namespace ReadyPlayerMe.Samples.BasicUI
             EventAggregator.Instance.RaiseAssetsLoaded();
         }
 
+        // TODO: Buttons can be cached and reinitialized with new asset information
         // Clean the page and then create buttons for each asset
         private void LoadPage(Asset[] assets)
         {

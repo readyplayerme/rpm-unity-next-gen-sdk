@@ -1026,11 +1026,7 @@ PrefabInstance:
       value: Asset Page Controller
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 6797145981276122197, guid: a6cfcccf3bf53a34eba640a6132946f6, type: 3}
-    - {fileID: 2777522498073932880, guid: a6cfcccf3bf53a34eba640a6132946f6, type: 3}
-    - {fileID: 9047855030655250824, guid: a6cfcccf3bf53a34eba640a6132946f6, type: 3}
-    - {fileID: 2861094702392369208, guid: a6cfcccf3bf53a34eba640a6132946f6, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6cfcccf3bf53a34eba640a6132946f6, type: 3}
