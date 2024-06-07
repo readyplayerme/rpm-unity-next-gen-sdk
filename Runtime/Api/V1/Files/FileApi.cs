@@ -6,9 +6,9 @@ using UnityEngine.Networking;
 
 namespace ReadyPlayerMe.Api.V1
 {
-    public class FileApi
+    public static class FileApi
     {
-        public virtual async Task<Texture2D> DownloadImageAsync(string url)
+        public static async Task<Texture2D> DownloadImageAsync(string url)
         {
             var request = UnityWebRequestTexture.GetTexture(url);
             var op = request.SendWebRequest();
@@ -21,12 +21,12 @@ namespace ReadyPlayerMe.Api.V1
             return DownloadHandlerTexture.GetContent(request);
         }
 
-        public virtual async Task<Texture2D[]> DownloadImagesAsync(IEnumerable<string> urls)
+        public static async Task<Texture2D[]> DownloadImagesAsync(IEnumerable<string> urls)
         {
             return await Task.WhenAll(urls.Select(DownloadImageAsync));
         }
         
-        public virtual async Task<byte[]> DownloadFileIntoMemoryAsync(string url)
+        public static async Task<byte[]> DownloadFileIntoMemoryAsync(string url)
         {
             using var request = new UnityWebRequest();
             request.url = url;
