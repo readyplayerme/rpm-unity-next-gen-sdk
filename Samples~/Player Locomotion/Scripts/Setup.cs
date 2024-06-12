@@ -2,11 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Api.V1;
 using System.Collections.Generic;
+using System.Linq;
 using ReadyPlayerMe.CharacterLoader;
+using ReadyPlayerMe.Data;
 
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private string characterStyleId = "665e05e758e847063761c985";
+    [SerializeField] private string styleId;
     [SerializeField] private ScrollRect scrollView;
     [SerializeField] private StoreItem storeItemPrefab;
 
@@ -17,17 +19,35 @@ public class Setup : MonoBehaviour
 
     private async void Start()
     {
+        var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
+
+        if (string.IsNullOrEmpty(settings.ApiProxyUrl) && string.IsNullOrEmpty(settings.ApiKey))
+        {
+            Debug.LogError("You need to configure authentication for the SDK before running this sample. See these docs: https://readyplayerme.notion.site/Authenticating-the-SDK-fbf58ab4670243bcb3d8082268426752");
+            return;
+        }
+        
         LoadStore();
 
         _characterApi = new CharacterApi();
+        var assetApi = new AssetApi();
+        
+        if (string.IsNullOrEmpty(styleId))
+        {
+            styleId = (await assetApi.ListAssetsAsync(new AssetListRequest()
+            {
+                Params = new AssetListQueryParams
+                {
+                    Type = "baseModel"
+                }
+            })).Data.FirstOrDefault()?.Id;
+        }
 
-        var payload = string.IsNullOrEmpty(characterStyleId)
-            ? new CharacterCreateRequestBody()
-            : new CharacterCreateRequestBody()
+        var payload = new CharacterCreateRequestBody()
             {
                 Assets = new Dictionary<string, string>()
                 {
-                    { "baseModel", characterStyleId }
+                    { "baseModel", styleId }
                 }
             };
 
@@ -40,7 +60,7 @@ public class Setup : MonoBehaviour
         _characterId = response.Data.Id;
         _characterManager = new CharacterManager();
 
-        await _characterManager.LoadCharacter(_characterId, characterStyleId);
+        await _characterManager.LoadCharacter(_characterId, styleId);
     }
 
     private async void UpdateOutfit(Asset asset)
