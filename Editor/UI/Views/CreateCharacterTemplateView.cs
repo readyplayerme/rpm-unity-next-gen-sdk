@@ -22,7 +22,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
         {
             GUILayout.Label("Add new template");
             
-            _templateInput.Render(template => { _viewModel.Template.template = template; }, "Template");
+            _templateInput.Render(template => { _viewModel.Template.template = template; }, "Prefab");
             _tagInput.Render("Tag", (tag) => { _viewModel.Tag = tag; });
             
             GUILayout.Space(2);

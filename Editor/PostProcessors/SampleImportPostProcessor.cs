@@ -12,6 +12,8 @@ namespace ReadyPlayerMe.Editor.PostProcessors
 {
     public class SampleImportPostProcessor : AssetPostprocessor
     {
+        public const string DemoCharacterStyleId = "665e05e758e847063761c985";
+        
         private static void OnPostprocessAllAssets(
             string[] importedAssets,
             string[] deletedAssets,
@@ -24,7 +26,7 @@ namespace ReadyPlayerMe.Editor.PostProcessors
                 var characterStyleConfigCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
                 var characterStyleConfig = characterStyleConfigCache.Init("CharacterStyleTemplateConfig");
                 var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterStyleTemplate>();
-                var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains("RPM"));
+                var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains(DemoCharacterStyleId));
                 if (existingTemplate == null)
                 {
                     var matchingTemplates = AssetDatabase.FindAssets("RPM_Character_Template");
@@ -35,7 +37,7 @@ namespace ReadyPlayerMe.Editor.PostProcessors
                     {
                         id = Guid.NewGuid().ToString(),
                         cacheId = matchingTemplates[0],
-                        tags = new List<string>() { "RPM" },
+                        tags = new List<string>() { DemoCharacterStyleId },
                         template = templateAsset
                     });
                 }

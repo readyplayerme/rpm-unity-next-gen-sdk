@@ -6,8 +6,7 @@ using ReadyPlayerMe.CharacterLoader;
 
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private string styleId;
-    [SerializeField] private string templateTag;
+    [SerializeField] private string characterStyleId = "665e05e758e847063761c985";
     [SerializeField] private ScrollRect scrollView;
     [SerializeField] private StoreItem storeItemPrefab;
 
@@ -22,13 +21,13 @@ public class Setup : MonoBehaviour
 
         _characterApi = new CharacterApi();
 
-        var payload = string.IsNullOrEmpty(styleId)
+        var payload = string.IsNullOrEmpty(characterStyleId)
             ? new CharacterCreateRequestBody()
             : new CharacterCreateRequestBody()
             {
                 Assets = new Dictionary<string, string>()
                 {
-                    { "baseModel", styleId }
+                    { "baseModel", characterStyleId }
                 }
             };
 
@@ -41,7 +40,7 @@ public class Setup : MonoBehaviour
         _characterId = response.Data.Id;
         _characterManager = new CharacterManager();
 
-        await _characterManager.LoadCharacter(_characterId, templateTag);
+        await _characterManager.LoadCharacter(_characterId, characterStyleId);
     }
 
     private async void UpdateOutfit(Asset asset)
