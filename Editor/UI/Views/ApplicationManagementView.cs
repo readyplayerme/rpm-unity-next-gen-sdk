@@ -167,7 +167,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 margin = new RectOffset(10, 10, 0, 0),
                 fontSize = 14
             });
-            GUILayout.Label("Here you can add templates for character loading.",
+            GUILayout.Label("Here you can add template prefabs for characters.",
                 new GUIStyle(GUI.skin.label)
                 {
                     margin = new RectOffset(9, 10, 0, 0)
