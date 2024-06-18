@@ -15,13 +15,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
         public async Task Create_Character()
         {
             // Arrange
-            var request = new CharacterCreateRequest()
-            {
-                Payload = new CharacterCreateRequestBody
-                {
-                    ApplicationId = "6628c280ecb07cb9d9cd7238"
-                }
-            };
+            var request = new CharacterCreateRequest();
             
             // Act
             var response = await _characterApi.CreateAsync(request);
@@ -31,42 +25,18 @@ namespace ReadyPlayerMe.Tests.Api.V1
             Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
         
-        [Test]
-        public async Task Update_Character()
-        {
-            // Arrange
-            var request = new CharacterUpdateRequest()
-            {
-                Id = "6628d1c497cb7a2453b807b1",
-                Payload = new CharacterUpdateRequestBody()
-                {
-                    Assets = new Dictionary<string, string>
-                    {
-                        { "top", "662a22be282104d791d4a123" }
-                    }
-                }
-            };
-            
-            // Act
-            var response = await _characterApi.UpdateAsync(request);
-            Debug.Log(response.Data.GlbUrl);
-            
-            // Assert
-            Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
-        }
-        
-        [Test]
+        [Test, Order(1)]
         public void Preview_Character()
         {
             // Arrange
             var request = new CharacterPreviewRequest()
             {
-                Id = "6628d1c497cb7a2453b807b1",
+                Id = TestConstants.CharacterId,
                 Params = new CharacterPreviewQueryParams()
                 {
                     Assets = new Dictionary<string, string>
                     {
-                        {"top", "662a22be282104d791d4a123"}
+                        {"top", TestConstants.TopAssetId}
                     }
                 }
             };
@@ -76,6 +46,30 @@ namespace ReadyPlayerMe.Tests.Api.V1
             
             // Assert
             Assert.NotNull(response);
+        }
+        
+        [Test, Order(2)]
+        public async Task Update_Character()
+        {
+            // Arrange
+            var request = new CharacterUpdateRequest()
+            {
+                Id = TestConstants.CharacterId,
+                Payload = new CharacterUpdateRequestBody()
+                {
+                    Assets = new Dictionary<string, string>
+                    {
+                        { "top", TestConstants.TopAssetId }
+                    }
+                }
+            };
+            
+            // Act
+            var response = await _characterApi.UpdateAsync(request);
+            Debug.Log(response.Data.Id);
+            
+            // Assert
+            Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
         }
     }
 }
