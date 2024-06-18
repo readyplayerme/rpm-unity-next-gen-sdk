@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.CharacterLoader;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Analytics;
 using ReadyPlayerMe.Editor.Api.V1.Analytics.Models;
