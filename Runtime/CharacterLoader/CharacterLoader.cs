@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using GLTFast;
 using System.Linq;
-using System.Threading.Tasks;
-using GLTFast;
-using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Data;
 using UnityEngine;
+using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Api.V1;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace ReadyPlayerMe.CharacterLoader
+namespace ReadyPlayerMe
 {
     public class CharacterLoader
     {
@@ -29,6 +29,7 @@ namespace ReadyPlayerMe.CharacterLoader
         {
             var template = GetTemplate(templateTagOrId);
             var templateInstance = template != null ? Object.Instantiate(template) : null;
+            templateInstance?.SetActive(false);
 
             return PreviewAsync(id, assets, templateInstance);
         }
@@ -87,6 +88,7 @@ namespace ReadyPlayerMe.CharacterLoader
 
             var template = GetTemplate(templateTagOrId);
             var templateInstance = template != null ? Object.Instantiate(template) : null;
+            templateInstance?.SetActive(false);
 
             return await LoadAsync(
                 response.Data.Id,
@@ -153,6 +155,8 @@ namespace ReadyPlayerMe.CharacterLoader
 
             if (data == null)
                 data = character.AddComponent<CharacterData>();
+            
+            character.SetActive(true);
 
             return data.Initialize(id, styleId);
         }

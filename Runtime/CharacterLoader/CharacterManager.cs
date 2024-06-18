@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ReadyPlayerMe.Data;
 using UnityEngine;
+using ReadyPlayerMe.Data;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace ReadyPlayerMe.CharacterLoader
+namespace ReadyPlayerMe
 {
     public class CharacterManager
     {

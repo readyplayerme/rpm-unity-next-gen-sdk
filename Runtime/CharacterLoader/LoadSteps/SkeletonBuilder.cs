@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Collections.Generic;
 
-namespace ReadyPlayerMe.CharacterLoader
+namespace ReadyPlayerMe
 {
     public class SkeletonBuilder
     {
