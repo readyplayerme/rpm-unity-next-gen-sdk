@@ -1,6 +1,7 @@
 ﻿using GLTFast;
 using System.Linq;
 using UnityEngine;
+using System.Threading;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
@@ -24,20 +25,22 @@ namespace ReadyPlayerMe
         public virtual Task<CharacterData> PreviewAsync(
             string id,
             Dictionary<string, string> assets,
-            string templateTagOrId = null
+            string templateTagOrId = null,
+            CancellationToken cancellationToken = default
         )
         {
             var template = GetTemplate(templateTagOrId);
             var templateInstance = template != null ? Object.Instantiate(template) : null;
             templateInstance?.SetActive(false);
 
-            return PreviewAsync(id, assets, templateInstance);
+            return PreviewAsync(id, assets, templateInstance, cancellationToken);
         }
 
         public virtual async Task<CharacterData> PreviewAsync(
             string id,
             Dictionary<string, string> assets,
-            GameObject template = null
+            GameObject template = null,
+            CancellationToken cancellationToken = default
         )
         {
             assets.TryGetValue("baseModel", out var styleId);
@@ -61,7 +64,7 @@ namespace ReadyPlayerMe
                 }
             });
 
-            return await LoadAsync(id, styleId, previewUrl, template);
+            return await LoadAsync(id, styleId, previewUrl, template, cancellationToken);
         }
 
         public virtual async Task<CharacterData> LoadAsync(string id)
@@ -79,7 +82,7 @@ namespace ReadyPlayerMe
             );
         }
 
-        public virtual async Task<CharacterData> LoadAsync(string id, string templateTagOrId)
+        public virtual async Task<CharacterData> LoadAsync(string id, string templateTagOrId, CancellationToken cancellationToken = default)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -94,7 +97,8 @@ namespace ReadyPlayerMe
                 response.Data.Id,
                 response.Data.Assets["baseModel"],
                 response.Data.GlbUrl,
-                templateInstance
+                templateInstance,
+                cancellationToken
             );
         }
 
@@ -102,13 +106,21 @@ namespace ReadyPlayerMe
             string id,
             string styleId,
             string loadFrom,
-            GameObject template
+            GameObject template,
+            CancellationToken cancellationToken = default
         )
         {
             var gltf = new GltfImport();
 
-            if (!await gltf.Load(loadFrom))
+            if (!await gltf.Load(loadFrom, null, cancellationToken))
                 return null;
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                gltf.Dispose();
+                Object.Destroy(template);
+                return null;
+            }
 
             var character = new GameObject(id);
 
