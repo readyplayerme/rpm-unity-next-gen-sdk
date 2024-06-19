@@ -112,7 +112,7 @@ namespace ReadyPlayerMe
         {
             var gltf = new GltfImport();
 
-            if (!await gltf.Load(loadFrom))
+            if (!await gltf.Load(loadFrom, null, cancellationToken))
                 return null;
 
             if (cancellationToken.IsCancellationRequested)
