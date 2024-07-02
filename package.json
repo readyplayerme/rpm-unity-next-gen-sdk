@@ -27,8 +27,8 @@
   },
   "samples": [
     {
-      "displayName": "Character Clothing Example",
-      "description": "A working example of a character that can equip clothing",
+      "displayName": "Player Locomotion Sample",
+      "description": "A working example of a character that can equip clothing while moving around the scene.",
       "path": "Samples~/Player Locomotion"
     },
     {
