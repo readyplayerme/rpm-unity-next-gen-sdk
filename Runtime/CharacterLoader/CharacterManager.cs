@@ -18,6 +18,11 @@ namespace ReadyPlayerMe
 
             if (characterData != null)
             {
+                if (templateTagOrId != null)
+                {
+                    return await UpdateNew(id, characterData, templateTagOrId);
+                }
+                
                 return await Update(id, characterData);
             }
 
@@ -39,9 +44,15 @@ namespace ReadyPlayerMe
 
             _meshTransfer.Transfer(data.gameObject, original.gameObject);
             Object.Destroy(data.gameObject);
-
-
+            
             return original;
+        }
+        
+        private async Task<CharacterData> UpdateNew(string id, CharacterData original, string templateTagOrId)
+        {
+            var data = await _characterLoader.LoadAsyncX(id, templateTagOrId, original.gameObject);
+
+            return data;
         }
     }
 }

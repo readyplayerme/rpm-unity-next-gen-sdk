@@ -39,12 +39,33 @@ namespace ReadyPlayerMe
         }
 
         /// Set meshes from source armature to target armature
-        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone,
-            Transform[] bones)
+        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone, Transform[] bones)
         {
             Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
+            
             foreach (Renderer renderer in sourceRenderers)
             {
+                Transform[] bonesCopy = new Transform[bones.Length];
+                Transform[] sourceBones = GetBones(sourceArmature);
+            
+                for (int i = 0; i < bones.Length; i++)
+                {
+                    for(int j = 0; j < bones.Length; j++)
+                    {
+                        if(bones.Length <= j)
+                            continue;
+
+                        if (sourceBones.Length <= i)
+                            continue;
+                    
+                        if (bones[j].name == sourceBones[i].name)
+                        {
+                            bonesCopy[i] = bones[j];
+                            break;
+                        }
+                    }
+                }
+                
                 renderer.gameObject.transform.SetParent(targetArmature);
                 renderer.gameObject.transform.localPosition = Vector3.zero;
                 renderer.gameObject.transform.localEulerAngles = Vector3.zero;
@@ -52,7 +73,7 @@ namespace ReadyPlayerMe
                 if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
                 {
                     skinnedMeshRenderer.rootBone = rootBone;
-                    skinnedMeshRenderer.bones = bones;
+                    skinnedMeshRenderer.bones = bonesCopy;
 
                     skinnedMeshRenderer.sharedMesh.RecalculateBounds();
                 }

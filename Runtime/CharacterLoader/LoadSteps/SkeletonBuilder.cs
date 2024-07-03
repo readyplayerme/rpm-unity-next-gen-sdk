@@ -140,7 +140,7 @@ namespace ReadyPlayerMe
             return human.ToArray();
         }
 
-        public void Build(GameObject source, Dictionary<string, string> boneNames = null)
+        public Animator Build(GameObject source, Dictionary<string, string> boneNames = null)
         {
             SetTPose(source, boneNames ?? DefaultBoneNames);
 
@@ -155,6 +155,7 @@ namespace ReadyPlayerMe
             }
 
             animator.avatar = animAvatar;
+            return animator;
         }
 
         private void SetTPose(GameObject source, Dictionary<string, string> boneNames)

@@ -149,6 +149,52 @@ namespace ReadyPlayerMe
 
             return InitCharacter(template, id, styleId);
         }
+        
+        public virtual async Task<CharacterData> LoadAsyncX(
+            string id,
+            string styleId,
+            GameObject original
+        )
+        {
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = id,
+            });
+            
+            var gltf = new GltfImport();
+
+            if (!await gltf.Load(response.Data.GlbUrl))
+                return null;
+
+            var character = new GameObject(id);
+            await gltf.InstantiateSceneAsync(character.transform);
+
+            // dont init
+            // if (template == null) return InitCharacter(character, id, styleId);
+            
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
+                .definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == styleId)?
+                .definition;
+
+            // TODO: Maybe check here if style id differnet and add this too
+            // Update skeleton and transfer mesh
+            original.TryGetComponent<Animator>(out var animator);
+            
+            GameObject source = character.transform.Find("Armature").gameObject;
+            Animator newAnimator = _skeletonBuilder.Build(source, skeletonDefinition != null
+                ? skeletonDefinition.GetHumanBones()
+                : null
+            );
+            
+            animator.avatar = newAnimator.avatar;
+            
+            _meshTransfer.Transfer(character, original);
+            
+            Object.Destroy(character);
+
+            return InitCharacter(original, id, styleId);
+        }
 
         protected virtual GameObject GetTemplate(string templateTagOrId)
         {
