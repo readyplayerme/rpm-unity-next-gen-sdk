@@ -20,7 +20,7 @@ namespace ReadyPlayerMe
             {
                 if (templateTagOrId != null)
                 {
-                    return await UpdateNew(id, characterData, templateTagOrId);
+                    return await UpdateInPlace(id, characterData, templateTagOrId);
                 }
                 
                 return await Update(id, characterData);
@@ -48,10 +48,9 @@ namespace ReadyPlayerMe
             return original;
         }
         
-        private async Task<CharacterData> UpdateNew(string id, CharacterData original, string templateTagOrId)
+        private async Task<CharacterData> UpdateInPlace(string id, CharacterData original, string templateTagOrId)
         {
-            var data = await _characterLoader.LoadAsyncX(id, templateTagOrId, original.gameObject);
-
+            var data = await _characterLoader.LoadAInPlaceAsync(id, templateTagOrId, original.gameObject);
             return data;
         }
     }

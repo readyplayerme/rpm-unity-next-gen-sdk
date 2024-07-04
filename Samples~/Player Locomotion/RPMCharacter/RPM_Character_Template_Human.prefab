@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 8624951944660754114}
   - component: {fileID: 779095956509573691}
   m_Layer: 0
-  m_Name: RPM_Character_Template
+  m_Name: RPM_Character_Template_Human
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

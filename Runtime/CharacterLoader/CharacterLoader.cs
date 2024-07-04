@@ -150,11 +150,7 @@ namespace ReadyPlayerMe
             return InitCharacter(template, id, styleId);
         }
         
-        public virtual async Task<CharacterData> LoadAsyncX(
-            string id,
-            string styleId,
-            GameObject original
-        )
+        public virtual async Task<CharacterData> LoadAInPlaceAsync(string id, string styleId, GameObject original)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -168,9 +164,6 @@ namespace ReadyPlayerMe
 
             var character = new GameObject(id);
             await gltf.InstantiateSceneAsync(character.transform);
-
-            // dont init
-            // if (template == null) return InitCharacter(character, id, styleId);
             
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
                 .definitionLinks
@@ -181,8 +174,7 @@ namespace ReadyPlayerMe
             // Update skeleton and transfer mesh
             original.TryGetComponent<Animator>(out var animator);
             
-            GameObject source = character.transform.Find("Armature").gameObject;
-            Animator newAnimator = _skeletonBuilder.Build(source, skeletonDefinition != null
+            Animator newAnimator = _skeletonBuilder.Build(character, skeletonDefinition != null
                 ? skeletonDefinition.GetHumanBones()
                 : null
             );

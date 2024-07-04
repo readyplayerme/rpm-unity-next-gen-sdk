@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
     {
         [SerializeField] private AssetButton assetButtonPrefab;
         [SerializeField] private ScrollRect baseModelScrollView;
-        [SerializeField] private ScrollRect outfitScrollView;
+        [SerializeField] private ScrollRect topsScrollView;
         [SerializeField] private GameObject loadingPanel;
         
         private AssetApi assetApi;
@@ -19,9 +18,6 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         private CharacterManager characterManager;
         
         private string characterId;
-        private string baseModelId;
-        
-        private CharacterData character;
         
         private async void Start()
         {
@@ -29,8 +25,8 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
             characterApi = new CharacterApi();
             characterManager = new CharacterManager();
             
-            baseModelId = await LoadBaseModels();
-            LoadOutfits();
+            string baseModelId = await LoadBaseModels();
+            LoadTops();
 
             var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
             {
@@ -44,7 +40,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
             });
             
             characterId = createResponse.Data.Id;
-            character = await characterManager.LoadCharacter(characterId, baseModelId);
+            await characterManager.LoadCharacter(characterId, baseModelId);
             
             loadingPanel.SetActive(false);
         }
@@ -62,15 +58,15 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
             foreach (var asset in baseModelResponse.Data)
             {
                 AssetButton button = Instantiate(assetButtonPrefab, baseModelScrollView.content);
-                button.Init(asset, UpdateCharacter);
+                button.Init(asset, UpdateBaseModel);
             }
             
             return baseModelResponse.Data[0].Id;
         }
 
-        private async void LoadOutfits()
+        private async void LoadTops()
         {
-            AssetListResponse outfitResponse = await assetApi.ListAssetsAsync(new AssetListRequest
+            AssetListResponse topsResponse = await assetApi.ListAssetsAsync(new AssetListRequest
             {
                 Params = new AssetListQueryParams()
                 {
@@ -78,10 +74,10 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                 }
             });
 
-            foreach (var asset in outfitResponse.Data)
+            foreach (var asset in topsResponse.Data)
             {
-                AssetButton button = Instantiate(assetButtonPrefab, outfitScrollView.content);
-                button.Init(asset, UpdateCharacter);
+                AssetButton button = Instantiate(assetButtonPrefab, topsScrollView.content);
+                button.Init(asset, UpdateTops);
             }
         }
         
@@ -101,12 +97,12 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                 }
             });
             
-            character = await characterManager.LoadCharacter(characterId, asset.Id);
+            await characterManager.LoadCharacter(characterId, asset.Id);
             
             loadingPanel.SetActive(false);
         }
 
-        private async void UpdateCharacter(Asset asset)
+        private async void UpdateTops(Asset asset)
         {
             loadingPanel.SetActive(true);
             
@@ -122,7 +118,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                 }
             });
             
-            character = await characterManager.LoadCharacter(characterId);
+            await characterManager.LoadCharacter(characterId);
             
             loadingPanel.SetActive(false);
         }
