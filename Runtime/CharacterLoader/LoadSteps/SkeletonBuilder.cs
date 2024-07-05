@@ -67,8 +67,6 @@ namespace ReadyPlayerMe
             { "Spine2", "UpperChest" }
         };
 
-        private Dictionary<string, string> BonesMap = new Dictionary<string, string>();
-
         /// <summary>
         /// Create a HumanDescription out of an avatar GameObject.
         /// The HumanDescription is what is needed to create an Avatar object
@@ -144,13 +142,10 @@ namespace ReadyPlayerMe
 
         public Animator Build(GameObject source, Dictionary<string, string> boneNames = null)
         {
-            BonesMap = (boneNames ?? DefaultBoneNames).ToDictionary(x => x.Value, x => x.Key);
-            var rootParent = FindChildByName(source.transform, BonesMap["Hips"]).parent.gameObject;
+            SetTPose(source, boneNames);
             
-            SetTPose(rootParent);
-            
-            var description = CreateHumanDescription(rootParent, boneNames ?? DefaultBoneNames);
-            var animAvatar = AvatarBuilder.BuildHumanAvatar(rootParent, description);
+            var description = CreateHumanDescription(source, boneNames ?? DefaultBoneNames);
+            var animAvatar = AvatarBuilder.BuildHumanAvatar(source, description);
             animAvatar.name = source.name;
 
             var animator = source.GetComponent<Animator>();
@@ -163,12 +158,14 @@ namespace ReadyPlayerMe
             return animator;
         }
 
-        private void SetTPose(GameObject source)
+        private void SetTPose(GameObject source, Dictionary<string, string> boneNames = null)
         {
-            var leftArm = FindChildByName(source.transform, BonesMap["LeftUpperArm"]);
-            var rightArm = FindChildByName(source.transform, BonesMap["RightUpperArm"]);
-            var lowerLeftArm = FindChildByName(source.transform, BonesMap["LeftHand"]);
-            var lowerRightArm = FindChildByName(source.transform, BonesMap["RightHand"]);
+            var bonesMap = (boneNames ?? DefaultBoneNames).ToDictionary(x => x.Value, x => x.Key);
+            
+            var leftArm = FindChildByName(source.transform, bonesMap["LeftUpperArm"]);
+            var rightArm = FindChildByName(source.transform, bonesMap["RightUpperArm"]);
+            var lowerLeftArm = FindChildByName(source.transform, bonesMap["LeftHand"]);
+            var lowerRightArm = FindChildByName(source.transform, bonesMap["RightHand"]);
 
             RotateArm(leftArm, lowerLeftArm, Vector3.left);
             RotateArm(rightArm, lowerRightArm, Vector3.right);

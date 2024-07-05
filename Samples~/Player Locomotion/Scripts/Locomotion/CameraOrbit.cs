@@ -19,14 +19,12 @@ namespace ReadyPlayerMe.Samples.QuickStart
         private Vector3 rotation;
         private Vector3 currentVelocity;
 
-        private float pitch;
-        private float yaw;
+        private static float pitch;
+        private static float yaw;
 
         private void Start()
         {
-            rotation = transform.transform.eulerAngles;
-            
-            transform.parent = null;
+            rotation = transform.eulerAngles;
         }
 
         private void LateUpdate()

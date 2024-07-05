@@ -14,26 +14,25 @@ namespace ReadyPlayerMe
 
         public async Task<CharacterData> LoadCharacter(string id, string templateTagOrId = null)
         {
-            Characters.TryGetValue(id, out var characterData);
-
-            if (characterData != null)
+            if (templateTagOrId != null || !Characters.TryGetValue(id, out var characterData))
             {
-                if (templateTagOrId != null)
-                {
-                    return await UpdateInPlace(id, characterData, templateTagOrId);
-                }
-                
-                return await Update(id, characterData);
+                return await Create(id, templateTagOrId);
             }
 
-            return await Create(id, templateTagOrId);
+            return await Update(id, characterData);
         }
 
         private async Task<CharacterData> Create(string id, string templateTagOrId)
         {
             var data = await _characterLoader.LoadAsync(id, templateTagOrId);
-
-            Characters.Add(id, data);
+            
+            Characters.TryGetValue(id, out var characterData);
+            if(characterData != null)
+            {
+                Object.Destroy(characterData.gameObject);
+            }
+            
+            Characters[id] = data;
 
             return data;
         }
@@ -46,12 +45,6 @@ namespace ReadyPlayerMe
             Object.Destroy(data.gameObject);
             
             return original;
-        }
-        
-        private async Task<CharacterData> UpdateInPlace(string id, CharacterData original, string templateTagOrId)
-        {
-            var data = await _characterLoader.LoadAInPlaceAsync(id, templateTagOrId, original.gameObject);
-            return data;
         }
     }
 }

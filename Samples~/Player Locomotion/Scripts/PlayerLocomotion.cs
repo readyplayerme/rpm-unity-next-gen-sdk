@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Api.V1;
+using ReadyPlayerMe.Data;
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -18,6 +20,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         private CharacterManager characterManager;
         
         private string characterId;
+        private CharacterData characterData;
         
         private async void Start()
         {
@@ -40,11 +43,12 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
             });
             
             characterId = createResponse.Data.Id;
-            await characterManager.LoadCharacter(characterId, baseModelId);
+            characterData = await characterManager.LoadCharacter(characterId, baseModelId);
             
             loadingPanel.SetActive(false);
         }
 
+        #region User Interface
         private async Task<string> LoadBaseModels()
         {
             AssetListResponse baseModelResponse = await assetApi.ListAssetsAsync(new AssetListRequest
@@ -80,6 +84,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                 button.Init(asset, UpdateTops);
             }
         }
+        #endregion
         
         private async void UpdateBaseModel(Asset asset)
         {
@@ -97,7 +102,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                 }
             });
             
-            await characterManager.LoadCharacter(characterId, asset.Id);
+            TransferCharacterStateInfo(characterData, characterManager.LoadCharacter(characterId, asset.Id));
             
             loadingPanel.SetActive(false);
         }
@@ -118,9 +123,25 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                 }
             });
             
-            await characterManager.LoadCharacter(characterId);
+            characterData = await characterManager.LoadCharacter(characterId);
             
             loadingPanel.SetActive(false);
+        }
+
+        private async void TransferCharacterStateInfo(CharacterData data, Task<CharacterData> task)
+        {
+            characterData = await task;
+
+            var animatorState = data.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+            var animTime = animatorState.normalizedTime;
+            var characterRotation = data.gameObject.transform.rotation;
+            var characterPosition = data.gameObject.transform.position;
+            
+            // set and update character data
+            characterData.gameObject.GetComponent<Animator>().Play(animatorState.fullPathHash);
+            characterData.gameObject.GetComponent<Animator>().Update(animTime);
+            characterData.gameObject.transform.rotation = characterRotation;
+            characterData.gameObject.transform.position = characterPosition;
         }
     }
 }
