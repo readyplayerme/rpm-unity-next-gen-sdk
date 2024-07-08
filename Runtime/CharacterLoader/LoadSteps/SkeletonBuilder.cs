@@ -140,10 +140,10 @@ namespace ReadyPlayerMe
             return human.ToArray();
         }
 
-        public void Build(GameObject source, Dictionary<string, string> boneNames = null)
+        public Animator Build(GameObject source, Dictionary<string, string> boneNames = null)
         {
-            SetTPose(source, boneNames ?? DefaultBoneNames);
-
+            SetTPose(source, boneNames);
+            
             var description = CreateHumanDescription(source, boneNames ?? DefaultBoneNames);
             var animAvatar = AvatarBuilder.BuildHumanAvatar(source, description);
             animAvatar.name = source.name;
@@ -155,16 +155,17 @@ namespace ReadyPlayerMe
             }
 
             animator.avatar = animAvatar;
+            return animator;
         }
 
-        private void SetTPose(GameObject source, Dictionary<string, string> boneNames)
+        private void SetTPose(GameObject source, Dictionary<string, string> boneNames = null)
         {
-            var map = boneNames.ToDictionary(x => x.Value, x => x.Key);
-
-            var leftArm = FindChildByName(source.transform, map["LeftUpperArm"]);
-            var rightArm = FindChildByName(source.transform, map["RightUpperArm"]);
-            var lowerLeftArm = FindChildByName(source.transform, map["LeftHand"]);
-            var lowerRightArm = FindChildByName(source.transform, map["RightHand"]);
+            var bonesMap = (boneNames ?? DefaultBoneNames).ToDictionary(x => x.Value, x => x.Key);
+            
+            var leftArm = FindChildByName(source.transform, bonesMap["LeftUpperArm"]);
+            var rightArm = FindChildByName(source.transform, bonesMap["RightUpperArm"]);
+            var lowerLeftArm = FindChildByName(source.transform, bonesMap["LeftHand"]);
+            var lowerRightArm = FindChildByName(source.transform, bonesMap["RightHand"]);
 
             RotateArm(leftArm, lowerLeftArm, Vector3.left);
             RotateArm(rightArm, lowerRightArm, Vector3.right);
@@ -187,13 +188,11 @@ namespace ReadyPlayerMe
                 {
                     return child;
                 }
-                else
+                
+                var found = FindChildByName(child, childName);
+                if (found != null)
                 {
-                    var found = FindChildByName(child, childName);
-                    if (found != null)
-                    {
-                        return found;
-                    }
+                    return found;
                 }
             }
 

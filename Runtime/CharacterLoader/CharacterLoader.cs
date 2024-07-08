@@ -6,6 +6,7 @@ using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace ReadyPlayerMe
 {
@@ -136,7 +137,9 @@ namespace ReadyPlayerMe
 
             // Update skeleton and transfer mesh
             template.TryGetComponent<Animator>(out var animator);
-            var animationAvatar = animator != null ? animator.avatar : null;
+            animator.enabled = false;
+            
+            var animationAvatar = animator.avatar;
             if (animationAvatar == null)
             {
                 _skeletonBuilder.Build(template, skeletonDefinition != null
@@ -146,10 +149,11 @@ namespace ReadyPlayerMe
             }
 
             _meshTransfer.Transfer(character, template);
+            animator.enabled = true;
 
             return InitCharacter(template, id, styleId);
         }
-
+        
         protected virtual GameObject GetTemplate(string templateTagOrId)
         {
             if (string.IsNullOrEmpty(templateTagOrId))
