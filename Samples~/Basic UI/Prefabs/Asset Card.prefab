@@ -328,7 +328,7 @@ MonoBehaviour:
   assetCategory: {fileID: 2071032325034156425}
   assetName: {fileID: 7494988660663385195}
   assetImage: {fileID: 7347064298452117792}
-  assetDescription: {fileID: 6187047172874511585}
+  assetID: {fileID: 6187047172874511585}
 --- !u!1 &9173968845562928882
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 2155050854431730388}
   - component: {fileID: 6187047172874511585}
   m_Layer: 5
-  m_Name: Description
+  m_Name: ID
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

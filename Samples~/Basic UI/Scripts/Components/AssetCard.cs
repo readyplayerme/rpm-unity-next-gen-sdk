@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Api.V1;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Samples
 {
@@ -9,7 +10,7 @@ namespace ReadyPlayerMe.Samples
         [SerializeField] private Text assetCategory;
         [SerializeField] private Text assetName;
         [SerializeField] private Image assetImage;
-        [SerializeField] private Text assetDescription;
+        [SerializeField] private Text assetID;
 
         /// <summary>
         ///     Initialize the asset card with the given asset.
@@ -18,8 +19,8 @@ namespace ReadyPlayerMe.Samples
         public void Initialize(Asset asset)
         {
             assetCategory.text = asset.Type;
-            assetName.text = asset.Id;
-            assetDescription.text = asset.Id;
+            assetName.text = asset.Name;
+            assetID.text = asset.Id;
             LoadImageAsync(asset.IconUrl);
         }
 

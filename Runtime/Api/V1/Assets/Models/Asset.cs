@@ -7,6 +7,9 @@ namespace ReadyPlayerMe.Api.V1
     {
         [JsonProperty("_id")]
         public string Id { get; set; }
+        
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         [JsonProperty("glbUrl")]
         public string GlbUrl { get; set; }
