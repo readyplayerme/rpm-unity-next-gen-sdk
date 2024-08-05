@@ -149,6 +149,7 @@ namespace ReadyPlayerMe
             }
 
             _meshTransfer.Transfer(character, template);
+            
             animator.enabled = true;
 
             return InitCharacter(template, id, styleId);

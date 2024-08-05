@@ -17,7 +17,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
                 Params =
                 {
                     ApplicationId = TestConstants.ApplicationId,
-                    Type = "baseModel"
+                    Type = "top"
                 }
             };
 
