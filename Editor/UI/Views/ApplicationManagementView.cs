@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.UI.Components;
-using ReadyPlayerMe.Editor.UI.ViewModels;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using ReadyPlayerMe.Data;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using ReadyPlayerMe.Editor.UI.Components;
+using ReadyPlayerMe.Editor.UI.ViewModels;
 
 namespace ReadyPlayerMe.Editor.UI.Views
 {
@@ -61,7 +61,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
             _characterTemplateViews = new List<CharacterTemplateView>();
             if (characterStyleTemplateConfig == null || characterStyleTemplateConfig.templates == null)
                 return;
-
+            
             foreach (var template in characterStyleTemplateConfig.templates)
             {
                 var templateView = new CharacterTemplateView(new CharacterTemplateViewModel());
