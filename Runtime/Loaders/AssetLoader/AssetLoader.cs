@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using GLTFast;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
+using UnityEngine.Networking;
 
 namespace ReadyPlayerMe
 {
@@ -16,6 +18,7 @@ namespace ReadyPlayerMe
     {
         private readonly AssetApi assetApi;
         private readonly string cacheFilePath = Application.persistentDataPath + "/Local Cache/Assets/assets.json";
+        private readonly string cacheRoot = Application.persistentDataPath + "/Local Cache/Assets/";
         
         /// <summary>
         /// Initializes a new instance of the AssetLoader class.
@@ -87,6 +90,40 @@ namespace ReadyPlayerMe
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="asset"></param>
+        /// <param name="templateTagOrId"></param>
+        /// <param name="useCache"></param>
+        /// <returns></returns>
+        public async Task<GameObject> GetAssetModelAsync(Asset asset, string templateTagOrId, bool useCache = false)
+        {
+            byte[] assetBytes = null;
+            var gltf = new GltfImport();
+            var outfit = new GameObject(asset.Id);
+            
+            if (useCache)
+            {
+                assetBytes = await GetAssetBytesFromCache(asset, templateTagOrId);
+            }
+
+            // TODO: internet check Application.internetReachability != NetworkReachability.NotReachable
+            if (assetBytes == null)
+            {
+                string path = cacheRoot + templateTagOrId + "/" + asset.Id;
+                using UnityWebRequest request = UnityWebRequest.Get(asset.GlbUrl);
+                request.downloadHandler = new DownloadHandlerFile(path);
+                AsyncOperation glbOp = request.SendWebRequest();
+                while (!glbOp.isDone) await Task.Yield();
+                assetBytes = await File.ReadAllBytesAsync(path);
+            }
+
+            await gltf.Load(assetBytes);
+            await gltf.InstantiateSceneAsync(outfit.transform);
+            return outfit;
+        }
+        
+        /// <summary>
         /// Asynchronously loads assets from a local cache file.
         /// </summary>
         private async Task<Asset[]> LoadAssetsFromCacheAsync()
@@ -117,6 +154,49 @@ namespace ReadyPlayerMe
             pagination.PrevPage = pagination.HasPrevPage ? page - 1 : page;
             
             return pagination;
+        }
+        
+        private async Task<byte[]> GetAssetBytesFromCache(Asset asset, string templateId)
+        {
+            string folderPath = $"{Application.persistentDataPath}/Local Cache/Assets/{templateId}";
+            string filePath = $"{folderPath}/{asset.Id}";
+            byte[] assetBytes;
+
+            // Check if the directory exists
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+        
+            // Check if the file exists in the cache and return the bytes if it does
+            if(File.Exists(filePath))
+            {
+                assetBytes = await File.ReadAllBytesAsync(filePath);
+            }
+            // If not, download the asset and save it to the cache and return the bytes
+            else
+            {
+                using UnityWebRequest request = UnityWebRequest.Get(asset.GlbUrl);
+                AsyncOperation op = request.SendWebRequest();
+            
+                while (!op.isDone)
+                {
+                    await Task.Yield();
+                }
+            
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    assetBytes = request.downloadHandler.data;
+                    await File.WriteAllBytesAsync(filePath, assetBytes);
+                }
+                else
+                {
+                    Debug.LogError(request.error);
+                    return null;
+                }
+            }
+        
+            return assetBytes;
         }
     }
 }
