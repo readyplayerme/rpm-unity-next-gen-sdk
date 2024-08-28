@@ -1,4 +1,5 @@
 ﻿using GLTFast;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using System.Threading;
@@ -6,7 +7,7 @@ using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Security.Cryptography;
+using UnityEngine.Networking;
 
 namespace ReadyPlayerMe
 {
@@ -103,6 +104,21 @@ namespace ReadyPlayerMe
             );
         }
 
+        public virtual async Task<CharacterData> LoadFromCacheAsync(CharacterData original, Asset asset, string templateId)
+        {
+            byte[] assetBytes = await GetAssetBytesFromCache(asset, templateId);
+            
+            var gltf = new GltfImport();
+            await gltf.Load(assetBytes);
+        
+            var outfit = new GameObject("outfit");
+            await gltf.InstantiateSceneAsync(outfit.transform);
+            
+            SwapAsset(original, asset, outfit);
+            
+            return original;
+        }
+
         public virtual async Task<CharacterData> LoadAsync(
             string id,
             string styleId,
@@ -176,6 +192,122 @@ namespace ReadyPlayerMe
             character.SetActive(true);
 
             return data.Initialize(id, styleId);
+        }
+        
+        private async Task<byte[]> GetAssetBytesFromCache(Asset asset, string templateId)
+        {
+            string folderPath = $"{Application.persistentDataPath}/Local Cache/Assets/{templateId}";
+            string filePath = $"{folderPath}/{asset.Id}";
+            byte[] assetBytes;
+
+            // Check if the directory exists
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+        
+            // Check if the file exists in the cache and return the bytes if it does
+            if(File.Exists(filePath))
+            {
+                assetBytes = await File.ReadAllBytesAsync(filePath);
+            }
+            // If not, download the asset and save it to the cache and return the bytes
+            else
+            {
+                using UnityWebRequest request = UnityWebRequest.Get(asset.GlbUrl);
+                AsyncOperation op = request.SendWebRequest();
+            
+                while (!op.isDone)
+                {
+                    await Task.Yield();
+                }
+            
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    assetBytes = request.downloadHandler.data;
+                    await File.WriteAllBytesAsync(filePath, assetBytes);
+                }
+                else
+                {
+                    Debug.LogError(request.error);
+                    return null;
+                }
+            }
+        
+            return assetBytes;
+        }
+        
+        private void SwapAsset(CharacterData original, Asset asset, GameObject outfit)
+        {
+            // TODO: Add handing baseMesh swap case, where all assets must be gone
+            if(original.AssetMeshes.ContainsKey(asset.Type))
+            {
+                foreach (var mesh in original.AssetMeshes[asset.Type])
+                {
+                    if(mesh != null)
+                        Object.Destroy(mesh.gameObject);
+                }
+            
+                original.AssetMeshes.Remove(asset.Type);
+            }
+
+            var meshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
+            original.AssetMeshes.Add(asset.Type, meshes);
+        
+            var bones = GetBones(original.transform);
+            TransferMeshes(original.transform, outfit.transform, original.transform, bones);
+            Object.Destroy(outfit);
+        }
+            
+        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone, Transform[] bones)
+        {
+            Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
+        
+            foreach (Renderer renderer in sourceRenderers)
+            {
+                Transform[] bonesCopy = new Transform[bones.Length];
+                Transform[] sourceBones = GetBones(sourceArmature);
+            
+                for (int i = 0; i < bones.Length; i++)
+                {
+                    for(int j = 0; j < bones.Length; j++)
+                    {
+                        if(bones.Length <= j)
+                            continue;
+
+                        if (sourceBones.Length <= i)
+                            continue;
+                    
+                        if (bones[j].name == sourceBones[i].name)
+                        {
+                            bonesCopy[i] = bones[j];
+                            break;
+                        }
+                    }
+                }
+            
+                renderer.gameObject.transform.SetParent(targetArmature);
+                renderer.gameObject.transform.localPosition = Vector3.zero;
+                renderer.gameObject.transform.localEulerAngles = Vector3.zero;
+
+                if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
+                {
+                    skinnedMeshRenderer.rootBone = rootBone;
+                    skinnedMeshRenderer.bones = bonesCopy;
+                
+                    skinnedMeshRenderer.sharedMesh.RecalculateBounds();
+                }
+            }
+
+            if (rootBone != null)
+                rootBone.SetAsLastSibling();
+        }
+
+        private Transform[] GetBones(Transform targetArmature)
+        {
+            SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
+            Transform[] bones = sampleMesh.bones;
+            return bones;
         }
     }
 }
