@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
-using System;
+using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -101,6 +100,8 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
                     }
                 }
             });
+            
+            await characterManager.LoadCharacter(characterId, asset.Id);
             
             TransferCharacterStateInfo(characterData, characterManager.LoadCharacter(characterId, asset.Id));
             
