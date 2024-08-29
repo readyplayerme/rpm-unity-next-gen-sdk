@@ -40,5 +40,18 @@ namespace ReadyPlayerMe
                 UpdatedAt = cachedAsset.UpdatedAt
             };
         }
+        
+        public static implicit operator Asset(CachedAsset cachedAsset)
+        {
+            return new Asset()
+            {
+                Id = cachedAsset.Id,
+                Name = cachedAsset.Name,
+                IconUrl = cachedAsset.IconUrl,
+                Type = cachedAsset.Type,
+                CreatedAt = cachedAsset.CreatedAt,
+                UpdatedAt = cachedAsset.UpdatedAt
+            };
+        }
     }
 }

@@ -68,8 +68,6 @@ namespace ReadyPlayerMe
 
                 foreach (string assetType in assetTypes)
                 {
-                    if (assetType == "baseModel") continue;
-
                     // get all assets except base models
                     AssetListResponse assetListResponse = await assetApi.ListAssetsAsync(new AssetListRequest()
                     {
@@ -92,8 +90,8 @@ namespace ReadyPlayerMe
                         }
                         cachedAsset.GlbUrls.Add(baseModel.Id, asset.GlbUrl);
                     }
-                    
-                    // download assets
+
+                    // TODO: Ignore downloading base model glb files ??
                     foreach (Asset asset in assetListResponse.Data)
                     {
                         // download glb
@@ -102,7 +100,7 @@ namespace ReadyPlayerMe
                         AsyncOperation glbOp = glbRequest.SendWebRequest();
                         while (!glbOp.isDone) await Task.Yield();
                     }
-
+                    
                     string iconsFolderPath = folderPath + "Icons";
                     if (!Directory.Exists(iconsFolderPath))
                     {

@@ -43,11 +43,16 @@ namespace ReadyPlayerMe
         {
             if(useCache)
             {
+                if (request.Params.CharacterModelAssetId == null)
+                {
+                    throw new System.ArgumentException("Character model asset ID is required for cached asset retrieval.");
+                }
+                
                 int limit = request.Params.Limit;
                 int page = request.Params.Page;
                 string type = request.Params.Type;
                 
-                Asset[] allAssets = await LoadAssetsFromCacheAsync();
+                Asset[] allAssets = await LoadAssetsFromCacheAsync(request.Params.CharacterModelAssetId);
                 Asset[] assetsOfType = allAssets.Where(asset => asset.Type == type).ToArray();
                 Asset[] assetsOfPage = assetsOfType.Skip(limit * (page - 1)).Take(limit).ToArray();
                 
@@ -126,13 +131,21 @@ namespace ReadyPlayerMe
         /// <summary>
         /// Asynchronously loads assets from a local cache file.
         /// </summary>
-        private async Task<Asset[]> LoadAssetsFromCacheAsync()
+        private async Task<Asset[]> LoadAssetsFromCacheAsync(string characterModelAssetId)
         {
             if (!File.Exists(cacheFilePath))
                 throw new FileNotFoundException("Cache file not found.", cacheFilePath);
         
             string json = await File.ReadAllTextAsync(cacheFilePath);
-            return JsonConvert.DeserializeObject<Asset[]>(json);
+            CachedAsset[] cachedAssets = JsonConvert.DeserializeObject<CachedAsset[]>(json);
+            Asset[] assets = cachedAssets.Select(cachedAsset =>
+            {
+                Asset asset = cachedAsset;
+                asset.GlbUrl = cachedAsset.GlbUrls[characterModelAssetId];
+                return asset;
+            }).ToArray();
+            
+            return assets;
         }
 
         /// <summary>

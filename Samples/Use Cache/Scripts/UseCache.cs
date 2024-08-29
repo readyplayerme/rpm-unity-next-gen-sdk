@@ -52,7 +52,7 @@ namespace ReadyPlayerMe.Samples.UseCache
         private void OnCategorySelected(string category)
         {
             selectedCategory = category;
-            assetPageController.LoadAssets(category, assetsToggle.isOn);
+            assetPageController.LoadAssets(category, baseModelId, assetsToggle.isOn);
         }
         
         private void OnAssetSelected(Asset asset)
@@ -62,7 +62,7 @@ namespace ReadyPlayerMe.Samples.UseCache
         
         private void OnPageChanged(int page)
         {
-            assetPageController.LoadAssets(selectedCategory, assetsToggle.isOn, page);
+            assetPageController.LoadAssets(selectedCategory, baseModelId, assetsToggle.isOn, page);
         }
         
         private async void LoadCharacter()

@@ -18,7 +18,7 @@ namespace ReadyPlayerMe.Samples.UseCache
         /// <param name="category">Selected category.</param>
         /// <param name="useCache">Use cache for loading assets.</param>
         /// <param name="page">Current page.</param>
-        public async void LoadAssets(string category, bool useCache, int page = 1)
+        public async void LoadAssets(string category, string characterModelAssetId, bool useCache, int page = 1)
         {
             assetLoader = new AssetLoader();
 
@@ -28,7 +28,8 @@ namespace ReadyPlayerMe.Samples.UseCache
                 {
                     Type = category,
                     Limit = assetPerPage,
-                    Page = page
+                    Page = page,
+                    CharacterModelAssetId = characterModelAssetId
                 }
             }, useCache);
             LoadPage(response.Data);
