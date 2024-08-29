@@ -105,19 +105,31 @@ namespace ReadyPlayerMe.Samples.UseCache
             }
             else
             {
-                await characterApi.UpdateAsync(new CharacterUpdateRequest()
+                if (charactersToggle.isOn)
                 {
-                    Id = characterId,
-                    Payload = new CharacterUpdateRequestBody()
+                    GameObject assetModel = await assetLoader.GetAssetModelAsync(asset, baseModelId, charactersToggle.isOn);
+                    
+                    CharacterLoader characterLoader = new CharacterLoader();
+                    characterLoader.SwapAsset(characterData, asset, assetModel);
+                    
+                    assetModel.transform.SetParent(characterPosition, false);
+                }
+                else
+                {
+                    await characterApi.UpdateAsync(new CharacterUpdateRequest()
                     {
-                        Assets = new Dictionary<string, string>
+                        Id = characterId,
+                        Payload = new CharacterUpdateRequestBody()
                         {
-                            { asset.Type, asset.Id }
+                            Assets = new Dictionary<string, string>
+                            {
+                                { asset.Type, asset.Id }
+                            }
                         }
-                    }
-                });
-            
-                characterData = await characterManager.LoadCharacter(characterId);
+                    });
+
+                    characterData = await characterManager.LoadCharacter(characterId);
+                }
             }
             
             // characterData = await characterLoader.PreviewAsync(characterData, asset, charactersToggle.isOn);

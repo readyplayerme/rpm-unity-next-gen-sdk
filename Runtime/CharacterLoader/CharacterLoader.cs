@@ -237,7 +237,7 @@ namespace ReadyPlayerMe
             return assetBytes;
         }
         
-        private void SwapAsset(CharacterData original, Asset asset, GameObject outfit)
+        public void SwapAsset(CharacterData original, Asset asset, GameObject outfit)
         {
             // TODO: Add handing baseMesh swap case, where all assets must be gone
             if(original.AssetMeshes.ContainsKey(asset.Type))

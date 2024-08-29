@@ -7,15 +7,28 @@ namespace ReadyPlayerMe
 {
     public class MeshTransfer
     {
-        private Transform[] bones;
-
         /// <summary>
         ///     Transfer meshes from source to target GameObject
         /// </summary>
         /// <param name="source">New character model</param>
         /// <param name="target">Character model existing in the scene</param>
+        /// <param name="definition">Skeleton definition</param>
         public void Transfer(GameObject source, GameObject target, SkeletonDefinition definition = null)
         {
+            Transform rootBone =
+                target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
+                target.transform;
+
+            var bones = GetBones(target.transform);
+            RemoveMeshes(target.transform);
+            TransferMeshes(target.transform, source.transform, rootBone, bones);
+
+            Object.Destroy(source);
+        }
+        
+        public void Transfer(GameObject source, CharacterData data, SkeletonDefinition definition = null)
+        {
+            Transform target = data.gameObject.transform;
             Transform rootBone =
                 target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
                 target.transform;
@@ -87,8 +100,7 @@ namespace ReadyPlayerMe
         private Transform[] GetBones(Transform targetArmature)
         {
             SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
-            Transform[] bones = sampleMesh.bones;
-            return bones;
+            return sampleMesh.bones;
         }
 
         private Renderer[] GetRenderers(Transform targetArmature)
