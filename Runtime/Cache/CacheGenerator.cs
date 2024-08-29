@@ -96,7 +96,6 @@ namespace ReadyPlayerMe
                     // download assets
                     foreach (Asset asset in assetListResponse.Data)
                     {
-                        Debug.Log($"Downloading asset: {asset.Id} | basemodel: {baseModel.Id} | url: {asset.GlbUrl}");
                         // download glb
                         using UnityWebRequest glbRequest = UnityWebRequest.Get(asset.GlbUrl);
                         glbRequest.downloadHandler = new DownloadHandlerFile(folderPath + baseModel.Id + "/" + asset.Id);
