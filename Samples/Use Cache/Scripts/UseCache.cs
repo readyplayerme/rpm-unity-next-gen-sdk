@@ -22,6 +22,7 @@ namespace ReadyPlayerMe.Samples.UseCache
 
         private AssetLoader assetLoader;
         private CharacterApi characterApi;
+        private CharacterLoader characterLoader;
         private CharacterManager characterManager;
         
         private string characterId;
@@ -37,6 +38,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             assetLoader = new AssetLoader();
             characterApi = new CharacterApi();
             characterManager = new CharacterManager();
+            characterLoader = new CharacterLoader();
         }
 
         public void DisplayUI()
@@ -68,20 +70,27 @@ namespace ReadyPlayerMe.Samples.UseCache
         private async void LoadCharacter()
         {
             baseModelId = await GetFirstBasemodelId();
-            
-            var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
+
+            if (charactersToggle.isOn)
             {
-                Payload = new CharacterCreateRequestBody()
+                characterData = characterLoader.LoadTemplate(baseModelId);
+            }
+            else
+            {
+                var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
                 {
-                    Assets = new Dictionary<string, string>
+                    Payload = new CharacterCreateRequestBody()
                     {
-                        { "baseModel", baseModelId }
+                        Assets = new Dictionary<string, string>
+                        {
+                            { "baseModel", baseModelId }
+                        }
                     }
-                }
-            });
+                });
             
-            characterId = createResponse.Data.Id;
-            characterData = await characterManager.LoadCharacter(characterId, baseModelId);
+                characterId = createResponse.Data.Id;
+                characterData = await characterManager.LoadCharacter(characterId, baseModelId);
+            }
             characterData.transform.SetParent(characterPosition, false);
         }
         
@@ -89,6 +98,10 @@ namespace ReadyPlayerMe.Samples.UseCache
         {
             if(asset.Type == "baseModel")
             {
+                Destroy(characterData.gameObject);
+                baseModelId = asset.Id;
+                
+                /*
                 await characterApi.UpdateAsync(new CharacterUpdateRequest()
                 {
                     Id = characterId,
@@ -100,7 +113,18 @@ namespace ReadyPlayerMe.Samples.UseCache
                         }
                     }
                 });
-                characterData = await characterManager.LoadCharacter(characterId, asset.Id);
+                */
+                if (charactersToggle.isOn)
+                {
+                    characterData = characterLoader.LoadTemplate(asset.Id);
+                    
+                    foreach (var assetMesh in assetLoader.Assets)
+                    {
+                        LoadAsset(assetMesh.Value);
+                    }
+                }
+                
+                // characterData = await characterManager.LoadCharacter(characterId, asset.Id);
                 characterData.gameObject.transform.SetParent(characterPosition, false);
             }
             else
@@ -108,10 +132,7 @@ namespace ReadyPlayerMe.Samples.UseCache
                 if (charactersToggle.isOn)
                 {
                     GameObject assetModel = await assetLoader.GetAssetModelAsync(asset, baseModelId, charactersToggle.isOn);
-                    
-                    CharacterLoader characterLoader = new CharacterLoader();
                     characterLoader.SwapAsset(characterData, asset, assetModel);
-                    
                     assetModel.transform.SetParent(characterPosition, false);
                 }
                 else
@@ -143,7 +164,7 @@ namespace ReadyPlayerMe.Samples.UseCache
                 {
                     Type = "baseModel",
                 }
-            });
+            }, charactersToggle.isOn);
 
             return baseModelResponse.Data[0].Id;
         }

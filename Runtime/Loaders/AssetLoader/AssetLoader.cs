@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
 using ReadyPlayerMe.Api.V1;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 
@@ -19,6 +20,8 @@ namespace ReadyPlayerMe
         private readonly AssetApi assetApi;
         private readonly string cacheFilePath = Application.persistentDataPath + "/Local Cache/Assets/assets.json";
         private readonly string cacheRoot = Application.persistentDataPath + "/Local Cache/Assets/";
+        
+        public readonly Dictionary<string, Asset> Assets = new Dictionary<string, Asset>();
         
         /// <summary>
         /// Initializes a new instance of the AssetLoader class.
@@ -43,7 +46,7 @@ namespace ReadyPlayerMe
         {
             if(useCache)
             {
-                if (request.Params.CharacterModelAssetId == null)
+                if (request.Params.CharacterModelAssetId == null && request.Params.Type != "baseModel")
                 {
                     throw new System.ArgumentException("Character model asset ID is required for cached asset retrieval.");
                 }
@@ -125,6 +128,9 @@ namespace ReadyPlayerMe
 
             await gltf.Load(assetBytes);
             await gltf.InstantiateSceneAsync(outfit.transform);
+            
+            Assets[asset.Type] = asset;
+            
             return outfit;
         }
         
@@ -141,7 +147,9 @@ namespace ReadyPlayerMe
             Asset[] assets = cachedAssets.Select(cachedAsset =>
             {
                 Asset asset = cachedAsset;
-                asset.GlbUrl = cachedAsset.GlbUrls[characterModelAssetId];
+                if(characterModelAssetId != null) 
+                    asset.GlbUrl = cachedAsset.GlbUrls[characterModelAssetId];
+                
                 return asset;
             }).ToArray();
             

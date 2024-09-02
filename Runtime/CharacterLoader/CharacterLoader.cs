@@ -16,7 +16,7 @@ namespace ReadyPlayerMe
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
-
+        
         public CharacterLoader()
         {
             _characterApi = new CharacterApi();
@@ -308,6 +308,17 @@ namespace ReadyPlayerMe
             SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
             Transform[] bones = sampleMesh.bones;
             return bones;
+        }
+        
+        public CharacterData LoadTemplate(string templateTagOrId)
+        {
+            var template = GetTemplate(templateTagOrId);
+            var templateInstance = template != null ? Object.Instantiate(template) : null;
+            templateInstance?.SetActive(false);
+
+            InitCharacter(templateInstance, null, templateTagOrId);
+            
+            return templateInstance?.GetComponent<CharacterData>();
         }
     }
 }
