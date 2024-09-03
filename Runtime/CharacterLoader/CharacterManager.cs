@@ -24,7 +24,7 @@ namespace ReadyPlayerMe
 
         private async Task<CharacterData> Create(string id, string templateTagOrId)
         {
-            var data = await _characterLoader.LoadAsync(id, templateTagOrId);
+            var data = await _characterLoader.LoadAsync(id);
             
             Characters.TryGetValue(id, out var characterData);
             if(characterData != null)

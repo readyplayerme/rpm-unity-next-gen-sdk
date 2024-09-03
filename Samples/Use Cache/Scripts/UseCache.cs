@@ -4,6 +4,7 @@ using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 namespace ReadyPlayerMe.Samples.UseCache
 {
@@ -16,6 +17,7 @@ namespace ReadyPlayerMe.Samples.UseCache
         [SerializeField] private Toggle assetsToggle;
         [SerializeField] private Toggle charactersToggle;
         [SerializeField] private GameObject mainUI;
+        [SerializeField] private GameObject topMenu;
         [SerializeField] private Transform characterPosition;
         
         private string selectedCategory;
@@ -23,7 +25,6 @@ namespace ReadyPlayerMe.Samples.UseCache
         private AssetLoader assetLoader;
         private CharacterApi characterApi;
         private CharacterLoader characterLoader;
-        private CharacterManager characterManager;
         
         private string characterId;
         private string baseModelId;
@@ -37,7 +38,6 @@ namespace ReadyPlayerMe.Samples.UseCache
 
             assetLoader = new AssetLoader();
             characterApi = new CharacterApi();
-            characterManager = new CharacterManager();
             characterLoader = new CharacterLoader();
         }
 
@@ -46,6 +46,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             if(mainUI.activeSelf) return;
             
             mainUI.SetActive(true);
+            topMenu.SetActive(false);
             categoryController.LoadCategories(categoriesToggle.isOn);
             
             LoadCharacter();
@@ -70,27 +71,7 @@ namespace ReadyPlayerMe.Samples.UseCache
         private async void LoadCharacter()
         {
             baseModelId = await GetFirstBasemodelId();
-
-            if (charactersToggle.isOn)
-            {
-                characterData = characterLoader.LoadTemplate(baseModelId);
-            }
-            else
-            {
-                var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
-                {
-                    Payload = new CharacterCreateRequestBody()
-                    {
-                        Assets = new Dictionary<string, string>
-                        {
-                            { "baseModel", baseModelId }
-                        }
-                    }
-                });
-            
-                characterId = createResponse.Data.Id;
-                characterData = await characterManager.LoadCharacter(characterId, baseModelId);
-            }
+            characterData = await characterLoader.LoadCharacter(baseModelId, charactersToggle.isOn);
             characterData.transform.SetParent(characterPosition, false);
         }
         
@@ -101,19 +82,6 @@ namespace ReadyPlayerMe.Samples.UseCache
                 Destroy(characterData.gameObject);
                 baseModelId = asset.Id;
                 
-                /*
-                await characterApi.UpdateAsync(new CharacterUpdateRequest()
-                {
-                    Id = characterId,
-                    Payload = new CharacterUpdateRequestBody()
-                    {
-                        Assets = new Dictionary<string, string>
-                        {
-                            { "baseModel", asset.Id }
-                        }
-                    }
-                });
-                */
                 if (charactersToggle.isOn)
                 {
                     characterData = characterLoader.LoadTemplate(asset.Id);
@@ -123,9 +91,11 @@ namespace ReadyPlayerMe.Samples.UseCache
                         LoadAsset(assetMesh.Value);
                     }
                 }
-                
-                // characterData = await characterManager.LoadCharacter(characterId, asset.Id);
-                characterData.gameObject.transform.SetParent(characterPosition, false);
+                else
+                {
+                    if(characterData != null) Destroy(characterData.gameObject);
+                    characterData = await characterLoader.LoadAsync(characterId, asset);
+                }
             }
             else
             {
@@ -149,11 +119,12 @@ namespace ReadyPlayerMe.Samples.UseCache
                         }
                     });
 
-                    characterData = await characterManager.LoadCharacter(characterId);
+                    if(characterData != null) Destroy(characterData.gameObject);
+                    characterData = await characterLoader.LoadAsync(characterId);
                 }
             }
             
-            // characterData = await characterLoader.PreviewAsync(characterData, asset, charactersToggle.isOn);
+            characterData.gameObject.transform.SetParent(characterPosition, false);
         }
         
         private async Task<string> GetFirstBasemodelId()

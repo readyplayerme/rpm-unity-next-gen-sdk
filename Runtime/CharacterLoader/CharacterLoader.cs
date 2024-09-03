@@ -24,6 +24,55 @@ namespace ReadyPlayerMe
             _skeletonBuilder = new SkeletonBuilder();
         }
 
+        // this is a new method
+        public async Task<CharacterData> LoadCharacter(string templateTagOrId, bool useCache = false)
+        {
+            CharacterData characterData = null;
+            
+            if (useCache)
+            {
+                // TODO: get or create cached character id
+                characterData = LoadTemplate(templateTagOrId);
+            }
+            else
+            {
+                var createResponse = await _characterApi.CreateAsync(new CharacterCreateRequest()
+                {
+                    Payload = new CharacterCreateRequestBody()
+                    {
+                        Assets = new Dictionary<string, string>
+                        {
+                            { "baseModel", templateTagOrId }
+                        }
+                    }
+                });
+                
+                characterData = LoadTemplate(templateTagOrId, createResponse.Data.Id);
+            }
+            
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
+                .definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
+                .definition;
+
+            characterData.gameObject.TryGetComponent<Animator>(out var animator);
+            animator.enabled = false;
+            
+            var animationAvatar = animator.avatar;
+            if (animationAvatar == null)
+            {
+                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                    ? skeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
+                
+            animator.enabled = true;
+                
+            return characterData;
+        }
+        
+        // old shit down here
         public virtual Task<CharacterData> PreviewAsync(
             string id,
             Dictionary<string, string> assets,
@@ -84,14 +133,26 @@ namespace ReadyPlayerMe
             );
         }
 
-        public virtual async Task<CharacterData> LoadAsync(string id, string templateTagOrId, CancellationToken cancellationToken = default)
+        public virtual async Task<CharacterData> LoadAsync(string characterId, Asset asset, CancellationToken cancellationToken = default)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
-                Id = id,
+                Id = characterId,
+            });
+            
+            await _characterApi.UpdateAsync(new CharacterUpdateRequest()
+            {
+                Id = characterId,
+                Payload = new CharacterUpdateRequestBody()
+                {
+                    Assets = new Dictionary<string, string>
+                    {
+                        { asset.Type, asset.Id }
+                    }
+                }
             });
 
-            var template = GetTemplate(templateTagOrId);
+            var template = GetTemplate(asset.Id);
             var templateInstance = template != null ? Object.Instantiate(template) : null;
             templateInstance?.SetActive(false);
 
@@ -310,13 +371,13 @@ namespace ReadyPlayerMe
             return bones;
         }
         
-        public CharacterData LoadTemplate(string templateTagOrId)
+        public CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
             var template = GetTemplate(templateTagOrId);
             var templateInstance = template != null ? Object.Instantiate(template) : null;
             templateInstance?.SetActive(false);
 
-            InitCharacter(templateInstance, null, templateTagOrId);
+            InitCharacter(templateInstance, characterId, templateTagOrId);
             
             return templateInstance?.GetComponent<CharacterData>();
         }

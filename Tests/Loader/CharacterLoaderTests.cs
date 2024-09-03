@@ -34,7 +34,7 @@ namespace ReadyPlayerMe.Tests.Loader
             cts.CancelAfter(100);
             
             var characterManager = new CharacterLoader();
-            var character = await characterManager.LoadAsync(TestConstants.CharacterId, TestConstants.TemplateId, cts.Token);
+            var character = await characterManager.LoadAsync(TestConstants.CharacterId, null, cts.Token);
             
             cts.Dispose();
             Assert.IsNull(character);
