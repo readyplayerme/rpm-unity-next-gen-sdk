@@ -19,27 +19,12 @@ namespace ReadyPlayerMe
                 target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
                 target.transform;
 
-            var bones = GetBones(target.transform);
             RemoveMeshes(target.transform);
-            TransferMeshes(target.transform, source.transform, rootBone, bones);
+            TransferMeshes(target.transform, source.transform, rootBone);
 
             Object.Destroy(source);
         }
         
-        public void Transfer(GameObject source, CharacterData data, SkeletonDefinition definition = null)
-        {
-            Transform target = data.gameObject.transform;
-            Transform rootBone =
-                target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
-                target.transform;
-
-            var bones = GetBones(target.transform);
-            RemoveMeshes(target.transform);
-            TransferMeshes(target.transform, source.transform, rootBone, bones);
-
-            Object.Destroy(source);
-        }
-
         /// Remove all meshes from the target armature
         private void RemoveMeshes(Transform targetArmature)
         {
@@ -52,8 +37,9 @@ namespace ReadyPlayerMe
         }
 
         /// Set meshes from source armature to target armature
-        private void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone, Transform[] bones)
+        public void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone)
         {
+            Transform[] bones = GetBones(targetArmature);
             Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
             
             foreach (Renderer renderer in sourceRenderers)
@@ -100,7 +86,8 @@ namespace ReadyPlayerMe
         private Transform[] GetBones(Transform targetArmature)
         {
             SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
-            return sampleMesh.bones;
+            Transform[] bones = sampleMesh.bones;
+            return bones;
         }
 
         private Renderer[] GetRenderers(Transform targetArmature)

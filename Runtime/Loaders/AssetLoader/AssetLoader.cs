@@ -4,9 +4,10 @@ using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
 using ReadyPlayerMe.Api.V1;
-using System.Collections.Generic;
+using ReadyPlayerMe.Data;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 namespace ReadyPlayerMe
 {
@@ -17,6 +18,8 @@ namespace ReadyPlayerMe
     /// </summary>
     public class AssetLoader
     {
+        private readonly MeshTransfer meshTransfer;
+        
         private readonly AssetApi assetApi;
         private readonly string cacheFilePath = Application.persistentDataPath + "/Local Cache/Assets/assets.json";
         private readonly string cacheRoot = Application.persistentDataPath + "/Local Cache/Assets/";
@@ -30,6 +33,7 @@ namespace ReadyPlayerMe
         public AssetLoader()
         {
             assetApi = new AssetApi();
+            meshTransfer = new MeshTransfer();
         }
         
         /// <summary>
@@ -218,6 +222,27 @@ namespace ReadyPlayerMe
             }
         
             return assetBytes;
+        }
+        
+        public void SwapAsset(CharacterData original, Asset asset, GameObject outfit)
+        {
+            // TODO: Add handing baseMesh swap case, where all assets must be gone
+            if(original.AssetMeshes.ContainsKey(asset.Type))
+            {
+                foreach (var mesh in original.AssetMeshes[asset.Type])
+                {
+                    if(mesh != null)
+                        Object.Destroy(mesh.gameObject);
+                }
+            
+                original.AssetMeshes.Remove(asset.Type);
+            }
+
+            var meshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
+            original.AssetMeshes.Add(asset.Type, meshes);
+        
+            meshTransfer.TransferMeshes(original.transform, outfit.transform, original.transform);
+            Object.Destroy(outfit);
         }
     }
 }

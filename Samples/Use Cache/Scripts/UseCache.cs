@@ -1,9 +1,8 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ReadyPlayerMe.Samples.UseCache
@@ -107,7 +106,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             if (charactersToggle.isOn)
             {
                 GameObject assetModel = await assetLoader.GetAssetModelAsync(asset, baseModelId, charactersToggle.isOn);
-                characterLoader.SwapAsset(characterData, asset, assetModel);
+                assetLoader.SwapAsset(characterData, asset, assetModel);
             }
             else
             {
