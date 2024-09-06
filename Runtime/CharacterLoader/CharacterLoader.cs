@@ -27,7 +27,7 @@ namespace ReadyPlayerMe
         // this is a new method
         public async Task<CharacterData> LoadCharacter(string templateTagOrId, bool useCache = false)
         {
-            CharacterData characterData = null;
+            CharacterData characterData;
             
             if (useCache)
             {
@@ -50,6 +50,8 @@ namespace ReadyPlayerMe
                 characterData = LoadTemplate(templateTagOrId, createResponse.Data.Id);
             }
             
+            characterData.gameObject.SetActive(false);
+            
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
                 .definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
@@ -68,6 +70,8 @@ namespace ReadyPlayerMe
             }
                 
             animator.enabled = true;
+            
+            characterData.gameObject.SetActive(true);
                 
             return characterData;
         }

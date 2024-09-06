@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ReadyPlayerMe.Samples.UseCache
@@ -81,20 +83,22 @@ namespace ReadyPlayerMe.Samples.UseCache
             if (charactersToggle.isOn)
             {
                 CharacterData newCharacterData = await characterLoader.LoadCharacter(baseModelId, charactersToggle.isOn);
-                    
-                foreach (var assetMesh in assetLoader.Assets)
-                {
-                    await LoadAssetAsync(assetMesh.Value);
-                }
-                    
+                
                 Destroy(characterData.gameObject);
                 characterData = newCharacterData;
+                
+                PlaceCharacterInScene(characterData);
+                
+                var assetLoadingTasks = assetLoader.Assets.Select(assetMesh => LoadAssetAsync(assetMesh.Value)).ToList();
+                await Task.WhenAll(assetLoadingTasks);
+                
             }
             else
             {
-                CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, asset.Id, asset);
+                CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, baseModelId, asset);
                 if(characterData != null) Destroy(characterData.gameObject);
                 characterData = newCharacterData;
+                PlaceCharacterInScene(characterData);
             }
         }
 
@@ -104,7 +108,6 @@ namespace ReadyPlayerMe.Samples.UseCache
             {
                 GameObject assetModel = await assetLoader.GetAssetModelAsync(asset, baseModelId, charactersToggle.isOn);
                 characterLoader.SwapAsset(characterData, asset, assetModel);
-                assetModel.transform.SetParent(characterPosition, false);
             }
             else
             {
@@ -112,6 +115,8 @@ namespace ReadyPlayerMe.Samples.UseCache
                 if(characterData != null) Destroy(characterData.gameObject);
                 characterData = newCharacterData;
             }
+            
+            PlaceCharacterInScene(characterData);
         }
         
         private async Task LoadAssetAsync(Asset asset)
@@ -124,8 +129,6 @@ namespace ReadyPlayerMe.Samples.UseCache
             {
                 await HandleCustomizationAssetAsync(asset);
             }
-            
-            PlaceCharacterInScene(characterData);
         }
         
         private async Task<string> GetFirstBasemodelId()
