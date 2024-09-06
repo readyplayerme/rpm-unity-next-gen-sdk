@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace ReadyPlayerMe.Samples.UseCache
 {
@@ -19,13 +18,11 @@ namespace ReadyPlayerMe.Samples.UseCache
         [SerializeField] private GameObject topMenu;
         [SerializeField] private Transform characterPosition;
         
-        private string selectedCategory;
-
         private AssetLoader assetLoader;
-        private CharacterApi characterApi;
         private CharacterLoader characterLoader;
         
         private string baseModelId;
+        private string selectedCategory;
         private CharacterData characterData;
 
         private void Start()
@@ -35,7 +32,6 @@ namespace ReadyPlayerMe.Samples.UseCache
             EventAggregator.Instance.OnPageChanged += OnPageChanged;
 
             assetLoader = new AssetLoader();
-            characterApi = new CharacterApi();
             characterLoader = new CharacterLoader();
         }
 
@@ -58,7 +54,7 @@ namespace ReadyPlayerMe.Samples.UseCache
         
         private void OnAssetSelected(Asset asset)
         {
-            LoadAsset(asset);
+            LoadAssetAsync(asset).ConfigureAwait(false);
         }
         
         private void OnPageChanged(int page)
@@ -70,62 +66,66 @@ namespace ReadyPlayerMe.Samples.UseCache
         {
             baseModelId = await GetFirstBasemodelId();
             characterData = await characterLoader.LoadCharacter(baseModelId, charactersToggle.isOn);
-            characterData.transform.SetParent(characterPosition, false);
+            PlaceCharacterInScene(characterData);
         }
         
-        private async void LoadAsset(Asset asset)
+        private void PlaceCharacterInScene(CharacterData characterData)
         {
-            if(asset.Type == "baseModel")
-            {
-                baseModelId = asset.Id;
+            characterData.transform.SetParent(characterPosition, false);
+        }
+
+        private async Task HandleBaseModelAssetAsync(Asset asset)
+        {
+            baseModelId = asset.Id;
                 
-                if (charactersToggle.isOn)
-                {
-                    CharacterData newCharacterData = await characterLoader.LoadCharacter(baseModelId, charactersToggle.isOn);
+            if (charactersToggle.isOn)
+            {
+                CharacterData newCharacterData = await characterLoader.LoadCharacter(baseModelId, charactersToggle.isOn);
                     
-                    foreach (var assetMesh in assetLoader.Assets)
-                    {
-                        LoadAsset(assetMesh.Value);
-                    }
-                    
-                    Destroy(characterData.gameObject);
-                    characterData = newCharacterData;
-                }
-                else
+                foreach (var assetMesh in assetLoader.Assets)
                 {
-                    if(characterData != null) Destroy(characterData.gameObject);
-                    characterData = await characterLoader.LoadAsync(characterData.Id, asset);
+                    await LoadAssetAsync(assetMesh.Value);
                 }
+                    
+                Destroy(characterData.gameObject);
+                characterData = newCharacterData;
             }
             else
             {
-                if (charactersToggle.isOn)
-                {
-                    GameObject assetModel = await assetLoader.GetAssetModelAsync(asset, baseModelId, charactersToggle.isOn);
-                    characterLoader.SwapAsset(characterData, asset, assetModel);
-                    assetModel.transform.SetParent(characterPosition, false);
-                }
-                else
-                {
-                    await characterApi.UpdateAsync(new CharacterUpdateRequest()
-                    {
-                        Id = characterData.Id,
-                        Payload = new CharacterUpdateRequestBody()
-                        {
-                            Assets = new Dictionary<string, string>
-                            {
-                                { asset.Type, asset.Id }
-                            }
-                        }
-                    });
+                CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, asset.Id, asset);
+                if(characterData != null) Destroy(characterData.gameObject);
+                characterData = newCharacterData;
+            }
+        }
 
-                    CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, baseModelId);
-                    if(characterData != null) Destroy(characterData.gameObject);
-                    characterData = newCharacterData;
-                }
+        private async Task HandleCustomizationAssetAsync(Asset asset)
+        {
+            if (charactersToggle.isOn)
+            {
+                GameObject assetModel = await assetLoader.GetAssetModelAsync(asset, baseModelId, charactersToggle.isOn);
+                characterLoader.SwapAsset(characterData, asset, assetModel);
+                assetModel.transform.SetParent(characterPosition, false);
+            }
+            else
+            {
+                CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, baseModelId, asset);
+                if(characterData != null) Destroy(characterData.gameObject);
+                characterData = newCharacterData;
+            }
+        }
+        
+        private async Task LoadAssetAsync(Asset asset)
+        {
+            if(asset.Type == "baseModel")
+            {
+                await HandleBaseModelAssetAsync(asset);
+            }
+            else
+            {
+                await HandleCustomizationAssetAsync(asset);
             }
             
-            characterData.gameObject.transform.SetParent(characterPosition, false);
+            PlaceCharacterInScene(characterData);
         }
         
         private async Task<string> GetFirstBasemodelId()

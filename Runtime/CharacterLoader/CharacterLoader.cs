@@ -72,8 +72,20 @@ namespace ReadyPlayerMe
             return characterData;
         }
         
-        public async Task<CharacterData> LoadAsyncX(string characterId, string templateTagOrId)
+        public async Task<CharacterData> LoadAsyncX(string characterId, string templateTagOrId, Asset asset)
         {
+            await _characterApi.UpdateAsync(new CharacterUpdateRequest()
+            {
+                Id = characterId,
+                Payload = new CharacterUpdateRequestBody()
+                {
+                    Assets = new Dictionary<string, string>
+                    {
+                        { asset.Type, asset.Id }
+                    }
+                }
+            });
+            
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId,
@@ -88,7 +100,7 @@ namespace ReadyPlayerMe
             if (!await gltf.Load(character.GlbUrl))
                 return null;
 
-            var characterObject = new GameObject("test");
+            var characterObject = new GameObject(character.Id);
 
             await gltf.InstantiateSceneAsync(characterObject.transform);
 
