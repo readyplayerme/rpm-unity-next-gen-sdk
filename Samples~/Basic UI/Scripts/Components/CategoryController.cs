@@ -11,7 +11,7 @@ namespace ReadyPlayerMe.Samples.BasicUI
         [SerializeField] private Transform categoryButtonContainer;
         [SerializeField] private List<Sprite> categoryIcons = new List<Sprite>();
 
-        private AssetApi assetApi;
+        private AssetLoader assetLoader;
         private Dictionary<string, Sprite> categoryIconDict = new Dictionary<string, Sprite>();
 
         // Map category names to icons for easy lookup
@@ -25,9 +25,9 @@ namespace ReadyPlayerMe.Samples.BasicUI
         /// </summary>
         public async void LoadCategories()
         {
-            assetApi = new AssetApi();
+            assetLoader = new AssetLoader();
 
-            AssetTypeListResponse response = await assetApi.ListAssetTypesAsync(new AssetTypeListRequest());
+            AssetTypeListResponse response = await assetLoader.ListAssetTypesAsync(new AssetTypeListRequest());
             var categories = response.Data;
 
             foreach (string category in categories)
