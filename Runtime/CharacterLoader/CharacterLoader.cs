@@ -72,6 +72,51 @@ namespace ReadyPlayerMe
             return characterData;
         }
         
+        public async Task<CharacterData> LoadAsyncX(string characterId, string templateTagOrId)
+        {
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = characterId,
+            });
+            
+            Character character = response.Data;
+            CharacterData characterData = LoadTemplate(templateTagOrId, character.Id);
+            characterData.gameObject.SetActive(false);
+            
+            var gltf = new GltfImport();
+
+            if (!await gltf.Load(character.GlbUrl))
+                return null;
+
+            var characterObject = new GameObject("test");
+
+            await gltf.InstantiateSceneAsync(characterObject.transform);
+
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
+                .definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
+                .definition;
+
+            characterData.gameObject.TryGetComponent<Animator>(out var animator);
+            animator.enabled = false;
+            
+            var animationAvatar = animator.avatar;
+            if (animationAvatar == null)
+            {
+                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                    ? skeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
+                
+            _meshTransfer.Transfer(characterObject, characterData.gameObject);
+            characterData.gameObject.SetActive(true);
+                
+            animator.enabled = true;
+            
+            return characterData;
+        }
+        
         // old shit down here
         public virtual Task<CharacterData> PreviewAsync(
             string id,

@@ -4,7 +4,6 @@ using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 namespace ReadyPlayerMe.Samples.UseCache
 {
@@ -26,7 +25,6 @@ namespace ReadyPlayerMe.Samples.UseCache
         private CharacterApi characterApi;
         private CharacterLoader characterLoader;
         
-        private string characterId;
         private string baseModelId;
         private CharacterData characterData;
 
@@ -79,22 +77,24 @@ namespace ReadyPlayerMe.Samples.UseCache
         {
             if(asset.Type == "baseModel")
             {
-                Destroy(characterData.gameObject);
                 baseModelId = asset.Id;
                 
                 if (charactersToggle.isOn)
                 {
-                    characterData = characterLoader.LoadTemplate(asset.Id);
+                    CharacterData newCharacterData = await characterLoader.LoadCharacter(baseModelId, charactersToggle.isOn);
                     
                     foreach (var assetMesh in assetLoader.Assets)
                     {
                         LoadAsset(assetMesh.Value);
                     }
+                    
+                    Destroy(characterData.gameObject);
+                    characterData = newCharacterData;
                 }
                 else
                 {
                     if(characterData != null) Destroy(characterData.gameObject);
-                    characterData = await characterLoader.LoadAsync(characterId, asset);
+                    characterData = await characterLoader.LoadAsync(characterData.Id, asset);
                 }
             }
             else
@@ -109,7 +109,7 @@ namespace ReadyPlayerMe.Samples.UseCache
                 {
                     await characterApi.UpdateAsync(new CharacterUpdateRequest()
                     {
-                        Id = characterId,
+                        Id = characterData.Id,
                         Payload = new CharacterUpdateRequestBody()
                         {
                             Assets = new Dictionary<string, string>
@@ -119,8 +119,9 @@ namespace ReadyPlayerMe.Samples.UseCache
                         }
                     });
 
+                    CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, baseModelId);
                     if(characterData != null) Destroy(characterData.gameObject);
-                    characterData = await characterLoader.LoadAsync(characterId);
+                    characterData = newCharacterData;
                 }
             }
             
