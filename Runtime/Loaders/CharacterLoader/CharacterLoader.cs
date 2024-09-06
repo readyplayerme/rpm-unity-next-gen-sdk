@@ -14,6 +14,9 @@ namespace ReadyPlayerMe
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
         
+        /// <summary>
+        ///     Initializes a new instance of the CharacterLoader class.
+        /// </summary>
         public CharacterLoader()
         {
             _characterApi = new CharacterApi();
@@ -21,7 +24,12 @@ namespace ReadyPlayerMe
             _skeletonBuilder = new SkeletonBuilder();
         }
 
-        // this is a new method
+        /// <summary>
+        ///     Asynchronously loads a character based on the given template tag or ID.
+        /// </summary>
+        /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
+        /// <param name="useCache"> A boolean indicating whether to use cached data if available. </param>
+        /// <returns> A task that represents the asynchronous operation. The task result contains a CharacterData object. </returns>
         public async Task<CharacterData> LoadCharacter(string templateTagOrId, bool useCache = false)
         {
             CharacterData characterData;
@@ -73,7 +81,14 @@ namespace ReadyPlayerMe
             return characterData;
         }
         
-        public async Task<CharacterData> LoadAsyncX(string characterId, string templateTagOrId, Asset asset)
+        /// <summary>
+        ///   Asynchronously loads a character based on the given character ID, template tag or ID, and asset.
+        /// </summary>
+        /// <param name="characterId"> The ID of the character to load. </param>
+        /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
+        /// <param name="asset"> The asset to load. </param>
+        /// <returns> A task that represents the asynchronous operation. The task result contains a CharacterData object. </returns>
+        public async Task<CharacterData> LoadAsync(string characterId, string templateTagOrId, Asset asset)
         {
             await _characterApi.UpdateAsync(new CharacterUpdateRequest()
             {
@@ -130,6 +145,11 @@ namespace ReadyPlayerMe
             return characterData;
         }
         
+        /// <summary>
+        ///     Retrieves a template based on the given template tag or ID.
+        /// </summary>
+        /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
+        /// <returns> A GameObject representing the template. </returns>
         protected virtual GameObject GetTemplate(string templateTagOrId)
         {
             if (string.IsNullOrEmpty(templateTagOrId))
@@ -141,6 +161,12 @@ namespace ReadyPlayerMe
                 .template;
         }
 
+        /// <summary>
+        ///    Loads a template based on the given template tag or ID.
+        /// </summary>
+        /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
+        /// <param name="characterId"> The ID of the character to load. </param>
+        /// <returns> A CharacterData object representing the loaded template. </returns>
         private CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
             GameObject template = GetTemplate(templateTagOrId);

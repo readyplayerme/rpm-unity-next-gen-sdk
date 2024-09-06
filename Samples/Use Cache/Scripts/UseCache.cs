@@ -94,7 +94,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             }
             else
             {
-                CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, baseModelId, asset);
+                CharacterData newCharacterData = await characterLoader.LoadAsync(characterData.Id, baseModelId, asset);
                 if(characterData != null) Destroy(characterData.gameObject);
                 characterData = newCharacterData;
                 PlaceCharacterInScene(characterData);
@@ -110,7 +110,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             }
             else
             {
-                CharacterData newCharacterData = await characterLoader.LoadAsyncX(characterData.Id, baseModelId, asset);
+                CharacterData newCharacterData = await characterLoader.LoadAsync(characterData.Id, baseModelId, asset);
                 if(characterData != null) Destroy(characterData.gameObject);
                 characterData = newCharacterData;
             }

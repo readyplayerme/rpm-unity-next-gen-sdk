@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
-using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 using System.Collections.Generic;
@@ -66,7 +66,16 @@ namespace ReadyPlayerMe
                 return new AssetListResponse()
                 {
                     Data = assetsOfPage,
-                    Pagination = BuildPagination(request.Params.Page, request.Params.Limit, assetsOfType.Length)
+                    Pagination = new Pagination
+                    {
+                        Limit = limit,
+                        Page = page,
+                        TotalPages = Mathf.CeilToInt(assetsOfType.Length / (float)limit),
+                        HasNextPage = page < Mathf.CeilToInt(assetsOfType.Length / (float)limit),
+                        HasPrevPage = page > 1,
+                        NextPage = page < Mathf.CeilToInt(assetsOfType.Length / (float)limit) ? page + 1 : page,
+                        PrevPage = page > 1 ? page - 1 : page
+                    }
                 };
             }
             
@@ -90,7 +99,7 @@ namespace ReadyPlayerMe
                 string folderPath = Application.persistentDataPath + "/Local Cache/Assets/types.json";
                 string json = await File.ReadAllTextAsync(folderPath);
                 string[] types = JsonConvert.DeserializeObject<string[]>(json);
-                types = types.Where(t => t != request.Params.ExcludeTypes).ToArray();
+                types = types.Except(new []{ request.Params.ExcludeTypes }).ToArray();
                         
                 return new AssetTypeListResponse()
                 {
@@ -102,7 +111,7 @@ namespace ReadyPlayerMe
         }
 
         /// <summary>
-        /// 
+        ///     Asynchronously retrieves an asset model based on the given asset and template tag or ID.
         /// </summary>
         /// <param name="asset"></param>
         /// <param name="templateTagOrId"></param>
@@ -110,36 +119,22 @@ namespace ReadyPlayerMe
         /// <returns></returns>
         public async Task<GameObject> GetAssetModelAsync(Asset asset, string templateTagOrId, bool useCache = false)
         {
-            byte[] assetBytes = null;
             var gltf = new GltfImport();
             var outfit = new GameObject(asset.Id);
-            
-            if (useCache)
-            {
-                assetBytes = await GetAssetBytesFromCache(asset, templateTagOrId);
-            }
 
-            // TODO: internet check Application.internetReachability != NetworkReachability.NotReachable
-            if (assetBytes == null)
-            {
-                string path = cacheRoot + templateTagOrId + "/" + asset.Id;
-                using UnityWebRequest request = UnityWebRequest.Get(asset.GlbUrl);
-                request.downloadHandler = new DownloadHandlerFile(path);
-                AsyncOperation glbOp = request.SendWebRequest();
-                while (!glbOp.isDone) await Task.Yield();
-                assetBytes = await File.ReadAllBytesAsync(path);
-            }
+            string path = $"{cacheRoot}/{templateTagOrId}/{asset.Id}";
+            byte[] assetBytes = useCache ? await DownloadOrLoadFromCache(asset.GlbUrl, path) : await File.ReadAllBytesAsync(path);
 
             await gltf.Load(assetBytes);
             await gltf.InstantiateSceneAsync(outfit.transform);
-            
+
             Assets[asset.Type] = asset;
-            
+
             return outfit;
         }
         
         /// <summary>
-        /// Asynchronously loads assets from a local cache file.
+        ///     Asynchronously loads assets from a local cache file.
         /// </summary>
         private async Task<Asset[]> LoadAssetsFromCacheAsync(string characterModelAssetId)
         {
@@ -159,74 +154,40 @@ namespace ReadyPlayerMe
             
             return assets;
         }
-
+        
         /// <summary>
-        /// Builds pagination details based on the current page, limit per page, and total number of assets.
+        ///     Asynchronously downloads an asset from a given URL or loads it from a local cache file.
         /// </summary>
-        /// <param name="page">The current page number.</param>
-        /// <param name="limit">The maximum number of assets per page.</param>
-        /// <param name="assetLength">The total number of assets available.</param>
-        /// <returns>A Pagination object containing pagination details.</returns>
-        private Pagination BuildPagination(int page, int limit, int assetLength)
+        private async Task<byte[]> DownloadOrLoadFromCache(string url, string filePath)
         {
-            Pagination pagination = new Pagination();
-            pagination.Limit = limit;
-            pagination.Page = page;
-            pagination.TotalPages = Mathf.CeilToInt(assetLength / (float)limit);
-            pagination.HasNextPage = pagination.TotalPages > page;
-            pagination.HasPrevPage = page > 1;
-            pagination.NextPage = pagination.HasNextPage ? page + 1 : page;
-            pagination.PrevPage = pagination.HasPrevPage ? page - 1 : page;
-            
-            return pagination;
-        }
-        
-        private async Task<byte[]> GetAssetBytesFromCache(Asset asset, string templateId)
-        {
-            string folderPath = $"{Application.persistentDataPath}/Local Cache/Assets/{templateId}";
-            string filePath = $"{folderPath}/{asset.Id}";
-            byte[] assetBytes;
+            if (File.Exists(filePath))
+            {
+                return await File.ReadAllBytesAsync(filePath);
+            }
 
-            // Check if the directory exists
-            if (!Directory.Exists(folderPath))
+            using var request = UnityWebRequest.Get(url);
+            AsyncOperation op = request.SendWebRequest();
+            while (!op.isDone) await Task.Yield();
+
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                Directory.CreateDirectory(folderPath);
+                byte[] data = request.downloadHandler.data;
+                await File.WriteAllBytesAsync(filePath, data);
+                return data;
             }
-        
-            // Check if the file exists in the cache and return the bytes if it does
-            if(File.Exists(filePath))
-            {
-                assetBytes = await File.ReadAllBytesAsync(filePath);
-            }
-            // If not, download the asset and save it to the cache and return the bytes
-            else
-            {
-                using UnityWebRequest request = UnityWebRequest.Get(asset.GlbUrl);
-                AsyncOperation op = request.SendWebRequest();
-            
-                while (!op.isDone)
-                {
-                    await Task.Yield();
-                }
-            
-                if (request.result == UnityWebRequest.Result.Success)
-                {
-                    assetBytes = request.downloadHandler.data;
-                    await File.WriteAllBytesAsync(filePath, assetBytes);
-                }
-                else
-                {
-                    Debug.LogError(request.error);
-                    return null;
-                }
-            }
-        
-            return assetBytes;
+
+            Debug.LogError(request.error);
+            return null;
         }
         
+        /// <summary>
+        ///     Swaps an asset on a character with a new asset.
+        /// </summary>
+        /// <param name="original">The character data object to swap the asset on.</param>
+        /// <param name="asset">The new asset to swap in.</param>
+        /// <param name="outfit">The outfit game object to swap in.</param>
         public void SwapAsset(CharacterData original, Asset asset, GameObject outfit)
         {
-            // TODO: Add handing baseMesh swap case, where all assets must be gone
             if(original.AssetMeshes.ContainsKey(asset.Type))
             {
                 foreach (var mesh in original.AssetMeshes[asset.Type])
