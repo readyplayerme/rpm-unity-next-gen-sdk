@@ -13,7 +13,7 @@ namespace ReadyPlayerMe
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("glbUrl")]
+        [JsonProperty("glbUrls")]
         public Dictionary<string, string> GlbUrls { get; set; }
         
         [JsonProperty("iconUrl")]
