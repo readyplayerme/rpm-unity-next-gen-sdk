@@ -7,7 +7,6 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 using System.Collections.Generic;
-using UnityEditor;
 
 namespace ReadyPlayerMe
 {
