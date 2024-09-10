@@ -9,7 +9,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
     {
         private CacheCreatorView cacheCreatorView;
 
-        [MenuItem("Tools/Ready Player Me Cache Creator")]
+        [MenuItem("Tools/Ready Player Me/Cache Creator", false, 1)]
         public static void Generate()
         {
             var window = GetWindow<CacheCreatorEditor>("Ready Player Me Cache Creator");
