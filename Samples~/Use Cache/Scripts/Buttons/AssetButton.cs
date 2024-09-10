@@ -23,7 +23,6 @@ namespace ReadyPlayerMe.Samples.UseCache
         private async void LoadImageAsync(Asset asset)
         {
             FileApi fileApi = new FileApi();
-            // Texture2D texture = await fileApi.DownloadImageAsync(url);
             Texture2D texture = await fileApi.DownloadAssetIconAsync(asset);
             assetIcon.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
         }
