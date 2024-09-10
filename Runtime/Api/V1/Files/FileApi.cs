@@ -26,17 +26,16 @@ namespace ReadyPlayerMe.Api.V1
         // TODO: Move the string path to a class of constants
         public virtual async Task<Texture2D> DownloadAssetIconAsync(Asset asset)
         {
-            string iconsFolderPath = Application.persistentDataPath + "/Local Cache/Assets/Icons";
-            if(!File.Exists(iconsFolderPath + "/" + asset.Id))
+            if(!File.Exists(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id))
             {
                 // download thumbnail
                 using UnityWebRequest iconRequest = UnityWebRequest.Get(asset.IconUrl);
-                iconRequest.downloadHandler = new DownloadHandlerFile(iconsFolderPath + "/" + asset.Id);
+                iconRequest.downloadHandler = new DownloadHandlerFile(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id);
                 AsyncOperation iconOp = iconRequest.SendWebRequest();
                 while (!iconOp.isDone) await Task.Yield();
             }
             
-            return await GetTextureFromFile(iconsFolderPath + "/" + asset.Id);
+            return await GetTextureFromFile(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id);
         }
         
         private async Task<Texture2D> GetTextureFromFile(string path)

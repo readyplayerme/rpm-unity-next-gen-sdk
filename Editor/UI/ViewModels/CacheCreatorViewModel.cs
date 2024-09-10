@@ -1,13 +1,10 @@
 using System;
-using UnityEngine;
 using UnityEditor;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class CacheCreatorViewModel
     {
-        private readonly string cacheFolderPath = Application.persistentDataPath + "/Local Cache/Assets"; 
-        
         public event Action OnCacheGenerated;
         public event Action OnRemoteCacheDownloaded;
         
@@ -22,19 +19,19 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         {
             var cache = new CacheGenerator();
             cache.ExtractCache();
-            EditorUtility.RevealInFinder(cacheFolderPath);
+            EditorUtility.RevealInFinder(CachePaths.CACHE_ASSET_ROOT);
         }
         
         public void OpenCacheFolder()
         {
-            EditorUtility.RevealInFinder(cacheFolderPath);
+            EditorUtility.RevealInFinder(CachePaths.CACHE_ASSET_ROOT);
         }
         
         public async void DownloadAndExtractRemoveCache(string url)
         {
             var cache = new CacheGenerator();
             await cache.DownloadAndExtract(url);
-            EditorUtility.RevealInFinder(cacheFolderPath);
+            EditorUtility.RevealInFinder(CachePaths.CACHE_ASSET_ROOT);
             OnRemoteCacheDownloaded?.Invoke();
         }
     }

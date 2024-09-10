@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
 using ReadyPlayerMe.Api.V1;
@@ -6,38 +7,33 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEditor;
 
 namespace ReadyPlayerMe
 {
     public class CacheGenerator
     {
-        private readonly string cacheZipFolderPath = Application.persistentDataPath + "/Local Cache/Assets.zip";
-        private readonly string folderPath = Application.streamingAssetsPath + "/Local Cache/Assets/";
-        private readonly string zipFilePath = Application.streamingAssetsPath + "/Local Cache/Assets.zip";
-        private readonly string cacheFolderPath = Application.persistentDataPath + "/Local Cache/Assets";
-
         public async Task DownloadAndExtract(string url)
         {
             using UnityWebRequest request = UnityWebRequest.Get(url);
-            request.downloadHandler = new DownloadHandlerFile(cacheZipFolderPath);
+            request.downloadHandler = new DownloadHandlerFile(CachePaths.CACHE_ASSET_ZIP_PATH);
             AsyncOperation op = request.SendWebRequest();
             while (!op.isDone)
             {
                 await Task.Yield();
             }
 
-            if (File.Exists(zipFilePath))
+            if (File.Exists(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH))
             {
-                if (!Directory.Exists(cacheFolderPath))
+                if (!Directory.Exists(CachePaths.CACHE_ASSET_ROOT))
                 {
-                    Directory.CreateDirectory(cacheFolderPath);
+                    Directory.CreateDirectory(CachePaths.CACHE_ASSET_ROOT);
                 }
 
-                ZipFile.ExtractToDirectory(cacheZipFolderPath, cacheFolderPath, true);
+                ZipFile.ExtractToDirectory(CachePaths.CACHE_ASSET_ZIP_PATH, CachePaths.CACHE_ASSET_ROOT, true);
             }
 
-            File.Delete(cacheZipFolderPath);
+            File.Delete(CachePaths.CACHE_ASSET_ZIP_PATH);
         }
 
         public async Task GenerateCache(int cacheItemCount)
@@ -61,9 +57,9 @@ namespace ReadyPlayerMe
             
             foreach (var baseModel in baseModelResponse.Data)
             {
-                if (!Directory.Exists(folderPath + baseModel.Id))
+                if (!Directory.Exists(CachePaths.PROJECT_CACHE_ASSET_ROOT + baseModel.Id))
                 {
-                    Directory.CreateDirectory(folderPath + baseModel.Id);
+                    Directory.CreateDirectory(CachePaths.PROJECT_CACHE_ASSET_ROOT + baseModel.Id);
                 }
 
                 foreach (string assetType in assetTypes)
@@ -96,22 +92,21 @@ namespace ReadyPlayerMe
                     {
                         // download glb
                         using UnityWebRequest glbRequest = UnityWebRequest.Get(asset.GlbUrl);
-                        glbRequest.downloadHandler = new DownloadHandlerFile(folderPath + baseModel.Id + "/" + asset.Id);
+                        glbRequest.downloadHandler = new DownloadHandlerFile(CachePaths.PROJECT_CACHE_ASSET_ROOT + baseModel.Id + "/" + asset.Id);
                         AsyncOperation glbOp = glbRequest.SendWebRequest();
                         while (!glbOp.isDone) await Task.Yield();
                     }
                     
-                    string iconsFolderPath = folderPath + "Icons";
-                    if (!Directory.Exists(iconsFolderPath))
+                    if (!Directory.Exists(CachePaths.PROJECT_CACHE_ASSET_ICON_PATH))
                     {
-                        Directory.CreateDirectory(iconsFolderPath);
+                        Directory.CreateDirectory(CachePaths.PROJECT_CACHE_ASSET_ICON_PATH);
                     }
                     // download assets
                     foreach (Asset asset in assetListResponse.Data)
                     {
                         // download thumbnail
                         using UnityWebRequest iconRequest = UnityWebRequest.Get(asset.IconUrl);
-                        iconRequest.downloadHandler = new DownloadHandlerFile(iconsFolderPath + "/" + asset.Id);
+                        iconRequest.downloadHandler = new DownloadHandlerFile(CachePaths.PROJECT_CACHE_ASSET_ICON_PATH + "/" + asset.Id);
                         AsyncOperation iconOp = iconRequest.SendWebRequest();
                         while (!iconOp.isDone) await Task.Yield();
                     }
@@ -119,30 +114,30 @@ namespace ReadyPlayerMe
             }
 
             // save json for requests
-            string assetsJsonPath = folderPath + "/assets.json";
-            await File.WriteAllTextAsync(assetsJsonPath, JsonConvert.SerializeObject(assetList, Formatting.Indented));
+            await File.WriteAllTextAsync(CachePaths.PROJECT_CACHE_ASSET_JSON_PATH, JsonConvert.SerializeObject(assetList, Formatting.Indented));
 
-            string assetTypesJsonPath = folderPath + "/types.json";
-            await File.WriteAllTextAsync(assetTypesJsonPath,
-                JsonConvert.SerializeObject(assetTypes, Formatting.Indented));
+            await File.WriteAllTextAsync(CachePaths.PROJECT_CACHE_TYPES_JSON_PATH, JsonConvert.SerializeObject(assetTypes, Formatting.Indented));
 
-            // create zip file
-            File.Delete(zipFilePath);
-            ZipFile.CreateFromDirectory(folderPath, zipFilePath);
+            if (File.Exists(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH))
+                File.Delete(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH);
+            
+            await Task.Yield();
+            
+            ZipFile.CreateFromDirectory(CachePaths.PROJECT_CACHE_ASSET_ROOT, CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH);
 
             // delete assets folder
-            Directory.Delete(folderPath, true);
+            Directory.Delete(CachePaths.PROJECT_CACHE_ASSET_ROOT, true);
         }
 
         public void ExtractCache()
         {
-            if (File.Exists(zipFilePath))
+            if (File.Exists(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH))
             {
-                if (Directory.Exists(cacheFolderPath))
+                if (Directory.Exists(CachePaths.CACHE_ASSET_ROOT))
                 {
-                    Directory.Delete(cacheFolderPath, true);
+                    Directory.Delete(CachePaths.CACHE_ASSET_ROOT, true);
                 }
-                ZipFile.ExtractToDirectory(zipFilePath, cacheFolderPath, true);
+                ZipFile.ExtractToDirectory(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH, CachePaths.CACHE_ASSET_ROOT, true);
             }
         }
     }

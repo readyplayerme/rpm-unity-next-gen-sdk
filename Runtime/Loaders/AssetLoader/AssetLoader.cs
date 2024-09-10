@@ -18,11 +18,8 @@ namespace ReadyPlayerMe
     /// </summary>
     public class AssetLoader
     {
-        private readonly MeshTransfer meshTransfer;
-        
         private readonly AssetApi assetApi;
-        private readonly string cacheFilePath = Application.persistentDataPath + "/Local Cache/Assets/assets.json";
-        private readonly string cacheRoot = Application.persistentDataPath + "/Local Cache/Assets/";
+        private readonly MeshTransfer meshTransfer;
         
         public readonly Dictionary<string, Asset> Assets = new Dictionary<string, Asset>();
         
@@ -96,8 +93,7 @@ namespace ReadyPlayerMe
         {
             if(useCache)
             {
-                string folderPath = Application.persistentDataPath + "/Local Cache/Assets/types.json";
-                string json = await File.ReadAllTextAsync(folderPath);
+                string json = await File.ReadAllTextAsync(CachePaths.CACHE_TYPES_JSON_PATH);
                 string[] types = JsonConvert.DeserializeObject<string[]>(json);
                 types = types.Except(new []{ request.Params.ExcludeTypes }).ToArray();
                         
@@ -122,7 +118,7 @@ namespace ReadyPlayerMe
             var gltf = new GltfImport();
             var outfit = new GameObject(asset.Id);
 
-            string path = $"{cacheRoot}/{templateTagOrId}/{asset.Id}";
+            string path = $"{CachePaths.CACHE_ASSET_ROOT}/{templateTagOrId}/{asset.Id}";
             byte[] assetBytes = useCache ? await DownloadOrLoadFromCache(asset.GlbUrl, path) : await File.ReadAllBytesAsync(path);
 
             await gltf.Load(assetBytes);
@@ -138,10 +134,10 @@ namespace ReadyPlayerMe
         /// </summary>
         private async Task<Asset[]> LoadAssetsFromCacheAsync(string characterModelAssetId)
         {
-            if (!File.Exists(cacheFilePath))
-                throw new FileNotFoundException("Cache file not found.", cacheFilePath);
+            if (!File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
+                throw new FileNotFoundException("Cache file not found.", CachePaths.CACHE_ASSET_JSON_PATH);
         
-            string json = await File.ReadAllTextAsync(cacheFilePath);
+            string json = await File.ReadAllTextAsync(CachePaths.CACHE_ASSET_JSON_PATH);
             CachedAsset[] cachedAssets = JsonConvert.DeserializeObject<CachedAsset[]>(json);
             Asset[] assets = cachedAssets.Select(cachedAsset =>
             {
