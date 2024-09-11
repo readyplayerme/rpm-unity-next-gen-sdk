@@ -10,6 +10,10 @@ namespace ReadyPlayerMe
 {
     public class CharacterLoader
     {
+        private const string BASE_MODEL_LABEL = "baseModel";
+        private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
+        private const string CHARACTER_STYLE_TEMPLATE_LABEL = "CharacterStyleTemplateConfig";
+        
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
@@ -47,7 +51,7 @@ namespace ReadyPlayerMe
                     {
                         Assets = new Dictionary<string, string>
                         {
-                            { "baseModel", templateTagOrId }
+                            { BASE_MODEL_LABEL, templateTagOrId }
                         }
                     }
                 });
@@ -57,7 +61,7 @@ namespace ReadyPlayerMe
             
             characterData.gameObject.SetActive(false);
             
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
                 .definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
                 .definition;
@@ -120,7 +124,7 @@ namespace ReadyPlayerMe
 
             await gltf.InstantiateSceneAsync(characterObject.transform);
 
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig")
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
                 .definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
                 .definition;
@@ -156,7 +160,7 @@ namespace ReadyPlayerMe
                 return null;
 
             return Resources
-                .Load<CharacterStyleTemplateConfig>($"CharacterStyleTemplateConfig")?
+                .Load<CharacterStyleTemplateConfig>(CHARACTER_STYLE_TEMPLATE_LABEL)?
                 .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
                 .template;
         }

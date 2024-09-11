@@ -12,6 +12,8 @@ namespace ReadyPlayerMe
 {
     public class CacheGenerator
     {
+        private const string BASE_MODEL_LABEL = "baseModel";
+        
         public async Task DownloadAndExtract(string url)
         {
             using UnityWebRequest request = UnityWebRequest.Get(url);
@@ -45,7 +47,7 @@ namespace ReadyPlayerMe
             {
                 Params = new AssetListQueryParams()
                 {
-                    Type = "baseModel",
+                    Type = BASE_MODEL_LABEL,
                     Limit = int.MaxValue
                 }
             });

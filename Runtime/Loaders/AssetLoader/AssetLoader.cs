@@ -18,6 +18,8 @@ namespace ReadyPlayerMe
     /// </summary>
     public class AssetLoader
     {
+        private const string BASE_MODEL_LABEL = "baseModel";
+        
         private readonly AssetApi assetApi;
         private readonly MeshTransfer meshTransfer;
         
@@ -47,7 +49,7 @@ namespace ReadyPlayerMe
         {
             if(useCache)
             {
-                if (request.Params.CharacterModelAssetId == null && request.Params.Type != "baseModel")
+                if (request.Params.CharacterModelAssetId == null && request.Params.Type != BASE_MODEL_LABEL)
                 {
                     throw new System.ArgumentException("Character model asset ID is required for cached asset retrieval.");
                 }
