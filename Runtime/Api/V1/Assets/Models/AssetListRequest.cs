@@ -19,5 +19,8 @@ namespace ReadyPlayerMe.Api.V1
         
         [JsonProperty("excludeTypes")]
         public string ExcludeTypes { get; set; }
+        
+        [JsonProperty("characterModelAssetId")]
+        public string CharacterModelAssetId { get; set; }
     }
 }

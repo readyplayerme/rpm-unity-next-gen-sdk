@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
-using System;
+using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace ReadyPlayerMe.Samples.PlayerLocomotion
 {
@@ -15,35 +13,21 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         [SerializeField] private ScrollRect topsScrollView;
         [SerializeField] private GameObject loadingPanel;
         
-        private AssetApi assetApi;
-        private CharacterApi characterApi;
-        private CharacterManager characterManager;
+        private AssetLoader assetLoader;
+        private CharacterLoader characterLoader;
         
-        private string characterId;
+        private string baseModelId;
         private CharacterData characterData;
         
         private async void Start()
         {
-            assetApi = new AssetApi();
-            characterApi = new CharacterApi();
-            characterManager = new CharacterManager();
+            assetLoader = new AssetLoader();
+            characterLoader = new CharacterLoader();
             
-            string baseModelId = await LoadBaseModels();
+            baseModelId = await LoadBaseModels();
             LoadTops();
 
-            var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
-            {
-                Payload = new CharacterCreateRequestBody()
-                {
-                    Assets = new Dictionary<string, string>
-                    {
-                        { "baseModel", baseModelId }
-                    }
-                }
-            });
-            
-            characterId = createResponse.Data.Id;
-            characterData = await characterManager.LoadCharacter(characterId, baseModelId);
+            characterData = await characterLoader.LoadCharacter(baseModelId);
             
             loadingPanel.SetActive(false);
         }
@@ -51,7 +35,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         #region User Interface
         private async Task<string> LoadBaseModels()
         {
-            AssetListResponse baseModelResponse = await assetApi.ListAssetsAsync(new AssetListRequest
+            AssetListResponse baseModelResponse = await assetLoader.ListAssetsAsync(new AssetListRequest
             {
                 Params = new AssetListQueryParams()
                 {
@@ -70,7 +54,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
 
         private async void LoadTops()
         {
-            AssetListResponse topsResponse = await assetApi.ListAssetsAsync(new AssetListRequest
+            AssetListResponse topsResponse = await assetLoader.ListAssetsAsync(new AssetListRequest
             {
                 Params = new AssetListQueryParams()
                 {
@@ -88,21 +72,12 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         
         private async void UpdateBaseModel(Asset asset)
         {
+            baseModelId = asset.Id;
             loadingPanel.SetActive(true);
             
-            await characterApi.UpdateAsync(new CharacterUpdateRequest()
-            {
-                Id = characterId,
-                Payload = new CharacterUpdateRequestBody()
-                {
-                    Assets = new Dictionary<string, string>
-                    {
-                        { "baseModel", asset.Id }
-                    }
-                }
-            });
+            var operation = characterLoader.LoadAsync(characterData.Id, asset.Id, asset);
             
-            TransferCharacterStateInfo(characterData, characterManager.LoadCharacter(characterId, asset.Id));
+            await TransferCharacterStateInfo(characterData, operation);
             
             loadingPanel.SetActive(false);
         }
@@ -111,26 +86,15 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         {
             loadingPanel.SetActive(true);
             
-            await characterApi.UpdateAsync(new CharacterUpdateRequest()
-            {
-                Id = characterId,
-                Payload = new CharacterUpdateRequestBody()
-                {
-                    Assets = new Dictionary<string, string>
-                    {
-                        { asset.Type, asset.Id }
-                    }
-                }
-            });
-            
-            characterData = await characterManager.LoadCharacter(characterId);
+            CharacterData newCharacterData = await characterLoader.LoadAsync(characterData.Id, baseModelId, asset);
+            ReplaceCharacter(newCharacterData);
             
             loadingPanel.SetActive(false);
         }
 
-        private async void TransferCharacterStateInfo(CharacterData data, Task<CharacterData> task)
+        private async Task TransferCharacterStateInfo(CharacterData data, Task<CharacterData> task)
         {
-            characterData = await task;
+            CharacterData newCharacterData = await task;
 
             var animatorState = data.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
             var animTime = animatorState.normalizedTime;
@@ -138,10 +102,18 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
             var characterPosition = data.gameObject.transform.position;
             
             // set and update character data
-            characterData.gameObject.GetComponent<Animator>().Play(animatorState.fullPathHash);
-            characterData.gameObject.GetComponent<Animator>().Update(animTime);
-            characterData.gameObject.transform.rotation = characterRotation;
-            characterData.gameObject.transform.position = characterPosition;
+            newCharacterData.gameObject.GetComponent<Animator>().Play(animatorState.fullPathHash);
+            newCharacterData.gameObject.GetComponent<Animator>().Update(animTime);
+            newCharacterData.gameObject.transform.rotation = characterRotation;
+            newCharacterData.gameObject.transform.position = characterPosition;
+            
+            ReplaceCharacter(newCharacterData);
+        }
+        
+        private void ReplaceCharacter(CharacterData data)
+        {
+            Destroy(characterData.gameObject);
+            characterData = data;
         }
     }
 }

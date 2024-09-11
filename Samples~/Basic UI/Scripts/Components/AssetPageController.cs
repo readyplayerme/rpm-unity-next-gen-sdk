@@ -10,7 +10,7 @@ namespace ReadyPlayerMe.Samples.BasicUI
         [SerializeField] private Transform assetButtonContainer;
         [SerializeField] private Paginator paginator;
 
-        private AssetApi assetApi;
+        private AssetLoader assetLoader;
 
         /// <summary>
         ///     Load assets from the API and create buttons for each asset.
@@ -19,9 +19,9 @@ namespace ReadyPlayerMe.Samples.BasicUI
         /// <param name="page">Current page.</param>
         public async void LoadAssets(string category, int page = 1)
         {
-            assetApi = new AssetApi();
+            assetLoader = new AssetLoader();
 
-            AssetListResponse response = await assetApi.ListAssetsAsync(new AssetListRequest
+            AssetListResponse response = await assetLoader.ListAssetsAsync(new AssetListRequest
             {
                 Params = new AssetListQueryParams()
                 {

@@ -9,6 +9,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class CharacterStylesViewModel
     {
+        private const string BASE_MODEL_LABEL = "baseModel";
+        
         public bool Loading { get; private set; }
 
         public IList<Asset> CharacterStyles { get; private set; } = new List<Asset>();
@@ -40,7 +42,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 Params = new AssetListQueryParams
                 {
                     ApplicationId = _settings.ApplicationId,
-                    Type = "baseModel"
+                    Type = BASE_MODEL_LABEL,
                 }
             });
             
