@@ -5,7 +5,7 @@ namespace ReadyPlayerMe.Api.V1
 {
     public class Asset
     {
-        [JsonProperty("_id")]
+        [JsonProperty("id")]
         public string Id { get; set; }
         
         [JsonProperty("name")]
