@@ -67,21 +67,90 @@ namespace ReadyPlayerMe
                 .definition;
 
             characterData.gameObject.TryGetComponent<Animator>(out var animator);
-            animator.enabled = false;
-            
-            var animationAvatar = animator.avatar;
-            if (animationAvatar == null)
+
+            if (animator != null)
             {
-                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
-                    ? skeletonDefinition.GetHumanBones()
-                    : null
-                );
+                animator.enabled = false;
+
+                var animationAvatar = animator.avatar;
+                if (animationAvatar == null)
+                {
+                    _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                        ? skeletonDefinition.GetHumanBones()
+                        : null
+                    );
+                }
+
+                animator.enabled = true;
             }
-                
-            animator.enabled = true;
-            
+
             characterData.gameObject.SetActive(true);
                 
+            return characterData;
+        }
+        
+        /// <summary>
+        ///   Asynchronously loads a character based on the given character ID, template tag or ID, and asset.
+        /// </summary>
+        /// <param name="characterId"> The ID of the character to load. </param>
+        /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
+        /// <param name="assets"> The assets to load. </param>
+        /// <returns> A task that represents the asynchronous operation. The task result contains a CharacterData object. </returns>
+        public async Task<CharacterData> PreviewAsync(string characterId, string templateTagOrId, Dictionary<string, string> assets)
+        {
+            var url = _characterApi.GeneratePreviewUrl(new CharacterPreviewRequest()
+            {
+                Id = characterId,
+                Params = new CharacterPreviewQueryParams()
+                {
+                    Assets = assets,
+                }
+            });
+            
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = characterId,
+            });
+            
+            Character character = response.Data;
+            CharacterData characterData = LoadTemplate(templateTagOrId, character.Id);
+            characterData.gameObject.SetActive(false);
+            
+            var gltf = new GltfImport();
+
+            if (!await gltf.Load(url))
+                return null;
+
+            var characterObject = new GameObject(character.Id);
+
+            await gltf.InstantiateSceneAsync(characterObject.transform);
+
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
+                .definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
+                .definition;
+
+            characterData.gameObject.TryGetComponent<Animator>(out var animator);
+
+            if (animator != null)
+            {
+                animator.enabled = false;
+
+                var animationAvatar = animator.avatar;
+                if (animationAvatar == null)
+                {
+                    _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                        ? skeletonDefinition.GetHumanBones()
+                        : null
+                    );
+                }
+
+                _meshTransfer.Transfer(characterObject, characterData.gameObject);
+                characterData.gameObject.SetActive(true);
+
+                animator.enabled = true;
+            }
+
             return characterData;
         }
         
