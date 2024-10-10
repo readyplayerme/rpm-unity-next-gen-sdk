@@ -40,12 +40,12 @@ namespace ReadyPlayerMe
         public void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone)
         {
             Transform[] bones = GetBones(targetArmature);
+            Transform[] sourceBones = GetBones(sourceArmature);
             Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
             
             foreach (Renderer renderer in sourceRenderers)
             {
                 Transform[] bonesCopy = new Transform[bones.Length];
-                Transform[] sourceBones = GetBones(sourceArmature);
             
                 for (int i = 0; i < bones.Length; i++)
                 {

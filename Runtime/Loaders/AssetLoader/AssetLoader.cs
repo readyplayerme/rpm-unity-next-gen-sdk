@@ -170,6 +170,7 @@ namespace ReadyPlayerMe
             if (request.result == UnityWebRequest.Result.Success)
             {
                 byte[] data = request.downloadHandler.data;
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
                 await File.WriteAllBytesAsync(filePath, data);
                 return data;
             }
