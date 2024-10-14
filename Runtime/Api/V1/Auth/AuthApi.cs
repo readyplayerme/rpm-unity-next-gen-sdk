@@ -45,7 +45,7 @@ namespace ReadyPlayerMe.Api.V1
             return await Dispatch<SendLoginCodeResponse>(apiRequest);
         }
         
-        public virtual async Task<LoginWithCodeResponse> LoginAsync(LoginWithCodeRequest request)
+        public virtual async Task<LoginWithCodeResponse> LoginWithCodeAsync(LoginWithCodeRequest request)
         {
             
             var payload = JsonConvert.SerializeObject(request, new JsonSerializerSettings
