@@ -35,6 +35,11 @@
       "displayName": "Basic UI Sample",
       "description": "A UI sample that show how to use Asset API of Ready Player Me SDK",
       "path": "Samples~/Basic UI"
+    },
+    {
+      "displayName": "Use Cache Sample",
+      "description": "A UI sample that show how to use asset caching functionality of Ready Player Me SDK",
+      "path": "Samples~/Use Cache"
     }
   ]
 }
