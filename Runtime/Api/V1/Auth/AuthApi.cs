@@ -56,7 +56,7 @@ namespace ReadyPlayerMe.Api.V1
             
             var apiRequest = new ApiRequest<string>()
             {
-                Url = $"{Settings.ApiBaseUrl}v1/auth/login",
+                Url = $"{Settings.ApiBaseUrl}/v1/auth/login",
                 Method = UnityWebRequest.kHttpVerbPOST,
                 Headers = new Dictionary<string, string>()
                 {
