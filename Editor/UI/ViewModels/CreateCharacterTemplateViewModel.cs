@@ -43,9 +43,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             };
 
             var templateConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
-            var templateList = templateConfig.templates.ToList();
-            templateList.Add(newTemplate);
-            templateConfig.templates = templateList.ToArray();
+            templateConfig.templates.Add(newTemplate);
             
             EditorUtility.SetDirty(templateConfig);
             AssetDatabase.Refresh();

@@ -42,7 +42,7 @@ namespace ReadyPlayerMe.Editor.PostProcessors
                     });
                 }
             
-                characterStyleConfig.templates = templates.ToArray();
+                characterStyleConfig.templates = templates;
                 
                 EditorUtility.SetDirty(characterStyleConfig);
                 AssetDatabase.SaveAssets();

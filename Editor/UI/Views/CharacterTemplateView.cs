@@ -59,7 +59,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                         
                         templateConfig.templates = templateConfig.templates
                             .Where(p => p.id != _viewModel.CharacterStyleTemplate.id)
-                            .ToArray();
+                            .ToList();
 
                         EditorUtility.SetDirty(templateConfig);
                         AssetDatabase.Refresh();
