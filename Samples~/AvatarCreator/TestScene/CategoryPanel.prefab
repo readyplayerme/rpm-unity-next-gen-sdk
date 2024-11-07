@@ -30,6 +30,7 @@ RectTransform:
   m_Children:
   - {fileID: 4171282699921384392}
   m_Father: {fileID: 3852229356230739763}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -66,6 +67,7 @@ RectTransform:
   m_Children:
   - {fileID: 6032669354271082943}
   m_Father: {fileID: 2943922937967098575}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -104,6 +106,7 @@ RectTransform:
   m_Children:
   - {fileID: 4126496817972978828}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -142,11 +145,11 @@ MonoBehaviour:
   - Name: baseModel
     Icon: {fileID: 21300000, guid: e9915d57a1c1a8541b8c2231a631bb40, type: 3}
   - Name: Custom top
-    Icon: {fileID: 21300000, guid: b7435722695f6b1489766bbe508ad894, type: 3}
+    Icon: {fileID: 21300000, guid: 26b5da9c181145d4abeb04b49478d409, type: 3}
   - Name: Custom bottom
     Icon: {fileID: 21300000, guid: eebef05165760004991bf270d82b4318, type: 3}
   - Name: Custom footwear
-    Icon: {fileID: 21300000, guid: 9b10cedae17cabc49b8dec0def552c40, type: 3}
+    Icon: {fileID: 21300000, guid: 6dd8ece979c625b49a9c6293d3e9b3cd, type: 3}
 --- !u!1 &4723304998088461848
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +181,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 232863729337032943}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -253,6 +257,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3751875510889492088}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -330,6 +335,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3673780534623630010}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -407,6 +413,7 @@ RectTransform:
   m_Children:
   - {fileID: 8126576157065620247}
   m_Father: {fileID: 4126496817972978828}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -497,6 +504,7 @@ RectTransform:
   m_Children:
   - {fileID: 232863729337032943}
   m_Father: {fileID: 4126496817972978828}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -584,7 +592,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1879605389503071757}
   m_HandleRect: {fileID: 4171282699921384392}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0.9999991
   m_Size: 0.83
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -623,6 +631,7 @@ RectTransform:
   m_Children:
   - {fileID: 3673780534623630010}
   m_Father: {fileID: 4126496817972978828}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -751,6 +760,7 @@ RectTransform:
   - {fileID: 2943922937967098575}
   - {fileID: 3852229356230739763}
   m_Father: {fileID: 5650230210779169279}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

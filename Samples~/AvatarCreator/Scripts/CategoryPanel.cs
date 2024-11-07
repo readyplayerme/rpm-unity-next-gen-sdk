@@ -46,22 +46,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             AssetTypeListResponse response = await assetApi.ListAssetTypesAsync(new AssetTypeListRequest());
             var categories = response.Data;
             OnCategoriesFetched?.Invoke(categories);
-            foreach (string category in categories)
+            foreach (var category in categories)
             {
-                Debug.Log($"Category: {category}");
                 var button = Instantiate(categoryButtonPrefab, categoryButtonContainer);
-                
                 CategoryIconAsset? categoryIconAsset = categoryIconAssets.FirstOrDefault(x => category.Contains(x.Name));
                 Sprite categoryIcon = categoryIconAsset.Value.Icon;
-                
-                if (categoryIcon == null)
-                {
-                    Debug.Log($"No icon found for category: {category}. Initializing with null icon.");
-                }
-                else
-                {
-                    Debug.Log($"Category: {category}, Icon: {categoryIcon.name}");
-                }
                 button.Initialize(category, categoryIcon);
                 button.OnCategorySelected += HandlecategorySelected;
                 categoryButtons.Add(button);

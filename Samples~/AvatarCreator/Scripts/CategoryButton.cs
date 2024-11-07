@@ -20,7 +20,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             Category = category;
             if(icon == null)
             {
-                Debug.LogError($"Icon not found for category: {category}");
                 return;
             }
             iconImage.sprite = icon;

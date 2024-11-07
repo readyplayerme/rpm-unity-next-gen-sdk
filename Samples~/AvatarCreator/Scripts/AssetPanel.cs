@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ReadyPlayerMe.Api.V1;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class AssetPanel : MonoBehaviour
     {
+        public Action<Asset> OnAssetSelected;
         [SerializeField] private int assetPerPage = 12;
         [SerializeField] private AssetButton assetButtonPrefab;
         [SerializeField] private Transform assetButtonContainer;
@@ -29,11 +31,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             var button = Instantiate(assetButtonPrefab, assetButtonContainer);
             button.Initialize(asset);
-            button.OnAssetSelected += OnAssetSelected;
+            button.OnAssetClicked += OnAssetClicked;
             assetButtons.Add(button);
         }
 
-        private void OnAssetSelected(AssetButton assetButton)
+        private void OnAssetClicked(AssetButton assetButton)
         {
             if (selectedAssetButton != null)
             {
@@ -41,6 +43,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             selectedAssetButton = assetButton;
             selectedAssetButton.SetSelected(true);
+            OnAssetSelected?.Invoke(assetButton.Asset);
         }
 
         public async void LoadAssetsOfCategory(string category, int page = 1)

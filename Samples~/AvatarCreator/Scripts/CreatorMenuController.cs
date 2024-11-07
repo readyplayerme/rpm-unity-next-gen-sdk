@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Demo;
 using ReadyPlayerMe.Samples.AvatarCreator;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CreatorMenuController : MonoBehaviour
 {
@@ -11,7 +13,8 @@ public class CreatorMenuController : MonoBehaviour
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private Animation menuAnimation;
     [SerializeField] private DragRotate dragRotate;
-    
+    public UnityEvent<Asset> OnAssetSelected;
+
     private AssetPanel activeAssetPanel;
     private Dictionary<string, AssetPanel> assetPanelMap = new Dictionary<string, AssetPanel>();
     
@@ -27,6 +30,7 @@ public class CreatorMenuController : MonoBehaviour
         {
             var assetPanel = Instantiate(assetPanelPrefab, assetPanelContainer);
             assetPanel.LoadAssetsOfCategory(category);
+            assetPanel.OnAssetSelected += asset => OnAssetSelected.Invoke(asset);  
             if(indexCount == 0)
             {
                 activeAssetPanel = assetPanel;

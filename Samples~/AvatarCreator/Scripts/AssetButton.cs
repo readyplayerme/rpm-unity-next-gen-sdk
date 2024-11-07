@@ -8,27 +8,27 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class AssetButton : MonoBehaviour, IPointerClickHandler
     {
-        public Action<AssetButton> OnAssetSelected;
+        public Action<AssetButton> OnAssetClicked;
         
         [SerializeField] private Image buttonImage;
         [SerializeField] private Image iconImage;
         
         private bool isSelected;
         
-        private Asset asset;
+        public Asset Asset { get; private set; }
         private FileApi fileApi;
         
         public void Initialize(Asset asset)
         {
             fileApi = new FileApi();
-            this.asset = asset;
+            Asset = asset;
             LoadIcon();
         }
 
         private async void LoadIcon()
         {
             //TODO add method to get as sprite directly
-            var iconTexture = await fileApi.DownloadAssetIconAsync( asset );
+            var iconTexture = await fileApi.DownloadAssetIconAsync( Asset );
             var sprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), Vector2.zero);
             iconImage.sprite = sprite;
         }
@@ -36,7 +36,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public void OnPointerClick(PointerEventData eventData)
         {
             SetSelected(!isSelected);
-            OnAssetSelected?.Invoke(this);
+            OnAssetClicked?.Invoke(this);
         }
 
         public void SetSelected(bool selected)

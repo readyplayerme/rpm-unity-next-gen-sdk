@@ -4,6 +4,7 @@ using System.Threading;
 using System.Collections;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
+using ReadyPlayerMe.Samples.BasicUI;
 
 namespace ReadyPlayerMe.Demo
 {
@@ -36,11 +37,11 @@ namespace ReadyPlayerMe.Demo
             characterLoader = new CharacterLoader();
             
             EventAggregator.Instance.OnCategorySelected += OnCategorySelected;
-            EventAggregator.Instance.OnCategoriesLoaded += () => categoryController.SelectFirstCategory();
+            //EventAggregator.Instance.OnCategoriesLoaded += () => categoryController.SelectFirstCategory();
             EventAggregator.Instance.OnAssetSelected += OnAssetSelected;
             EventAggregator.Instance.OnPageChanged += OnPageChanged;
-            EventAggregator.Instance.OnAssetEquipped += OnAssetEquipped;
-            EventAggregator.Instance.OnAssetUnequipped += OnAssetUnequipped;
+            //EventAggregator.Instance.OnAssetEquipped += OnAssetEquipped;
+            //EventAggregator.Instance.OnAssetUnequipped += OnAssetUnequipped;
             categoryController.LoadCategories();
             loadingCanvas.SetActive(true);
             
@@ -95,10 +96,10 @@ namespace ReadyPlayerMe.Demo
                 
       
            
-                assetPageController.EquipedAssets.TryGetValue("baseModel", out string currentBaseModelId);
-                PlayerPrefs.SetString("BaseModelId", currentBaseModelId);
-                
-                character = await characterLoader.LoadCharacter(currentBaseModelId);
+                //assetPageController.EquipedAssets.TryGetValue("baseModel", out string currentBaseModelId);
+                // PlayerPrefs.SetString("BaseModelId", currentBaseModelId);
+                //
+                // character = await characterLoader.LoadCharacter(currentBaseModelId);
                 character.transform.position = new Vector3(0, 0, -0.5f);
 
                 dragRotate.Target = character.transform;
@@ -115,14 +116,14 @@ namespace ReadyPlayerMe.Demo
                 Destroy(previewCharacter.gameObject);
             }
             
-            assetPageController.EquipedAssets.TryGetValue("baseModel", out string currentBaseModelId);
-            PlayerPrefs.SetString("BaseModelId", currentBaseModelId);
+            //assetPageController.EquipedAssets.TryGetValue("baseModel", out string currentBaseModelId);
+            // PlayerPrefs.SetString("BaseModelId", currentBaseModelId);
+            //
+            // var preview = await characterLoader.LoadAssetPreviewAsync(characterId, currentBaseModelId, asset);
             
-            var preview = await characterLoader.LoadAssetPreviewAsync(characterId, currentBaseModelId, asset);
-            
-            if(preview == null) return;
-            
-            previewCharacter = preview;
+            // if(preview == null) return;
+            //
+            // previewCharacter = preview;
             
             previewCharacter.transform.position = previewCharacterPosition;
             previewCharacter.name = "[Preview Character]";
