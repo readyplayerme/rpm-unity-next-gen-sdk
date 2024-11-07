@@ -59,7 +59,6 @@ namespace ReadyPlayerMe.Api
                 var bodyRaw = Encoding.UTF8.GetBytes(data.Payload);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             }
-
             var asyncOperation = request.SendWebRequest();
 
             while (!asyncOperation.isDone)
@@ -110,7 +109,6 @@ namespace ReadyPlayerMe.Api
                     queryString.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value.ToString())}&");
                 }
             }
-
             return queryString.ToString();
         }
 

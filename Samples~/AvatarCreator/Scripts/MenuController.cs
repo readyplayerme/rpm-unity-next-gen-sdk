@@ -11,8 +11,6 @@ namespace ReadyPlayerMe.Demo
     {
         [SerializeField] private CategoryController categoryController;
         [SerializeField] private AssetPageController assetPageController;
-        [SerializeField] private AssetCard assetCard;
-        [SerializeField] private EquipButton equipButton;
         [SerializeField] private GameObject loadingCanvas;
         [SerializeField] private Animation menuAnimation;
         [SerializeField] private DragRotate dragRotate;
@@ -57,8 +55,6 @@ namespace ReadyPlayerMe.Demo
         
         private void OnAssetSelected(Asset asset)
         {
-            assetCard.Initialize(asset);
-            equipButton.Loading(asset);
             EquipAsset(asset);
         }
         
@@ -73,12 +69,17 @@ namespace ReadyPlayerMe.Demo
             {
                 characterId = PlayerPrefs.GetString("CharacterId");
                 baseModelId = PlayerPrefs.GetString("BaseModelId");
-                
-                character = await characterLoader.LoadAsync(characterId, baseModelId, new Asset()
+                Debug.Log("Character ID: " + characterId);
+                Debug.Log("baseModelId: " + baseModelId);
+                character = await characterLoader.LoadAssetPreviewAsync(characterId, baseModelId, new Asset()
                 {
                     Type = "baseModel",
                     Id = baseModelId
                 });
+                if (character == null)
+                {
+                    Debug.Log("Character is null");
+                }
                 character.transform.position = new Vector3(0, 0, -0.5f);
 
                 dragRotate.Target = character.transform;
@@ -92,7 +93,8 @@ namespace ReadyPlayerMe.Demo
                 characterId = response.Data.Id;
                 PlayerPrefs.SetString("CharacterId", characterId);
                 
-                Debug.Log("Character ID: " + characterId);
+      
+           
                 assetPageController.EquipedAssets.TryGetValue("baseModel", out string currentBaseModelId);
                 PlayerPrefs.SetString("BaseModelId", currentBaseModelId);
                 
@@ -106,9 +108,6 @@ namespace ReadyPlayerMe.Demo
         
         private async void EquipAsset(Asset asset)
         {
-            equipButton.gameObject.SetActive(true);
-            equipButton.Loading(asset);
-            
             previousAsset = asset;
             
             if (previewCharacter)
@@ -119,7 +118,7 @@ namespace ReadyPlayerMe.Demo
             assetPageController.EquipedAssets.TryGetValue("baseModel", out string currentBaseModelId);
             PlayerPrefs.SetString("BaseModelId", currentBaseModelId);
             
-            var preview = await characterLoader.LoadAsync(characterId, currentBaseModelId, asset);
+            var preview = await characterLoader.LoadAssetPreviewAsync(characterId, currentBaseModelId, asset);
             
             if(preview == null) return;
             
@@ -127,8 +126,6 @@ namespace ReadyPlayerMe.Demo
             
             previewCharacter.transform.position = previewCharacterPosition;
             previewCharacter.name = "[Preview Character]";
-            
-            equipButton.ToggleEquipState(true);
         }
         
         private void OnAssetEquipped(Asset asset)
@@ -151,7 +148,6 @@ namespace ReadyPlayerMe.Demo
         private void OnAssetUnequipped(Asset asset)
         {
             SwapCharacters(ref character, ref previewCharacter);
-            equipButton.ToggleEquipState(true);
         }
         
         private IEnumerator HideLoadingCanvas()

@@ -84,6 +84,59 @@ namespace ReadyPlayerMe
                 
             return characterData;
         }
+
+        public async Task<CharacterData> LoadAssetPreviewAsync(string characterId, string templateTagOrId, Asset asset)
+        {
+            var previewUrl = _characterApi.GeneratePreviewUrl( new CharacterPreviewRequest()
+            {
+                Id = characterId,
+                Params = new CharacterPreviewQueryParams()
+                {
+                    Assets = new Dictionary<string, string>
+                    {
+                        { asset.Type, asset.Id }
+                    }
+                }
+            });
+            var fileApi = new FileApi();
+            var avatarData = await fileApi.DownloadFileIntoMemoryAsync(previewUrl);
+            CharacterData characterData = LoadTemplate(templateTagOrId);
+            characterData.Assets.Add(asset.Type, asset);
+            characterData.gameObject.SetActive(false);
+            
+            var gltf = new GltfImport();
+
+            if (!await gltf.Load(avatarData))
+                return null;
+
+            var characterObject = new GameObject(characterId);
+
+            await gltf.InstantiateSceneAsync(characterObject.transform);
+
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
+                .definitionLinks
+                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
+                .definition;
+
+            characterData.gameObject.TryGetComponent<Animator>(out var animator);
+            animator.enabled = false;
+            
+            var animationAvatar = animator.avatar;
+            if (animationAvatar == null)
+            {
+                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                    ? skeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
+                
+            _meshTransfer.Transfer(characterObject, characterData.gameObject);
+            characterData.gameObject.SetActive(true);
+                
+            animator.enabled = true;
+            
+            return characterData;
+        }
         
         /// <summary>
         ///   Asynchronously loads a character based on the given character ID, template tag or ID, and asset.
@@ -112,7 +165,16 @@ namespace ReadyPlayerMe
             });
             
             Character character = response.Data;
-            CharacterData characterData = LoadTemplate(templateTagOrId, character.Id);
+            CharacterData characterData = LoadTemplate(templateTagOrId);
+            if (characterData == null)
+            {
+                Debug.LogWarning($" CharacterData is null. Character ID: {character.Id}");
+            }
+            
+            if(characterData.gameObject == null)
+            {
+                Debug.LogWarning($" CharacterData GameObject is null. Character ID: {character.Id}");
+            }
             characterData.gameObject.SetActive(false);
             
             var gltf = new GltfImport();
@@ -174,6 +236,10 @@ namespace ReadyPlayerMe
         private CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
             GameObject template = GetTemplate(templateTagOrId);
+            if(template == null)
+            {
+                Debug.Log($"Template is null. Template Tag or ID: {templateTagOrId}");
+            }
             GameObject templateInstance = template != null ? Object.Instantiate(template) : null;
 
             var data = templateInstance?.GetComponent<CharacterData>();
