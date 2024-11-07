@@ -98,19 +98,26 @@ namespace ReadyPlayerMe
                     }
                 }
             });
-            var fileApi = new FileApi();
-            var avatarData = await fileApi.DownloadFileIntoMemoryAsync(previewUrl);
             CharacterData characterData = LoadTemplate(templateTagOrId);
+            
+            if (characterData == null)
+            {
+                Debug.LogWarning($" CharacterData is null. Character ID: {characterId}");
+            }
+            
+            if(characterData.gameObject == null)
+            {
+                Debug.LogWarning($" CharacterData GameObject is null. Character ID: {characterId}");
+            }
             characterData.Assets.Add(asset.Type, asset);
             characterData.gameObject.SetActive(false);
             
             var gltf = new GltfImport();
 
-            if (!await gltf.Load(avatarData))
+            if (!await gltf.Load(previewUrl))
                 return null;
 
             var characterObject = new GameObject(characterId);
-
             await gltf.InstantiateSceneAsync(characterObject.transform);
 
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
