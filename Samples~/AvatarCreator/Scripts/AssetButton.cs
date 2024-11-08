@@ -6,15 +6,16 @@ using UnityEngine.UI;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
-    public class AssetButton : MonoBehaviour, IPointerClickHandler
+    public class AssetButton : MonoBehaviour, IPointerClickHandler, ISelectable
     {
         public Action<AssetButton> OnAssetClicked;
         
         [SerializeField] private Image buttonImage;
         [SerializeField] private Image iconImage;
         
-        private bool isSelected;
-        
+        public bool IsSelected { get; protected set; }
+        public Action<bool> OnSelectionChanged { get; set; }
+
         public Asset Asset { get; private set; }
         private FileApi fileApi;
         
@@ -35,13 +36,14 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            SetSelected(!isSelected);
+            SetSelected(!IsSelected);
             OnAssetClicked?.Invoke(this);
         }
 
         public void SetSelected(bool selected)
         {
-            isSelected = selected;
+            IsSelected = selected;
+            OnSelectionChanged?.Invoke(IsSelected);
         }
     }
 }
