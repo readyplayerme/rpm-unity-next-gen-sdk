@@ -4,14 +4,15 @@ using System.Linq;
 using ReadyPlayerMe.Api.V1;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     [Serializable]
     struct CategoryIconAsset
     {
-        public string Name;
-        public Sprite Icon;
+        public string CategoryName;
+        public string DisplayName;
     }
     
     public class CategoryPanel : MonoBehaviour
@@ -19,13 +20,13 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public UnityEvent<string> OnCategorySelected;
         public UnityEvent<string[]> OnCategoriesFetched;
         
-        [SerializeField] private CategoryButton categoryButtonPrefab;
+        [FormerlySerializedAs("categoryButtonPrefab"),SerializeField] private CategoryTextButton categoryTextButtonPrefab;
         [SerializeField] private Transform categoryButtonContainer;
         [SerializeField] private CategoryIconAsset[] categoryIconAssets;
         
         private AssetApi assetApi;
-        private CategoryButton selectedCategoryButton;
-        private List<CategoryButton> categoryButtons = new List<CategoryButton>();
+        private CategoryTextButton selectedCategoryTextButton;
+        private List<CategoryTextButton> categoryButtons = new List<CategoryTextButton>();
 
         private void OnDestroy()
         {
@@ -48,23 +49,22 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             OnCategoriesFetched?.Invoke(categories);
             foreach (var category in categories)
             {
-                var button = Instantiate(categoryButtonPrefab, categoryButtonContainer);
-                CategoryIconAsset? categoryIconAsset = categoryIconAssets.FirstOrDefault(x => category.Contains(x.Name));
-                Sprite categoryIcon = categoryIconAsset.Value.Icon;
-                button.Initialize(category, categoryIcon);
+                var button = Instantiate(categoryTextButtonPrefab, categoryButtonContainer);
+                CategoryIconAsset? categoryIconAsset = categoryIconAssets.FirstOrDefault(x => category.Contains(x.CategoryName));
+                button.Initialize(category, categoryIconAsset.Value.DisplayName ?? category);
                 button.OnCategorySelected += HandlecategorySelected;
                 categoryButtons.Add(button);
             }
         }
 
-        private void HandlecategorySelected(CategoryButton category)
+        private void HandlecategorySelected(CategoryTextButton categoryText)
         {
-            if(selectedCategoryButton != null)
+            if(selectedCategoryTextButton != null)
             {
-                selectedCategoryButton.SetSelected(false);
+                selectedCategoryTextButton.SetSelected(false);
             }
-            selectedCategoryButton = category;
-            OnCategorySelected?.Invoke(category.Category);
+            selectedCategoryTextButton = categoryText;
+            OnCategorySelected?.Invoke(categoryText.Category);
         }
         
         public void SelectFirstCategory()
