@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 1817150227609182827}
   - component: {fileID: 6069163142760003660}
   - component: {fileID: 6885454171357058230}
+  - component: {fileID: 322818705970590644}
   m_Layer: 5
   m_Name: CategoryButton
   m_TagString: Untagged
@@ -137,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.101960786}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.101960786}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -168,3 +169,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonImage: {fileID: 6069163142760003660}
   iconImage: {fileID: 5634962315291035956}
+--- !u!114 &322818705970590644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7733623607122170357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d77217bc647d3f44927b9e05380a692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assetImage: {fileID: 5634962315291035956}
+  normalButtonSprite: {fileID: 0}
+  selectedButtonSprite: {fileID: 0}
+  normalColor: {r: 0, g: 0, b: 0, a: 0.101960786}
+  hoverColor: {r: 0, g: 0, b: 0, a: 0.6117647}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0.101960786}
+  hoverSfx: {fileID: 8300000, guid: 7d44d7bba7b9cc543b6ff795cf34e79d, type: 3}
+  clickSfx: {fileID: 8300000, guid: c610df9be8965bc48a8ea5d58d8f4f27, type: 3}

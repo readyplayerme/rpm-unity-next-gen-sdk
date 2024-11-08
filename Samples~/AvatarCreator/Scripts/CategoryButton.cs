@@ -5,15 +5,16 @@ using UnityEngine.UI;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
-    public class CategoryButton : MonoBehaviour, IPointerClickHandler
+    public class CategoryButton : MonoBehaviour, IPointerClickHandler, ISelectable
     {
         public Action<CategoryButton> OnCategorySelected;
         
         [SerializeField] private Image buttonImage;
         [SerializeField] private Image iconImage;
-
-        private bool isSelected;
         public string Category { get; private set; } = string.Empty;
+        
+        public bool IsSelected { get; protected set; }
+        public Action<bool> OnSelectionChanged { get; set; }
 
         public void Initialize(string category, Sprite icon)
         {
@@ -27,13 +28,14 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            SetSelected(!isSelected);
+            SetSelected(!IsSelected);
             OnCategorySelected?.Invoke(this);
         }
 
         public void SetSelected(bool selected)
         {
-            isSelected = selected;
+            IsSelected = selected;
+            OnSelectionChanged?.Invoke(IsSelected);
         }
     }
 }
