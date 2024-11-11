@@ -28,12 +28,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             buttonText.text = newText;
 
             
-            var margins = buttonText.margin;
             var textWidth = CalculateTextWidth(buttonText);
-
-            // Adjust the button width based on the text width
-            RectTransform buttonRectTransform = GetComponent<RectTransform>();
-            buttonRectTransform.sizeDelta = new Vector2(textWidth, buttonRectTransform.sizeDelta.y);
+            var padding = buttonText.margin.x + buttonText.margin.z; 
+            
+            var buttonRectTransform = GetComponent<RectTransform>();
+            buttonRectTransform.sizeDelta = new Vector2(textWidth + padding, buttonRectTransform.sizeDelta.y);
         }
 
         public void OnPointerClick(PointerEventData eventData)

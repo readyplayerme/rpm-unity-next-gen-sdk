@@ -286,7 +286,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 10
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -596,8 +596,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1879605389503071757}
   m_HandleRect: {fileID: 4171282699921384392}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.83
+  m_Value: 1.0000004
+  m_Size: 0.38000008
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -799,7 +799,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 6b7641a31ae50184c85c1273798796cd, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

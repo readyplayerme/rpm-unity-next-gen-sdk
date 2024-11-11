@@ -3,36 +3,46 @@ using UnityEngine.EventSystems;
 
 namespace ReadyPlayerMe.Demo
 {
-    public class DragRotate : MonoBehaviour, IPointerDownHandler, IPointerMoveHandler, IPointerUpHandler
+    public class DragRotate : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         public Transform Target { get; set; }
 
         private bool isDragging;
-        private RectTransform rectTransform;
-        
-        private void Awake()
+        private Vector3 lastMousePosition;
+
+        private void Update()
         {
-            rectTransform = GetComponent<RectTransform>();
+            // Only rotate if dragging is active
+            if (isDragging && Target != null)
+            {
+                Vector3 mouseDelta = Input.mousePosition - lastMousePosition;
+
+                float dragSpeed = Mathf.Clamp(mouseDelta.x / Screen.width, -1, 1);
+                Target.Rotate(Vector3.up, -dragSpeed * 500f);
+
+                lastMousePosition = Input.mousePosition;
+                if (Input.GetMouseButtonUp(0))
+                {
+                    Debug.Log($"Mouse up on {gameObject.name}");
+                    isDragging = false;
+                }
+            }
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             isDragging = true;
-        }
-
-        public void OnPointerMove(PointerEventData eventData)
-        {
-            if (isDragging && Target != null)
-            {
-                float x = eventData.delta.x / Screen.width * rectTransform.rect.width;
-                float dragSpeed = Mathf.Clamp(x, -1, 1);
-                Target.Rotate(Vector3.up, -dragSpeed * 5f);
-            }
+            lastMousePosition = Input.mousePosition;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             isDragging = false;
+        }
+
+        public void SetTarget(GameObject target)
+        {
+            Target = target.transform;
         }
     }
 }

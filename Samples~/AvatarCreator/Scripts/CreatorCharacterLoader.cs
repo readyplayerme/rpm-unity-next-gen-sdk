@@ -2,11 +2,17 @@ using System.Linq;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class CreatorCharacterLoader : MonoBehaviour
     {
+        
+        
+        [SerializeField]
+        private string styleId = "665e05e758e847063761c985";
+        
         private const string BASE_MODEL_LABEL = "baseModel";
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
         private const string CHARACTER_STYLE_TEMPLATE_LABEL = "CharacterStyleTemplateConfig";
@@ -18,11 +24,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private AssetLoader assetLoader;
         private CharacterLoader characterLoader;
         private string characterId;
-        [SerializeField]
-        private string styleId = "665e05e758e847063761c985";
         private CharacterData characterData;
-
         private GameObject CharacterObject;
+        
+        public UnityEvent<GameObject> OnCharacterLoaded;
+        
         private void Start()
         {
             characterApi = new CharacterApi();
@@ -37,6 +43,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             characterData = await characterLoader.LoadCharacter(templateTagOrId);
             characterId = characterData.Id;
             CharacterObject = characterData.gameObject;
+            OnCharacterLoaded?.Invoke(CharacterObject);
         }
 
         public async void LoadAssetPreview(Asset asset)
@@ -52,6 +59,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(CharacterObject);
             }
             CharacterObject = characterData.gameObject;
+            OnCharacterLoaded?.Invoke(CharacterObject);
         }
         
         protected virtual GameObject GetTemplate(string templateTagOrId)
