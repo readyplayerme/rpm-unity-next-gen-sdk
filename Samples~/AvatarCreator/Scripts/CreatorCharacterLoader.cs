@@ -52,7 +52,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 styleId = asset.Id;
             }
-            characterData = await characterLoader.LoadAssetPreviewAsync(characterId, styleId, asset);
+            //characterData = await characterLoader.LoadAssetPreviewAsync(characterId, styleId, asset);
+            characterData = await characterLoader.LoadAsync(characterId, styleId, asset);
             if(CharacterObject != null)
             {
                 Debug.Log( "Destroying old character object");
