@@ -9,6 +9,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class AssetPanel : MonoBehaviour
     {
         public Action<Asset> OnAssetSelected;
+        public Action<Asset> OnAssetRemoved;
         [SerializeField] private int assetPerPage = 12;
         [SerializeField] private AssetButton assetButtonPrefab;
         [SerializeField] private Transform assetButtonContainer;
@@ -37,12 +38,19 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private void OnAssetClicked(AssetButton assetButton)
         {
-            if (selectedAssetButton != null && selectedAssetButton.Asset.Type.Contains(assetButton.Asset.Type))
+            if (selectedAssetButton != null && !selectedAssetButton.Asset.Id.Contains(assetButton.Asset.Id))
             {
                 selectedAssetButton.SetSelected(false);
             }
             selectedAssetButton = assetButton;
-            OnAssetSelected?.Invoke(assetButton.Asset);
+            if (assetButton.IsSelected)
+            {
+                OnAssetSelected?.Invoke(assetButton.Asset);
+            }
+            else
+            {
+                OnAssetRemoved?.Invoke(assetButton.Asset);
+            }
         }
 
         public async void LoadAssetsOfCategory(string category, int page = 1)

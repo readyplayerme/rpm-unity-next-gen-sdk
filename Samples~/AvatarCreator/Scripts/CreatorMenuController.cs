@@ -14,6 +14,7 @@ public class CreatorMenuController : MonoBehaviour
     [SerializeField] private Animation menuAnimation;
     [SerializeField] private DragRotate dragRotate;
     public UnityEvent<Asset> OnAssetSelected;
+    public UnityEvent<Asset> OnAssetRemoved;
 
     private AssetPanel activeAssetPanel;
     private Dictionary<string, AssetPanel> assetPanelMap = new Dictionary<string, AssetPanel>();
@@ -31,6 +32,7 @@ public class CreatorMenuController : MonoBehaviour
             var assetPanel = Instantiate(assetPanelPrefab, assetPanelContainer);
             assetPanel.LoadAssetsOfCategory(category);
             assetPanel.OnAssetSelected += asset => OnAssetSelected.Invoke(asset);  
+            assetPanel.OnAssetRemoved += asset => OnAssetRemoved.Invoke(asset);
             if(indexCount == 0)
             {
                 activeAssetPanel = assetPanel;

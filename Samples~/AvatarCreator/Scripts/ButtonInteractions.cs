@@ -39,8 +39,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public void OnPointerEnter(PointerEventData eventData)
         {
             if(hoverSfx != null) audioSource.PlayOneShot(hoverSfx);
-            if(selectable.IsSelected) return;
-            animator.SetInteger( ButtonStateKey,  selectable.IsSelected ? 0 : 1);
+            animator.SetInteger( ButtonStateKey, selectable.IsSelected ? 2 : 1);
         }
 
         public void OnPointerExit(PointerEventData eventData)
