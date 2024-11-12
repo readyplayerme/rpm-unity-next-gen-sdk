@@ -18,11 +18,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private ISelectable selectable;
         private Animator animator;
         private static readonly int ButtonStateKey = Animator.StringToHash("ButtonState");
-        private int animState = 0;
 
         private void Start()
         {
-            
+            animator = GetComponent<Animator>();
+            animator.keepAnimatorStateOnDisable = true;
             selectable = GetComponent<ISelectable>();
             selectable.OnSelectionChanged += SetSelected;
             audioSource = GetComponent<AudioSource>();
@@ -31,46 +31,27 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        private void OnEnable()
-        {
-            if (animator == null)
-            {
-                animator = GetComponent<Animator>();
-                animator.keepAnimatorStateOnDisable = true;
-            }
-            animator.SetInteger( ButtonStateKey,  animState);
-        }
-
-        private void OnDisable()
-        {
-            
-        }
-
         private void SetSelected(bool isSelected)
         {
-            animState = isSelected ? 2 : 0;
-            animator.SetInteger( ButtonStateKey, animState);
+            animator.SetInteger( ButtonStateKey, isSelected ? 2 : 0);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             if(hoverSfx != null) audioSource.PlayOneShot(hoverSfx);
             if(selectable.IsSelected) return;
-            animState = selectable.IsSelected ? 0 : 1;
-            animator.SetInteger( ButtonStateKey,  animState);
+            animator.SetInteger( ButtonStateKey,  selectable.IsSelected ? 0 : 1);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            animState = selectable.IsSelected ? 2 : 0;
-            animator.SetInteger( ButtonStateKey, animState);
+            animator.SetInteger( ButtonStateKey, selectable.IsSelected ? 2 : 0);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            animState = selectable.IsSelected ? 2 : 1;
             if(clickSfx != null) audioSource.PlayOneShot(clickSfx);
-            animator.SetInteger( ButtonStateKey, animState);
+            animator.SetInteger( ButtonStateKey, selectable.IsSelected ? 2 : 1);
         }
     }
 }
