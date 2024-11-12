@@ -37,12 +37,13 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private void OnAssetClicked(AssetButton assetButton)
         {
-            if (selectedAssetButton != null)
+            if (selectedAssetButton != null && selectedAssetButton.Asset.Type.Contains(assetButton.Asset.Type))
             {
+                Debug.Log($" Deactivating selected asset because {selectedAssetButton.Asset.Type} == {assetButton.Asset.Type}");
                 selectedAssetButton.SetSelected(false);
             }
             selectedAssetButton = assetButton;
-            selectedAssetButton.SetSelected(true);
+            //selectedAssetButton.SetSelected(true);
             OnAssetSelected?.Invoke(assetButton.Asset);
         }
 

@@ -18,6 +18,8 @@ namespace ReadyPlayerMe
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
         
+        private Dictionary<string, string> equippedAssetMap = new Dictionary<string, string>();
+        
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
@@ -57,6 +59,10 @@ namespace ReadyPlayerMe
                 });
                 
                 characterData = LoadTemplate(templateTagOrId, createResponse.Data.Id);
+                foreach (var kvp in characterData.Assets)
+                {
+                    equippedAssetMap.Add(kvp.Key, kvp.Value.Id);
+                }
             }
             
             characterData.gameObject.SetActive(false);
@@ -87,15 +93,19 @@ namespace ReadyPlayerMe
 
         public async Task<CharacterData> LoadAssetPreviewAsync(string characterId, string templateTagOrId, Asset asset)
         {
+            var assetIdAlreadyExists = equippedAssetMap.ContainsKey(asset.Type) && equippedAssetMap[asset.Type] == asset.Id;
+            equippedAssetMap[asset.Type] = asset.Id;
+            if(assetIdAlreadyExists)
+            {
+                equippedAssetMap.Remove(asset.Type);
+            }
+            
             var previewUrl = _characterApi.GeneratePreviewUrl( new CharacterPreviewRequest()
             {
                 Id = characterId,
                 Params = new CharacterPreviewQueryParams()
                 {
-                    Assets = new Dictionary<string, string>
-                    {
-                        { asset.Type, asset.Id }
-                    }
+                    Assets = equippedAssetMap
                 }
             });
             CharacterData characterData = LoadTemplate(templateTagOrId);

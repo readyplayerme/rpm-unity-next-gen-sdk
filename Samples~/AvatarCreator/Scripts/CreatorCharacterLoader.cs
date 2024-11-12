@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
@@ -29,6 +31,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         public UnityEvent<GameObject> OnCharacterLoaded;
         
+
+        
         private void Start()
         {
             characterApi = new CharacterApi();
@@ -52,8 +56,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 styleId = asset.Id;
             }
-            //characterData = await characterLoader.LoadAssetPreviewAsync(characterId, styleId, asset);
-            characterData = await characterLoader.LoadAsync(characterId, styleId, asset);
+
+            characterData = await characterLoader.LoadAssetPreviewAsync(characterId, styleId, asset);
+            //characterData = await characterLoader.LoadAsync(characterId, styleId, asset);
+
             if(CharacterObject != null)
             {
                 Debug.Log( "Destroying old character object");
