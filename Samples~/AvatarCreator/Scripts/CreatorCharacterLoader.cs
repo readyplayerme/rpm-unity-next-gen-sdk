@@ -45,7 +45,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private async void Start()
         {
             //disable if cache doesn't exist
-            useCache == useCache && File.Exists(CachePaths.CACHE_ASSET_JSON_PATH);
+            useCache = useCache && File.Exists(CachePaths.CACHE_ASSET_JSON_PATH);
             characterApi = new CharacterApi();
             meshTransfer = new MeshTransfer();
             skeletonBuilder = new SkeletonBuilder();
