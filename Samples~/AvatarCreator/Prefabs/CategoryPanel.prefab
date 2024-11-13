@@ -133,12 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec549d1b847d4244b1f41544094a695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnCategorySelected:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCategoriesFetched:
-    m_PersistentCalls:
-      m_Calls: []
   categoryTextButtonPrefab: {fileID: 6885454171357058230, guid: b819dda40f247934c86333dee25c05fa, type: 3}
   categoryButtonContainer: {fileID: 8126576157065620247}
   categoryIconAssets:
@@ -154,6 +148,13 @@ MonoBehaviour:
     DisplayName: Moustache
   - CategoryName: Bear outfit
     DisplayName: Costumes
+  scrollRect: {fileID: 317764565875683781}
+  OnCategorySelected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCategoriesFetched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4723304998088461848
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,7 +598,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4171282699921384392}
   m_Direction: 2
   m_Value: 1.0000004
-  m_Size: 0.38000008
+  m_Size: 0.37999997
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -723,7 +724,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4942077212043922262}
   m_HandleRect: {fileID: 6032669354271082943}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

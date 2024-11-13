@@ -29,8 +29,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private async void LoadIcon()
         {
             //TODO add method to get as sprite directly
+            gameObject.SetActive(false);
             var iconTexture = await fileApi.DownloadAssetIconAsync( Asset );
             var sprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), Vector2.zero);
+            gameObject.SetActive(true);
             iconImage.sprite = sprite;
         }
 

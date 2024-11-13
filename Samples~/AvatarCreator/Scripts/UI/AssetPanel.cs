@@ -10,7 +10,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     {
         public Action<Asset> OnAssetSelected;
         public Action<Asset> OnAssetRemoved;
-        [SerializeField] private int assetPerPage = 12;
+        [SerializeField] private int assetPerPage = 20;
         [SerializeField] private AssetButton assetButtonPrefab;
         [SerializeField] private Transform assetButtonContainer;
 
@@ -64,7 +64,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Params = new AssetListQueryParams()
                  {
                      Type = category,
-                     Page = page
+                     Page = page,
+                     Limit = assetPerPage
                  }
             });
             var assets = response.Data;
