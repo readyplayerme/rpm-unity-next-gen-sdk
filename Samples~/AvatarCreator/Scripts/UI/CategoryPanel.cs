@@ -5,6 +5,7 @@ using ReadyPlayerMe.Api.V1;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
@@ -17,9 +18,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     
     public class CategoryPanel : MonoBehaviour
     {
-        [FormerlySerializedAs("categoryButtonPrefab"),SerializeField] private CategoryTextButton categoryTextButtonPrefab;
+        [SerializeField] private CategoryTextButton categoryTextButtonPrefab;
         [SerializeField] private Transform categoryButtonContainer;
         [SerializeField] private CategoryIconAsset[] categoryIconAssets;
+        [SerializeField] private ScrollRect scrollRect;
         
         public string[] GetCategoriesInOrder()
         {
@@ -63,6 +65,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 categoryButtons.Add(button);
             }
             ReorderCategories();
+            SelectFirstChildCategory();
         }
 
         private void HandlecategorySelected(CategoryTextButton categoryText)
@@ -75,11 +78,15 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             OnCategorySelected?.Invoke(categoryText.Category);
         }
         
-        public void SelectFirstCategory()
+        public void SelectFirstChildCategory()
         {
-            if (categoryButtons.Count > 0)
+            if (categoryButtonContainer.childCount > 0)
             {
-                categoryButtons[0].OnPointerClick(null);
+                categoryButtonContainer.GetChild(0).GetComponent<CategoryTextButton>().OnPointerClick(null);
+            }
+            if(scrollRect != null)
+            {
+                scrollRect.normalizedPosition = new Vector2(0, 1);
             }
         }
         
