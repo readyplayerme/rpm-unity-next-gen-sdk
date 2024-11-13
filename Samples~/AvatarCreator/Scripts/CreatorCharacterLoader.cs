@@ -185,6 +185,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public async Task LoadAssetPreview(Asset[] assets)
         {
+            // TODO add check if asset exists in cache
             if (useCache)
             {
                 foreach (var asset in assets)
@@ -192,7 +193,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     await LoadAssetFromCache(asset);
                 }
             }
-            {
+            else {
                 // add assets to map
                 foreach (var asset in assets)
                 {
