@@ -71,10 +71,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             characterId = createResponse.Data.Id;
             LoadStyleTemplate();
             CharacterObject.SetActive(false);
+            await GetCachedAssets();
             var defaultAssets = await GetDefaultAssets();
             await LoadAssetPreview(defaultAssets);
             CharacterObject.SetActive(true);
-            await GetCachedAssets();
+            
         }
 
         private async Task<Asset[]> GetDefaultAssets()
@@ -186,7 +187,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public async Task LoadAssetPreview(Asset[] assets)
         {
             // TODO add check if asset exists in cache
-            if (useCache)
+            if (useCache && assets.All(asset => CanUseCache(asset.Id)))
             {
                 foreach (var asset in assets)
                 {
@@ -211,6 +212,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         public async void LoadAssetPreview(Asset asset)
         {
+            Debug.Log("LoadAssetPreview");
             if (asset.IsStyleAsset())
             {
                 styleId = asset.Id;
@@ -223,12 +225,14 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             AssetsMap[asset.Type] = asset;
 
-            if (useCache)
+            if (useCache && CanUseCache(asset.Id))
             {
+                Debug.Log("Loading from cache");
                 await LoadAssetFromCache(asset);
             }
             else
             {
+                Debug.Log("Loading from web");
                 var assets = new Dictionary<string, string>();
                 foreach (var assetInMap in AssetsMap)
                 {
@@ -247,7 +251,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             await gltf.Load(assetBytes);
             await gltf.InstantiateSceneAsync(outfit.transform);
             var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
-            if(AssetMeshMap.ContainsKey(asset.Type))
+            if(AssetMeshMap.ContainsKey(asset.Type) || AssetMeshMap.ContainsKey(string.Empty))
             {
                 foreach (var skinnedMesh in AssetMeshMap[asset.Type])
                 {
@@ -300,6 +304,19 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 .Load<CharacterStyleTemplateConfig>(CHARACTER_STYLE_TEMPLATE_LABEL)?
                 .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
                 .template;
+        }
+        
+        private bool CanUseCache(string assetId)
+        {
+            if (cachedAssets != null)
+            {
+                Debug.Log($" cachedAssets: {cachedAssets.Length}");
+            }
+            var assetExistsInCache = cachedAssets != null && cachedAssets.Any(cachedAsset => cachedAsset.Id == assetId);
+            var nonCachedAssetInMap = AssetMeshMap.ContainsKey(string.Empty);
+            Debug.Log($" assetId:  {assetId} assetExistsInCache: {assetExistsInCache}, nonCachedAssetInMap: {nonCachedAssetInMap}");
+            return cachedAssets != null && cachedAssets.Any(cachedAsset => cachedAsset.Id == assetId) //is asset present in cache
+                   &&  !AssetMeshMap.ContainsKey(string.Empty); //is there any non cached asset loaded
         }
     }
 }
