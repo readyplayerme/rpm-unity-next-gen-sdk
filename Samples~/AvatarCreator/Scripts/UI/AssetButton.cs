@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         [SerializeField] private Image buttonImage;
         [SerializeField] private Image iconImage;
-        
+        [SerializeField] private bool disableDeselectOnClick;
         public bool IsSelected { get; protected set; }
         public Action<bool> OnSelectionChanged { get; set; }
 
@@ -21,6 +21,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         public void Initialize(Asset asset)
         {
+            if (asset.IsStyleAsset())
+            {
+                disableDeselectOnClick = true;
+            }
             gameObject.name = asset.Name;
             fileApi = new FileApi();
             Asset = asset;
@@ -39,6 +43,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (disableDeselectOnClick && IsSelected) return;
             SetSelected(!IsSelected);
             OnAssetClicked?.Invoke(this);
         }

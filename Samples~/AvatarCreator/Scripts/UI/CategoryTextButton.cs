@@ -12,7 +12,9 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public Action<CategoryTextButton> OnCategorySelected;
         
         [SerializeField] private Image buttonImage;
-        [FormerlySerializedAs("text"),SerializeField] private TMP_Text buttonText;
+        [SerializeField] private TMP_Text buttonText;
+        [SerializeField] private bool disableDeselectOnClick = true;
+
         public string Category { get; private set; } = string.Empty;
         
         public bool IsSelected { get; protected set; }
@@ -37,6 +39,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (disableDeselectOnClick && IsSelected) return;
             SetSelected(!IsSelected);
             OnCategorySelected?.Invoke(this);
         }

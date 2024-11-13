@@ -19,8 +19,6 @@ public class CameraTransition : MonoBehaviour
 
     public void OnCategoryChanged(string category)
     {
-        Debug.Log($"Category changed to: {category}");
-        
         if (category.Contains("Hair") || category.Contains("Moustache"))
         {
             MoveToTarget(headView);
@@ -45,7 +43,6 @@ public class CameraTransition : MonoBehaviour
         targetPosition = target.position;
         targetRotation = target.rotation;
 
-        Debug.Log($"Starting transition from {startPosition} to {targetPosition}");
         transitionProgress = 0f; // Reset the transition progress
         isTransitioning = true;  // Begin the transition
     }
@@ -54,20 +51,13 @@ public class CameraTransition : MonoBehaviour
     {
         if (isTransitioning)
         {
-            // Increment the transition progress over time
             transitionProgress += Time.deltaTime / transitionDuration;
-
-            // Lerp position and Slerp rotation
+            
             transform.position = Vector3.Lerp(startPosition, targetPosition, transitionProgress);
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, transitionProgress);
-
-            // Log transition details
-            Debug.Log($"Transitioning... Progress: {transitionProgress * 100:F1}%, Position: {transform.position}, Rotation: {transform.rotation.eulerAngles}");
-
-            // Check if transition is complete
+            
             if (transitionProgress >= 1f)
             {
-                Debug.Log($"Transition complete at {transform.position}");
                 isTransitioning = false; // Stop the transition
             }
         }

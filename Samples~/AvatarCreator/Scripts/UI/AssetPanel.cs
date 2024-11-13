@@ -87,7 +87,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 selectedAssetButton = assetButtons[0];
                 selectedAssetButton.SetSelected(true);
-                Debug.Log( "SET DEFAULT STYLE" );
                 return;
             }
             var defaultAssets = assetButtons.Where( asset => asset.Asset.Name.EndsWith("_Default")).ToArray();
@@ -98,7 +97,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             selectedAssetButton = defaultAssets[0];
             selectedAssetButton.SetSelected(true);
-            Debug.Log( $"Default asset selected {defaultAssets[0].Asset.Name}" );
         }
     }
 }
