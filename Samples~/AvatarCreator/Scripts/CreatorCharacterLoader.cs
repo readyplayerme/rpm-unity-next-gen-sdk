@@ -40,6 +40,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private bool useCache;
         
         Asset[] cachedAssets;
+        
 
         private async void Start()
         {
@@ -69,8 +70,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             });
             characterId = createResponse.Data.Id;
             LoadStyleTemplate();
+            CharacterObject.SetActive(false);
             var defaultAssets = await GetDefaultAssets();
-            LoadAssetPreview(defaultAssets);
+            await LoadAssetPreview(defaultAssets);
+            CharacterObject.SetActive(true);
             await GetCachedAssets();
         }
 
@@ -85,7 +88,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     Limit = 100
                 }
             });
-            Debug.Log($"Fetched {response.Data.Length} assets");
             var defaultAssets = response.Data.Where( asset => asset.Name.EndsWith("_Default")).ToArray();
             return defaultAssets;
         }
@@ -101,7 +103,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             AssetsMap[STYLE_ASSET_LABEL] = new Asset {Id = styleId, Type = STYLE_ASSET_LABEL};
             var skinnedMeshes = CharacterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             AssetMeshMap[STYLE_ASSET_LABEL] = skinnedMeshes;
-            
+            OnCharacterLoaded?.Invoke(CharacterObject);
             SetupSkeletonAndAnimator();
         }
 
@@ -155,10 +157,22 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             return assets;
         }
 
-        public void RemoveAsset(Asset asset)
+        public async void RemoveAsset(Asset asset)
         {
             if (asset.IsStyleAsset()) return;
             AssetsMap.Remove(asset.Type);
+            
+            if(AssetMeshMap.ContainsKey(string.Empty))
+            {
+                var assets = new Dictionary<string, string>();
+                foreach (var assetInMap in AssetsMap)
+                {
+                    assets[assetInMap.Value.Type] = assetInMap.Value.Id;
+                }
+                await LoadAssetPreview(assets);
+                return;
+            }
+            
             if(AssetMeshMap.ContainsKey(asset.Type))
             {
                 foreach (var skinnedMesh in AssetMeshMap[asset.Type])
@@ -169,7 +183,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
         }
 
-        public async void LoadAssetPreview(Asset[] assets)
+        public async Task LoadAssetPreview(Asset[] assets)
         {
             if (useCache)
             {
@@ -179,13 +193,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 }
             }
             {
-                Debug.Log($"Assets to add {AssetsMap.Count}. AssetMap length Before {AssetsMap.Count}");
                 // add assets to map
                 foreach (var asset in assets)
                 {
                     AssetsMap[asset.Type] = asset;
                 }
-                Debug.Log($"Assets to add {AssetsMap.Count}. AssetMap length After {AssetsMap.Count}");
                 var assetIdMapByType = new Dictionary<string, string>();
                 foreach (var assetInMap in AssetsMap)
                 {

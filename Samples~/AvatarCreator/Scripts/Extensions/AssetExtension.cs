@@ -6,7 +6,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     {
         public static bool IsStyleAsset(this Asset asset)
         {
-            return asset.Type == "baseModel";
+            return asset.Type.Contains("baseModel");
         }
     }
 }
