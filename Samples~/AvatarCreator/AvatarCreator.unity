@@ -2823,7 +2823,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4f42786865511404eb99ef8ad87df58c, type: 2}
+  - {fileID: 2100000, guid: f12fdcb865e1c7f46b12037421a287d5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3250,6 +3250,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1179002181}
     m_Modifications:
+    - target: {fileID: 317764565875683781, guid: f04592b5320fcf647b296baf2da064a2, type: 3}
+      propertyPath: m_MovementType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2280932114981052020, guid: f04592b5320fcf647b296baf2da064a2, type: 3}
       propertyPath: categoryIconAssets.Array.size
       value: 6

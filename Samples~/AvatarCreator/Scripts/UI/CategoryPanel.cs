@@ -61,14 +61,14 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 button.name = category;
                 CategoryIconAsset? categoryIconAsset = categoryIconAssets.FirstOrDefault(x => category.Contains(x.CategoryName));
                 button.Initialize(category, categoryIconAsset.Value.DisplayName ?? category);
-                button.OnCategorySelected += HandlecategorySelected;
+                button.OnCategorySelected += HandleCategorySelected;
                 categoryButtons.Add(button);
             }
             ReorderCategories();
             SelectFirstChildCategory();
         }
 
-        private void HandlecategorySelected(CategoryTextButton categoryText)
+        private void HandleCategorySelected(CategoryTextButton categoryText)
         {
             if(selectedCategoryTextButton != null)
             {
@@ -76,6 +76,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             selectedCategoryTextButton = categoryText;
             OnCategorySelected?.Invoke(categoryText.Category);
+            SnapToSelected();
         }
         
         public void SelectFirstChildCategory()
@@ -112,6 +113,28 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     childToReorder.SetSiblingIndex(i);
                 }
             }
+        }
+
+        public void SnapToSelected()
+        {
+            var scrollRectPosition = scrollRect.content.position;
+            var selectedCategoryPosition = selectedCategoryTextButton.transform.position;
+            if (!scrollRect.horizontal)
+            {
+                scrollRectPosition.x = 0;
+                selectedCategoryPosition.x = 0;
+                
+            }
+            if (!scrollRect.vertical)
+            {
+                scrollRectPosition.y = 0;
+                selectedCategoryPosition.y = 0;
+            }
+            // var anchoredPosition = scrollRect.content.anchoredPosition;
+            // Debug.Log($" scrollRectPosition: {scrollRectPosition} selectedCategoryPosition: {selectedCategoryPosition} anchoredPosition: {anchoredPosition}");
+            scrollRect.content.anchoredPosition =
+                (Vector2)scrollRect.transform.InverseTransformPoint(scrollRectPosition) -
+                (Vector2)scrollRect.transform.InverseTransformPoint(selectedCategoryPosition);
         }
     }
 }
