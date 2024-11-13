@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ReadyPlayerMe.Api.V1;
 using UnityEngine;
 
@@ -73,7 +74,31 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 CreateAssetButton(asset);
             }
+            SetDefaultSelectedAsset();
         }
-
+        
+        public void SetDefaultSelectedAsset()
+        {
+            if (selectedAssetButton != null)
+            {
+                selectedAssetButton.SetSelected(false);
+            }
+            if (assetButtons.Count> 1 && assetButtons[0].Asset.IsStyleAsset())
+            {
+                selectedAssetButton = assetButtons[0];
+                selectedAssetButton.SetSelected(true);
+                Debug.Log( "SET DEFAULT STYLE" );
+                return;
+            }
+            var defaultAssets = assetButtons.Where( asset => asset.Asset.Name.EndsWith("_Default")).ToArray();
+            if(defaultAssets.Length == 0)
+            {
+                Debug.Log( "No default asset found" );
+                return;
+            }
+            selectedAssetButton = defaultAssets[0];
+            selectedAssetButton.SetSelected(true);
+            Debug.Log( $"Default asset selected {defaultAssets[0].Asset.Name}" );
+        }
     }
 }

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Demo;
 using ReadyPlayerMe.Samples.AvatarCreator;
@@ -13,18 +15,20 @@ public class CreatorMenuController : MonoBehaviour
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private Animation menuAnimation;
     [SerializeField] private DragRotate dragRotate;
-    public UnityEvent<Asset> OnAssetSelected;
-    public UnityEvent<Asset> OnAssetRemoved;
-
+    
     private AssetPanel activeAssetPanel;
     private Dictionary<string, AssetPanel> assetPanelMap = new Dictionary<string, AssetPanel>();
     
-    private void Start()
+    [Header("Events")]
+    public UnityEvent<Asset> OnAssetSelected;
+    public UnityEvent<Asset> OnAssetRemoved;
+    
+    private async void Start()
     {
         categoryPanel.LoadCategories();
     }
 
-    public void CreatePanelsFromCategories(string[] categories)
+    public async void CreatePanelsFromCategories(string[] categories)
     {
         var indexCount = 0;
         foreach (var category in categories)

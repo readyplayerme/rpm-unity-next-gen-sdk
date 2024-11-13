@@ -22,6 +22,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             animator = GetComponent<Animator>();
             animator.keepAnimatorStateOnDisable = true;
             selectable = GetComponent<ISelectable>();
+            SetSelected(selectable.IsSelected);
             selectable.OnSelectionChanged += SetSelected;
             audioSource = GetComponent<AudioSource>();
             if (audioSource != null) return;

@@ -446,7 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e178d4dc9dfd7f846bc10b31f51eeb6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assetPerPage: 20
+  assetPerPage: 50
   assetButtonPrefab: {fileID: 5708733626491816541, guid: 80da2ffbebbf6914db22c65b8cabd10c, type: 3}
   assetButtonContainer: {fileID: 1129635397945561124}
 --- !u!1 &7353139799194991203

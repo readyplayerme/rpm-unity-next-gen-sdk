@@ -21,6 +21,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         public void Initialize(Asset asset)
         {
+            gameObject.name = asset.Name;
             fileApi = new FileApi();
             Asset = asset;
             LoadIcon();
