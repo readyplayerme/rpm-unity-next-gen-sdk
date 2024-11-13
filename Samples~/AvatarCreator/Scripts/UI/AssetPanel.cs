@@ -28,19 +28,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         private void OnEnable()
         {
-            // Start the update check coroutine when enabled
             updateCoroutine = StartCoroutine(CheckForAssetUpdatesPeriodically());
         }
 
         private void OnDisable()
         {
-            // Stop the update check coroutine when disabled
             if (updateCoroutine != null)
             {
                 StopCoroutine(updateCoroutine);
             }
         }
-
         
         private void OnDestroy()
         {
@@ -95,6 +92,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             var assets = response.Data;
 
             CreateButtons(assets);
+            SetDefaultSelectedAsset();
         }
 
         private void CreateButtons(Asset[] assets)
@@ -129,6 +127,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public async void CheckForAssetUpdates()
         {
+            if(assetApi == null)
+            {
+                assetApi = new AssetApi();
+            }
             var response = await assetApi.ListAssetsAsync(new AssetListRequest()
             {
                 Params = new AssetListQueryParams()
@@ -139,7 +141,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 }
             });
             var assets = response.Data;
-            Debug.Log($"Checking for asset updates: {assets.Length} assets and {assetButtons.Count} buttons exist");
             if (assets.Length == assetButtons.Count) return;
             var previouslySelectedAsset = selectedAssetButton ? selectedAssetButton.Asset.Id : "";
             foreach (var assetButton in assetButtons)
@@ -158,8 +159,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             while (true)
             {
-                CheckForAssetUpdates();
                 yield return new WaitForSeconds(updateInterval);
+                CheckForAssetUpdates();
             }
         }
     }

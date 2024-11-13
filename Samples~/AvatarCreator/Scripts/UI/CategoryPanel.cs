@@ -31,7 +31,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private CategoryTextButton selectedCategoryTextButton;
         private List<CategoryTextButton> categoryButtons = new List<CategoryTextButton>();
 
-        // inspector label
         [Header("Events")]
         public UnityEvent<string> OnCategorySelected;
         public UnityEvent<string[]> OnCategoriesFetched;
@@ -66,6 +65,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             ReorderCategories();
             SelectFirstChildCategory();
+            Invoke(nameof(SnapToSelected), 0.1f); // fix for initial state
         }
 
         private void HandleCategorySelected(CategoryTextButton categoryText)
@@ -83,20 +83,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             if (categoryButtonContainer.childCount > 0)
             {
-                categoryButtonContainer.GetChild(0).GetComponent<CategoryTextButton>().OnPointerClick(null);
+                selectedCategoryTextButton = categoryButtonContainer.GetChild(0).GetComponent<CategoryTextButton>();
+                selectedCategoryTextButton.SetSelected(true);
             }
-            if(scrollRect != null)
-            {
-                scrollRect.normalizedPosition = new Vector2(0, 1);
-            }
+            SnapToSelected();
         }
         
         public void ReorderCategories()
         {
-            // Loop through the array and find the corresponding child in the container
             for (int i = 0; i < categoryIconAssets.Length; i++)
             {
-                // Find the child with the matching name
                 Transform childToReorder = null;
                 foreach (var categoryButton in categoryButtons)
                 {
@@ -107,7 +103,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     }
                 }
 
-                // If we found a matching child, set its sibling index to the desired position
                 if (childToReorder != null)
                 {
                     childToReorder.SetSiblingIndex(i);

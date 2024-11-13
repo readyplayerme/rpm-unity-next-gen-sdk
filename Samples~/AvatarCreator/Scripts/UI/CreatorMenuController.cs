@@ -61,6 +61,7 @@ public class CreatorMenuController : MonoBehaviour
         {
             activeAssetPanel = assetPanelMap[category];
             activeAssetPanel.gameObject.SetActive(true);
+            activeAssetPanel.CheckForAssetUpdates();
         }
     }
 }
