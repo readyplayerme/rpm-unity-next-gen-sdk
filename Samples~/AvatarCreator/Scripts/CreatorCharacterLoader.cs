@@ -75,7 +75,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             var defaultAssets = await GetDefaultAssets();
             await LoadAssetPreview(defaultAssets);
             CharacterObject.SetActive(true);
-            
         }
 
         private async Task<Asset[]> GetDefaultAssets()
@@ -110,7 +109,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private void SetupSkeletonAndAnimator()
         {
-
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
                 .definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == styleId)?
@@ -208,31 +206,26 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 
                 await LoadAssetPreview(assetIdMapByType);
             }
+            
+            CharacterObject.SetActive(true);
         }
         
         public async void LoadAssetPreview(Asset asset)
         {
-            Debug.Log("LoadAssetPreview");
             if (asset.IsStyleAsset())
             {
                 styleId = asset.Id;
-                // style (baseModel) changed, reload template
-                LoadStyleTemplate();
-                
-                var assetArray = AssetsMap.Values.ToArray();
-                LoadAssetPreview(assetArray);
+                UpdateBaseModel();
                 return;
             }
             AssetsMap[asset.Type] = asset;
 
             if (useCache && CanUseCache(asset.Id))
             {
-                Debug.Log("Loading from cache");
                 await LoadAssetFromCache(asset);
             }
             else
             {
-                Debug.Log("Loading from web");
                 var assets = new Dictionary<string, string>();
                 foreach (var assetInMap in AssetsMap)
                 {
@@ -255,6 +248,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 foreach (var skinnedMesh in AssetMeshMap[asset.Type])
                 {
+                    Debug.Log($"Destroying {skinnedMesh.gameObject.name}");
                     Destroy(skinnedMesh.gameObject);
                 }
                 AssetMeshMap.Remove(asset.Type);
@@ -280,8 +274,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             await gltf.Load(url);
             await gltf.InstantiateSceneAsync(outfit.transform);
             var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
-                
             meshTransfer.TransferMeshes(CharacterObject.transform, outfit.transform, CharacterObject.transform);
+          
             foreach (var AssetMeshMap in AssetMeshMap)
             {
                 foreach (var skinnedMesh in AssetMeshMap.Value)
@@ -308,15 +302,31 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         private bool CanUseCache(string assetId)
         {
-            if (cachedAssets != null)
-            {
-                Debug.Log($" cachedAssets: {cachedAssets.Length}");
-            }
-            var assetExistsInCache = cachedAssets != null && cachedAssets.Any(cachedAsset => cachedAsset.Id == assetId);
-            var nonCachedAssetInMap = AssetMeshMap.ContainsKey(string.Empty);
-            Debug.Log($" assetId:  {assetId} assetExistsInCache: {assetExistsInCache}, nonCachedAssetInMap: {nonCachedAssetInMap}");
             return cachedAssets != null && cachedAssets.Any(cachedAsset => cachedAsset.Id == assetId) //is asset present in cache
                    &&  !AssetMeshMap.ContainsKey(string.Empty); //is there any non cached asset loaded
+        }
+        
+        private async void UpdateBaseModel()
+        {
+            var previousCharacterObject = CharacterObject;
+            CharacterObject = null;
+            LoadStyleTemplate();
+            OnCharacterLoaded?.Invoke(previousCharacterObject);
+            if (CharacterObject != null)
+            {
+                CharacterObject.SetActive(false);
+            }
+     
+            var assetArray = AssetsMap.Values.ToArray();
+            
+            await LoadAssetPreview(assetArray); 
+            var previousRotation = previousCharacterObject.transform.rotation;
+            Destroy(previousCharacterObject);
+            if (CharacterObject != null)
+            {
+                CharacterObject.transform.rotation = previousRotation;
+                CharacterObject.SetActive(true);
+            }
         }
     }
 }
