@@ -46,6 +46,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private async void Start()
         {
             loadingObject = new GameObject("LoadingMeshes");
+            loadingObject.SetActive(false);
             if (useCache && !File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
             {
                 var cacheGenerator = new CacheGenerator();
@@ -185,20 +186,17 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         public async Task LoadAssetPreview(Asset[] assets)
         {
+            foreach (var asset in assets)
+            {
+                AssetsMap[asset.Type] = asset;
+            }
             // TODO add check if asset exists in cache
             if (useCache && assets.All(asset => CanUseCache(asset.Id)))
             {
-                foreach (var asset in assets)
-                {
-                    await LoadAssetFromCache(asset);
-                }
+                await LoadAssetsFromCache(assets);
             }
             else {
                 // add assets to map
-                foreach (var asset in assets)
-                {
-                    AssetsMap[asset.Type] = asset;
-                }
                 var assetIdMapByType = new Dictionary<string, string>();
                 foreach (var assetInMap in AssetsMap)
                 {
@@ -235,6 +233,39 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 await LoadAssetPreview(assets);
             }
         }
+        private async Task LoadAssetsFromCache(Asset[] assets)
+        {
+            var loadedOutfits = new Dictionary<string, GameObject>();
+            foreach (var asset in assets)
+            {
+                var gltf = new GltfImport();
+                var outfit = new GameObject(asset.Id);
+                outfit.transform.SetParent(loadingObject.transform);
+                var path = $"{CachePaths.CACHE_ASSET_ROOT}/{styleId}/{asset.Id}";
+                byte[] assetBytes = await File.ReadAllBytesAsync(path);
+                await gltf.Load(assetBytes);
+                await gltf.InstantiateSceneAsync(outfit.transform);
+                loadedOutfits[asset.Type] = outfit;
+            }
+
+            foreach (var loadedOutfit in loadedOutfits)
+            {
+                var newSkinnedMeshes = loadedOutfit.Value.GetComponentsInChildren<SkinnedMeshRenderer>();
+                meshTransfer.TransferMeshes(CharacterObject.transform, loadedOutfit.Value.transform, CharacterObject.transform);
+                if(AssetMeshMap.ContainsKey(loadedOutfit.Key) || AssetMeshMap.ContainsKey(string.Empty))
+                {
+                    foreach (var skinnedMesh in AssetMeshMap[loadedOutfit.Key])
+                    {
+                        Destroy(skinnedMesh.gameObject);
+                    }
+                    AssetMeshMap.Remove(loadedOutfit.Key);
+                }
+                AssetMeshMap[loadedOutfit.Key] = newSkinnedMeshes;
+                Destroy(loadedOutfit.Value);
+            }
+            
+            OnCharacterLoaded?.Invoke(CharacterObject);
+        }
 
         private async Task LoadAssetFromCache(Asset asset)
         {
@@ -246,17 +277,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             await gltf.Load(assetBytes);
             await gltf.InstantiateSceneAsync(outfit.transform);
             var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
+            meshTransfer.TransferMeshes(CharacterObject.transform, outfit.transform, CharacterObject.transform);
             if(AssetMeshMap.ContainsKey(asset.Type) || AssetMeshMap.ContainsKey(string.Empty))
             {
                 foreach (var skinnedMesh in AssetMeshMap[asset.Type])
                 {
-                    Debug.Log($"Destroying {skinnedMesh.gameObject.name}");
                     Destroy(skinnedMesh.gameObject);
                 }
                 AssetMeshMap.Remove(asset.Type);
             }
             AssetMeshMap[asset.Type] = newSkinnedMeshes;
-            meshTransfer.TransferMeshes(CharacterObject.transform, outfit.transform, CharacterObject.transform);
             Destroy(outfit);
             OnCharacterLoaded?.Invoke(CharacterObject);
         }
