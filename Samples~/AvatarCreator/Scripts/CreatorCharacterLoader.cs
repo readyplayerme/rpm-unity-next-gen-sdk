@@ -40,11 +40,12 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private bool useCache;
         
         Asset[] cachedAssets;
-        
+        private GameObject loadingObject;
+        private bool isUpdatingBaseModel;
 
         private async void Start()
         {
-            
+            loadingObject = new GameObject("LoadingMeshes");
             if (useCache && !File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
             {
                 var cacheGenerator = new CacheGenerator();
@@ -239,6 +240,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             var gltf = new GltfImport();
             var outfit = new GameObject(asset.Id);
+            outfit.transform.SetParent(loadingObject.transform);
             var path = $"{CachePaths.CACHE_ASSET_ROOT}/{styleId}/{asset.Id}";
             byte[] assetBytes = await File.ReadAllBytesAsync(path);
             await gltf.Load(assetBytes);
@@ -261,8 +263,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private async Task LoadAssetPreview(Dictionary<string, string> assets)
         {
+            var styleIdOnStart = styleId;
+            
             var gltf = new GltfImport();
             var outfit = new GameObject(characterId);
+            outfit.transform.SetParent(loadingObject.transform);
             var url = characterApi.GeneratePreviewUrl(new CharacterPreviewRequest()
             {
                 Id = characterId,
@@ -272,7 +277,14 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 }
             });
             await gltf.Load(url);
+            if (styleIdOnStart != styleId) return;
             await gltf.InstantiateSceneAsync(outfit.transform);
+            if (styleIdOnStart != styleId)
+            {
+                Destroy(outfit);
+                return;
+            }
+   
             var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
             meshTransfer.TransferMeshes(CharacterObject.transform, outfit.transform, CharacterObject.transform);
           
@@ -308,6 +320,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         private async void UpdateBaseModel()
         {
+            var styleIdOnStart = styleId;
             var previousCharacterObject = CharacterObject;
             CharacterObject = null;
             LoadStyleTemplate();
