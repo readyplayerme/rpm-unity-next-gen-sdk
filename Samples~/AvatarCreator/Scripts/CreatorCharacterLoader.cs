@@ -47,7 +47,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             loadingObject = new GameObject("LoadingMeshes");
             loadingObject.SetActive(false);
-            if (useCache && !File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
+            if (useCache)
             {
                 var cacheGenerator = new CacheGenerator();
                 cacheGenerator.ExtractCache();
