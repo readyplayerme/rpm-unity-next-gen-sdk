@@ -105,11 +105,12 @@ namespace ReadyPlayerMe.Api
                             $"{Uri.EscapeDataString(entry.Key.ToString())}={Uri.EscapeDataString(entry.Value.ToString())}&");
                     }
                 }
-                else if (value is IEnumerable<string> stringArray) // Handle arrays of strings
+                else if (value is IEnumerable<string> stringArray) 
                 {
-                    // Encode each element individually, then join them
-                    var joinedArray = string.Join(",", stringArray.Select(Uri.EscapeDataString));
-                    queryString.Append($"{Uri.EscapeDataString(key)}={joinedArray}&");
+                    foreach (var item in stringArray)
+                    {
+                        queryString.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(item)}&");
+                    }
                 }
                 else
                 {

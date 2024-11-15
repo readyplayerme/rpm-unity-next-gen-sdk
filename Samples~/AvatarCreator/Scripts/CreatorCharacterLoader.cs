@@ -44,8 +44,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         public Dictionary<string, Asset> AssetsMap = new Dictionary<string, Asset>();
         public Dictionary<string, SkinnedMeshRenderer[]> EquippedMeshes = new Dictionary<string, SkinnedMeshRenderer[]>();
-        
-        [SerializeField]
         private bool useCache;
         
         Asset[] cachedAssets;
@@ -56,14 +54,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             loadingObject = new GameObject("LoadingMeshes");
             loadingObject.SetActive(false);
+            
+            //disable if cache doesn't exist
+            useCache = File.Exists(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH);
             if (useCache)
             {
                 var cacheGenerator = new CacheGenerator();
                 cacheGenerator.ExtractCache();
             }
             //disable if cache doesn't exist
-            useCache = useCache && File.Exists(CachePaths.CACHE_ASSET_JSON_PATH);
-            
+            useCache = File.Exists(CachePaths.CACHE_ASSET_JSON_PATH);
             characterApi = new CharacterApi();
             meshTransfer = new MeshTransfer();
             skeletonBuilder = new SkeletonBuilder();
@@ -167,21 +167,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             return assets;
         }
 
-        public async void RemoveAsset(Asset asset)
+        public void RemoveAsset(Asset asset)
         {
             if (asset.IsStyleAsset()) return;
             AssetsMap.Remove(asset.Type);
-            
-            if(EquippedMeshes.ContainsKey(string.Empty))
-            {
-                var assets = new Dictionary<string, string>();
-                foreach (var assetInMap in AssetsMap)
-                {
-                    assets[assetInMap.Value.Type] = assetInMap.Value.Id;
-                }
-                await LoadAssetPreview(assets);
-                return;
-            }
             
             if(EquippedMeshes.ContainsKey(asset.Type))
             {
@@ -201,40 +190,35 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 AssetsMap[asset.Type] = asset;
                 if (useCache && CanUseCache(asset.Id))
                 {
-                    //await LoadAssetsFromCache(assets);
-                    Debug.Log($"Loading asset of type {asset.Type} from cache");
                     var loadedOutfit = await LoadAssetFromCache(asset);
                     loadedOutfits.Add(loadedOutfit);
                 }
-                else
-                {
-                    Debug.Log($"Loading asset of type {asset.Type} from web");
-                    var response = await assetApi.ListAssetsAsync(new AssetListRequest()
-                    {
-                        Params = new AssetListQueryParams()
-                        {
-                            Type = asset.Type,
-                            CharacterModelAssetId = styleId,
-                            Ids = new[] { asset.Id }
-                        }
-                    });
-                    if (response.Data.Length > 0)
-                    {
-                        var loadedOutfit = await LoadAsset(response.Data[0]);
-                        loadedOutfits.Add(loadedOutfit);
-                    }
-                    else
-                    {
-                        Debug.LogError($"Asset {asset.Id} not found");
-                    }
-                }
-                
             }
-            Debug.Log( $"Loaded {loadedOutfits.Count} outfits");
+            var nonCachedAssets = assets.Where(asset => !CanUseCache(asset.Id)).ToArray();
+            var nonCachedAssetIds = nonCachedAssets.Select(asset => asset.Id).ToArray();
+            var response = await assetApi.ListAssetsAsync(new AssetListRequest()
+            {
+                Params = new AssetListQueryParams()
+                {
+                    CharacterModelAssetId = styleId,
+                    Ids = nonCachedAssetIds
+                }
+            });
+            if (response.Data.Length > 0)
+            {
+                foreach (var refittedAssets in response.Data)
+                {
+                    var loadedOutfit = await LoadAsset(refittedAssets);
+                    loadedOutfits.Add(loadedOutfit);
+                }
+            }
+            else
+            {
+                Debug.LogError($"Assets not found");
+            }
             foreach (var loadedOutfit in loadedOutfits)
             {
                 meshTransfer.TransferMeshes(CharacterObject.transform, loadedOutfit.Outfit.transform, CharacterObject.transform);
-                Debug.Log($"Transferred meshes for {loadedOutfit.Type}");
                 if (EquippedMeshes.TryGetValue(loadedOutfit.Type, out var value))
                 {
                     foreach (var skinnedMesh in value)
@@ -247,46 +231,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             CharacterObject.SetActive(true);
             OnCharacterLoaded?.Invoke(CharacterObject);
-            
-            // // TODO add check if asset exists in cache
-            // if (useCache && assets.All(asset => CanUseCache(asset.Id)))
-            // {
-            //     await LoadAssetsFromCache(assets);
-            // }
-            // else 
-            // {
-            //     var assetIdMapByType = new Dictionary<string, string>();
-            //     foreach (var assetInMap in AssetsMap)
-            //     {
-            //         assetIdMapByType[assetInMap.Value.Type] = assetInMap.Value.Id;
-            //     }
-            //     var assetList = new List<Asset>();
-            //     foreach (var assetId in assetIdMapByType)
-            //     {
-            //         var response = await assetApi.ListAssetsAsync(new AssetListRequest()
-            //         {
-            //             Params = new AssetListQueryParams()
-            //             {
-            //                 CharacterModelAssetId = styleId,
-            //                 Ids = new[] { assetId.Value }
-            //             }
-            //         });
-            //         assetList.AddRange(response.Data);
-            //     }
-            //     if( assetList.Count > 0)
-            //     {
-            //         //var loadedOutfits = new List<LoadedOutfit>();
-            //
-            //         
-            //         OnCharacterLoaded?.Invoke(CharacterObject);
-            //     }
-            //     else
-            //     {
-            //         Debug.LogError($"Assets not found");
-            //     }
-            // }
-            //
-            // CharacterObject.SetActive(true);
         }
         
         public async void LoadAssetPreview(Asset asset)
@@ -374,18 +318,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
             loadedOutfit.Meshes = newSkinnedMeshes;
             return loadedOutfit;
-            // meshTransfer.TransferMeshes(CharacterObject.transform, outfit.transform, CharacterObject.transform);
-            // if(EquippedMeshes.ContainsKey(asset.Type) || EquippedMeshes.ContainsKey(string.Empty))
-            // {
-            //     foreach (var skinnedMesh in EquippedMeshes[asset.Type])
-            //     {
-            //         Destroy(skinnedMesh.gameObject);
-            //     }
-            //     EquippedMeshes.Remove(asset.Type);
-            // }
-            // EquippedMeshes[asset.Type] = newSkinnedMeshes;
-            // Destroy(outfit);
-            // OnCharacterLoaded?.Invoke(CharacterObject);
         }
 
         private async Task LoadAssetsFromCache(Asset[] assets)
@@ -419,48 +351,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(loadedOutfit.Value);
             }
             
-            OnCharacterLoaded?.Invoke(CharacterObject);
-        }
-
-
-
-        private async Task LoadAssetPreview(Dictionary<string, string> assets)
-        {
-            var styleIdOnStart = styleId;
-            
-            var gltf = new GltfImport();
-            var outfit = new GameObject(characterId);
-            outfit.transform.SetParent(loadingObject.transform);
-            var url = characterApi.GeneratePreviewUrl(new CharacterPreviewRequest()
-            {
-                Id = characterId,
-                Params = new CharacterPreviewQueryParams()
-                {
-                    Assets = assets,
-                }
-            });
-            await gltf.Load(url);
-            if (styleIdOnStart != styleId) return;
-            await gltf.InstantiateSceneAsync(outfit.transform);
-            if (styleIdOnStart != styleId)
-            {
-                Destroy(outfit);
-                return;
-            }
-   
-            var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
-            meshTransfer.TransferMeshes(CharacterObject.transform, outfit.transform, CharacterObject.transform);
-          
-            foreach (var AssetMeshMap in EquippedMeshes)
-            {
-                foreach (var skinnedMesh in AssetMeshMap.Value)
-                {
-                    Destroy(skinnedMesh.gameObject);
-                }
-            }
-            EquippedMeshes.Clear();
-            EquippedMeshes[string.Empty] = newSkinnedMeshes;
-            Destroy(outfit);
             OnCharacterLoaded?.Invoke(CharacterObject);
         }
         
