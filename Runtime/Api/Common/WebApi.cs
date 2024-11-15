@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -104,12 +105,20 @@ namespace ReadyPlayerMe.Api
                             $"{Uri.EscapeDataString(entry.Key.ToString())}={Uri.EscapeDataString(entry.Value.ToString())}&");
                     }
                 }
+                else if (value is IEnumerable<string> stringArray) // Handle arrays of strings
+                {
+                    // Encode each element individually, then join them
+                    var joinedArray = string.Join(",", stringArray.Select(Uri.EscapeDataString));
+                    queryString.Append($"{Uri.EscapeDataString(key)}={joinedArray}&");
+                }
                 else
                 {
                     queryString.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value.ToString())}&");
                 }
             }
-            return queryString.ToString();
+
+            // Remove the trailing '&' and return the query string
+            return queryString.ToString().TrimEnd('&');
         }
 
         private static string GetPropertyName(MemberInfo prop)

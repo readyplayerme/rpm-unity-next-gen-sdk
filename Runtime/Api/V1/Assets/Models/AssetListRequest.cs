@@ -22,5 +22,8 @@ namespace ReadyPlayerMe.Api.V1
         
         [JsonProperty("characterModelAssetId")]
         public string CharacterModelAssetId { get; set; }
+        
+        [JsonProperty("ids")]
+        public string[] Ids { get; set; }
     }
 }
