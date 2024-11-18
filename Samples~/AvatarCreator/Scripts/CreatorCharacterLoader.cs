@@ -367,8 +367,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         private bool CanUseCache(string assetId)
         {
-            return cachedAssets != null && cachedAssets.Any(cachedAsset => cachedAsset.Id == assetId) //is asset present in cache
-                   &&  !EquippedMeshes.ContainsKey(string.Empty); //is there any non cached asset loaded
+            return cachedAssets != null && cachedAssets.Any(cachedAsset => cachedAsset.Id == assetId); //is asset present in cache
         }
         
         private async void UpdateBaseModel()
