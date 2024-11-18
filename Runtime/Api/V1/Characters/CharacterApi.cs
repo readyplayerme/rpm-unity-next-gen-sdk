@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -14,7 +15,7 @@ namespace ReadyPlayerMe.Api.V1
             SetAuthenticationStrategy(new ApiKeyAuthStrategy());
         }
 
-        public virtual async Task<CharacterCreateResponse> CreateAsync(CharacterCreateRequest request)
+        public virtual async Task<CharacterCreateResponse> CreateAsync(CharacterCreateRequest request, CancellationToken cancellationToken = default)
         {
             return await Dispatch<CharacterCreateResponse, CharacterCreateRequestBody>(
                 new ApiRequest<CharacterCreateRequestBody>
@@ -26,11 +27,11 @@ namespace ReadyPlayerMe.Api.V1
                     {
                         { "Content-Type", "application/json" },
                     }
-                }
+                }, cancellationToken
             );
         }
 
-        public virtual async Task<CharacterUpdateResponse> UpdateAsync(CharacterUpdateRequest request)
+        public virtual async Task<CharacterUpdateResponse> UpdateAsync(CharacterUpdateRequest request, CancellationToken cancellationToken = default)
         {
             return await Dispatch<CharacterUpdateResponse, CharacterUpdateRequestBody>(
                 new ApiRequest<CharacterUpdateRequestBody>()
@@ -42,14 +43,12 @@ namespace ReadyPlayerMe.Api.V1
                     {
                         { "Content-Type", "application/json" },
                     }
-                }
+                }, cancellationToken
             );
         }
 
-        public virtual async Task<CharacterFindByIdResponse> FindByIdAsync(CharacterFindByIdRequest request)
+        public virtual async Task<CharacterFindByIdResponse> FindByIdAsync(CharacterFindByIdRequest request, CancellationToken cancellationToken = default)
         {
-            
-   
             return await Dispatch<CharacterFindByIdResponse>(
                 new ApiRequest<string>()
                 {
@@ -59,7 +58,7 @@ namespace ReadyPlayerMe.Api.V1
                     {
                         { "Content-Type", "application/json" },
                     }
-                }
+                }, cancellationToken
             );
         }
 

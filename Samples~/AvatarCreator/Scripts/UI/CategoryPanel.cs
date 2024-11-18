@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using ReadyPlayerMe.Api.V1;
 using UnityEngine;
 using UnityEngine.Events;
@@ -35,6 +36,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public UnityEvent<string> OnCategorySelected;
         public UnityEvent<string[]> OnCategoriesFetched;
         
+        private CancellationTokenSource cancellationTokenSource;
+        
         private void OnDestroy()
         {
             foreach (var categoryButton in categoryButtons)
@@ -42,6 +45,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy( categoryButton.gameObject );
             }
             categoryButtons.Clear();
+            cancellationTokenSource?.Cancel();
         }
 
         public async void LoadCategories()
@@ -50,8 +54,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 assetApi = new AssetApi();
             }
-
-            AssetTypeListResponse response = await assetApi.ListAssetTypesAsync(new AssetTypeListRequest());
+            cancellationTokenSource = new CancellationTokenSource();
+            AssetTypeListResponse response = await assetApi.ListAssetTypesAsync(new AssetTypeListRequest(), cancellationTokenSource.Token);
             var categories = response.Data;
             OnCategoriesFetched?.Invoke(categories);
             foreach (var category in categories)

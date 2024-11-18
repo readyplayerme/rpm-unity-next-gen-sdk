@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ReadyPlayerMe.Data;
@@ -18,7 +19,7 @@ namespace ReadyPlayerMe.Api
         protected Settings Settings => _settings ??= Resources.Load<Settings>("ReadyPlayerMeSettings");
         protected bool LogWarnings = true;
 
-        protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data)
+        protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data, CancellationToken cancellationToken = default)
             where TResponse : ApiResponse, new()
         {
             var payload = JsonConvert.SerializeObject(new ApiRequestBody<TRequestBody>()
@@ -36,10 +37,10 @@ namespace ReadyPlayerMe.Api
                 Method = data.Method,
                 Url = data.Url,
                 Payload = payload
-            });
+            }, cancellationToken);
         }
 
-        protected virtual async Task<TResponse> Dispatch<TResponse>(ApiRequest<string> data)
+        protected virtual async Task<TResponse> Dispatch<TResponse>(ApiRequest<string> data, CancellationToken cancellationToken = default)
             where TResponse : ApiResponse, new()
         {
             using var request = new UnityWebRequest();
@@ -64,6 +65,12 @@ namespace ReadyPlayerMe.Api
 
             while (!asyncOperation.isDone)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Debug.LogWarning($"Request cancelled: {data.Url}");
+                    request.Abort();
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
                 await Task.Yield();
             }
 

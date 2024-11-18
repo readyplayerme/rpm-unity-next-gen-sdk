@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GLTFast;
 using Newtonsoft.Json;
@@ -25,10 +26,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         [SerializeField]
         private string styleId = "665e05e758e847063761c985";
         
-        private const string STYLE_ASSET_LABEL = "baseModel";
-        private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
-        private const string CHARACTER_STYLE_TEMPLATE_LABEL = "CharacterStyleTemplateConfig";
-        
         private CharacterApi characterApi;
         private MeshTransfer meshTransfer;
         private SkeletonBuilder skeletonBuilder;
@@ -49,6 +46,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         Asset[] cachedAssets;
         private GameObject loadingObject;
         private bool isUpdatingBaseModel;
+        
+        private CancellationTokenSource cancellationTokenSource;
+        
+        private const string STORED_CHARACTER_PREF = "RPM_Creator_Character";
+        private const string STORED_CHARACTER_STYLE_PREF = "RPM_Creator_Character_STYLE";
 
         private async void Start()
         {
@@ -68,39 +70,70 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             meshTransfer = new MeshTransfer();
             skeletonBuilder = new SkeletonBuilder();
             assetApi = new AssetApi();
-            
-            var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
+            try
             {
-                Payload = new CharacterCreateRequestBody()
+                cancellationTokenSource = new CancellationTokenSource();
+                var createResponse = await characterApi.CreateAsync(new CharacterCreateRequest()
                 {
-                    Assets =  new Dictionary<string, string>
+                    Payload = new CharacterCreateRequestBody()
                     {
-                        {STYLE_ASSET_LABEL, styleId}
+                        Assets =  new Dictionary<string, string>
+                        {
+                            {Constants.STYLE_ASSET_LABEL, styleId}
+                        }
                     }
-                }
-            });
-            characterId = createResponse.Data.Id;
-            LoadStyleTemplate();
-            CharacterObject.SetActive(false);
-            await GetCachedAssets();
-            var defaultAssets = await GetDefaultAssets();
-            await LoadAssetPreview(defaultAssets);
+                }, cancellationTokenSource.Token);
+                characterId = createResponse.Data.Id;
+                PlayerPrefs.SetString(STORED_CHARACTER_PREF, characterId);
+                PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, styleId);
+                LoadStyleTemplate();
+                CharacterObject.SetActive(false);
+                await GetCachedAssets();
+                var defaultAssets = await GetDefaultAssets();
+                await LoadAssetPreview(defaultAssets);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
             CharacterObject.SetActive(true);
+        }
+
+        private void OnDestroy()
+        {
+            Destroy(CharacterObject);
+            Destroy(loadingObject);
+            cancellationTokenSource?.Cancel();
         }
 
         private async Task<Asset[]> GetDefaultAssets()
         {
-            var response = await assetApi.ListAssetsAsync(new AssetListRequest()
+            try
             {
-                Params = new AssetListQueryParams()
+                cancellationTokenSource = new CancellationTokenSource();
+                var response = await assetApi.ListAssetsAsync(new AssetListRequest()
                 {
-                    ExcludeTypes = "baseModel",
-                    CharacterModelAssetId = styleId,
-                    Limit = 100
-                }
-            });
-            var defaultAssets = response.Data.Where( asset => asset.Name.EndsWith("_Default")).ToArray();
-            return defaultAssets;
+                    Params = new AssetListQueryParams()
+                    {
+                        ExcludeTypes = "baseModel",
+                        CharacterModelAssetId = styleId,
+                        Limit = 100
+                    }
+                }, cancellationTokenSource.Token);
+                // TODO using _Default in name is a temp solution
+                var defaultAssets = response.Data.Where( asset => asset.Name.EndsWith("_Default")).ToArray();
+                return defaultAssets;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            return null;
         }
 
         private void LoadStyleTemplate()
@@ -111,16 +144,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 EquippedMeshes.Clear();
             }
             CharacterObject = Instantiate(GetTemplate(styleId));
-            AssetsMap[STYLE_ASSET_LABEL] = new Asset {Id = styleId, Type = STYLE_ASSET_LABEL};
+            AssetsMap[Constants.STYLE_ASSET_LABEL] = new Asset {Id = styleId, Type = Constants.STYLE_ASSET_LABEL};
             var skinnedMeshes = CharacterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-            EquippedMeshes[STYLE_ASSET_LABEL] = skinnedMeshes;
+            EquippedMeshes[Constants.STYLE_ASSET_LABEL] = skinnedMeshes;
             OnCharacterLoaded?.Invoke(CharacterObject);
             SetupSkeletonAndAnimator();
         }
 
         private void SetupSkeletonAndAnimator()
         {
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(Constants.SKELETON_DEFINITION_LABEL)
                 .definitionLinks
                 .FirstOrDefault(p => p.characterStyleId == styleId)?
                 .definition;
@@ -144,6 +177,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             if (useCache && File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
             {
+                
                 cachedAssets = await LoadAssetsFromCacheAsync(styleId);
             }
         }
@@ -152,19 +186,30 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             if (!File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
                 throw new FileNotFoundException("Cache file not found.", CachePaths.CACHE_ASSET_JSON_PATH);
-        
-            var json = await File.ReadAllTextAsync(CachePaths.CACHE_ASSET_JSON_PATH);
-            var cachedAssets = JsonConvert.DeserializeObject<CachedAsset[]>(json);
-            var assets = cachedAssets.Select(cachedAsset =>
+
+            try
             {
-                Asset asset = cachedAsset;
-                if(characterModelAssetId != null) 
-                    asset.GlbUrl = cachedAsset.GlbUrls[characterModelAssetId];
+                cancellationTokenSource = new CancellationTokenSource();
+                var json = await File.ReadAllTextAsync(CachePaths.CACHE_ASSET_JSON_PATH, cancellationTokenSource.Token);
+                var cachedAssets = JsonConvert.DeserializeObject<CachedAsset[]>(json);
+                var assets = cachedAssets.Select(cachedAsset =>
+                {
+                    Asset asset = cachedAsset;
+                    if(characterModelAssetId != null) 
+                        asset.GlbUrl = cachedAsset.GlbUrls[characterModelAssetId];
                 
-                return asset;
-            }).ToArray();
+                    return asset;
+                }).ToArray();
+                return assets;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
             
-            return assets;
+            return null;
         }
 
         public void RemoveAsset(Asset asset)
@@ -196,6 +241,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             var nonCachedAssets = assets.Where(asset => !CanUseCache(asset.Id)).ToArray();
             var nonCachedAssetIds = nonCachedAssets.Select(asset => asset.Id).ToArray();
+            var startTime = Time.realtimeSinceStartup;
             var response = await assetApi.ListAssetsAsync(new AssetListRequest()
             {
                 Params = new AssetListQueryParams()
@@ -204,6 +250,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     Ids = nonCachedAssetIds
                 }
             });
+            Debug.Log($"Time taken to fetch list of assets: {Time.realtimeSinceStartup - startTime}");
             if (response.Data.Length > 0)
             {
                 foreach (var refittedAssets in response.Data)
@@ -231,6 +278,34 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             CharacterObject.SetActive(true);
             OnCharacterLoaded?.Invoke(CharacterObject);
+            ApplyUpdates();
+
+        }
+        
+        public async void ApplyUpdates()
+        {
+            var idByType = new Dictionary<string, string>();
+            foreach (var asset in AssetsMap)
+            {
+                idByType[asset.Value.Type] = asset.Value.Id;
+            }
+            try
+            {
+                var response = await characterApi.UpdateAsync( new CharacterUpdateRequest()
+                {
+                    Id = characterId,
+                    Payload = new CharacterUpdateRequestBody()
+                    {
+                        Assets = idByType
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
         
         public async void LoadAssetPreview(Asset asset)
@@ -239,10 +314,12 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 styleId = asset.Id;
                 UpdateBaseModel();
+                PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, styleId);
                 return;
             }
             AssetsMap[asset.Type] = asset;
 
+            
             if (useCache && CanUseCache(asset.Id))
             {
                 var loadedOutfit = await LoadAssetFromCache(asset);
@@ -256,69 +333,118 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             else
             {
-                var response = await assetApi.ListAssetsAsync( new AssetListRequest()
+                var startTime = Time.realtimeSinceStartup;
+                try
                 {
-                    Params = new AssetListQueryParams()
+                    cancellationTokenSource = new CancellationTokenSource();
+                    var response = await assetApi.ListAssetsAsync( new AssetListRequest()
                     {
-                        Type = asset.Type,
-                        CharacterModelAssetId = styleId,
-                        Ids = new []{ asset.Id }
-                    }
-                });
-                if( response.Data.Length > 0)
-                {
-                    var loadedOutfit = await LoadAsset(response.Data[0]);
-                    meshTransfer.TransferMeshes(CharacterObject.transform, loadedOutfit.Outfit.transform, CharacterObject.transform);
-                    if(EquippedMeshes.ContainsKey(asset.Type))
-                    {
-                        foreach (var skinnedMesh in EquippedMeshes[asset.Type])
+                        Params = new AssetListQueryParams()
                         {
-                            Destroy(skinnedMesh.gameObject);
+                            Type = asset.Type,
+                            CharacterModelAssetId = styleId,
+                            Ids = new []{ asset.Id }
                         }
-                        EquippedMeshes.Remove(asset.Type);
+                    }, cancellationTokenSource.Token);
+                    Debug.Log($"Time taken to fetch list of assets: {Time.realtimeSinceStartup - startTime}");
+                    if( response.Data.Length > 0)
+                    {
+                        var loadedOutfit = await LoadAsset(response.Data[0]);
+                        meshTransfer.TransferMeshes(CharacterObject.transform, loadedOutfit.Outfit.transform, CharacterObject.transform);
+                        if(EquippedMeshes.ContainsKey(asset.Type))
+                        {
+                            foreach (var skinnedMesh in EquippedMeshes[asset.Type])
+                            {
+                                Destroy(skinnedMesh.gameObject);
+                            }
+                            EquippedMeshes.Remove(asset.Type);
+                        }
+                        EquippedMeshes[asset.Type] = loadedOutfit.Meshes;
+                        Destroy(loadedOutfit.Outfit);
                     }
-                    EquippedMeshes[asset.Type] = loadedOutfit.Meshes;
-                    Destroy(loadedOutfit.Outfit);
+                    else
+                    {
+                        Debug.LogError($"Asset {asset.Id} not found");
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Debug.LogError($"Asset {asset.Id} not found");
+                    Console.WriteLine(e);
+                    throw;
                 }
+                
             }
+            ApplyUpdates();
             OnCharacterLoaded?.Invoke(CharacterObject);
         }
 
         private async Task<LoadedOutfit> LoadAsset(Asset asset)
         {
+            Debug.Log($"Loading asset {asset.Type} from web");
+            cancellationTokenSource = new CancellationTokenSource();
+            
             var loadedOutfit = new LoadedOutfit();
             var outfit = new GameObject(asset.Id);
             outfit.transform.SetParent(loadingObject.transform);
             loadedOutfit.Type = asset.Type;
             loadedOutfit.Outfit = outfit;
             var gltf = new GltfImport();
-            await gltf.Load(asset.GlbUrl);
-            await gltf.InstantiateSceneAsync(outfit.transform);
-            var newMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
-            loadedOutfit.Meshes = newMeshes;
+            try
+            {
+                await gltf.Load(asset.GlbUrl, null, cancellationTokenSource.Token);
+                await gltf.InstantiateSceneAsync(outfit.transform, 0 , cancellationTokenSource.Token);
+                var newMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
+                loadedOutfit.Meshes = newMeshes;
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.LogWarning("Asset loading was canceled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load asset: {ex.Message}");
+                throw;
+            }
+
             return loadedOutfit;
         }
         
         private async Task<LoadedOutfit> LoadAssetFromCache(Asset asset)
         {
+            Debug.Log($"Loading asset {asset.Type} from cache");
+            
             var loadedOutfit = new LoadedOutfit();
             var gltf = new GltfImport();
             var outfit = new GameObject(asset.Id);
             loadedOutfit.Type = asset.Type;
             loadedOutfit.Outfit = outfit;
             outfit.transform.SetParent(loadingObject.transform);
+
             var path = $"{CachePaths.CACHE_ASSET_ROOT}/{styleId}/{asset.Id}";
-            var assetBytes = await File.ReadAllBytesAsync(path);
-            await gltf.Load(assetBytes);
-            await gltf.InstantiateSceneAsync(outfit.transform);
-            var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
-            loadedOutfit.Meshes = newSkinnedMeshes;
+            try
+            {
+                cancellationTokenSource = new CancellationTokenSource();
+                var token = cancellationTokenSource.Token;
+                var assetBytes = await File.ReadAllBytesAsync(path, token);
+                await gltf.Load(assetBytes, null, null, token);
+                await gltf.InstantiateSceneAsync(outfit.transform, 0, token);
+                var newSkinnedMeshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
+                loadedOutfit.Meshes = newSkinnedMeshes;
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.LogWarning("Asset loading was canceled.");
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load asset: {ex.Message}");
+                throw; // Re-throw to propagate the error if necessary
+            }
+
             return loadedOutfit;
         }
+
 
         private async Task LoadAssetsFromCache(Asset[] assets)
         {
@@ -360,7 +486,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 return null;
 
             return Resources
-                .Load<CharacterStyleTemplateConfig>(CHARACTER_STYLE_TEMPLATE_LABEL)?
+                .Load<CharacterStyleTemplateConfig>(Constants.CHARACTER_STYLE_TEMPLATE_LABEL)?
                 .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
                 .template;
         }
@@ -380,10 +506,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 CharacterObject.SetActive(false);
             }
-     
-            var assetArray = AssetsMap.Values.ToArray();
-            
+            Debug.Log($"number of assets: {AssetsMap.Values.Count}");
+            var assetArray = AssetsMap.Values.Where(asset => !asset.IsStyleAsset()).ToArray(); // asset without style model
+            Debug.Log($"number of assets after: {assetArray.Length}");
+            // print asset array types
+            foreach (var asset in assetArray)
+            {
+                Debug.Log(asset.Type);
+            }
             await LoadAssetPreview(assetArray); 
+            PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, styleId);
             var previousRotation = previousCharacterObject.transform.rotation;
             Destroy(previousCharacterObject);
             if (CharacterObject != null)

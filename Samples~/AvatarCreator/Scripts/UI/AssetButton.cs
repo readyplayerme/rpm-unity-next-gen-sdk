@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using ReadyPlayerMe.Api.V1;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +20,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         public Asset Asset { get; private set; }
         private FileApi fileApi;
         
+        private CancellationTokenSource cancellationTokenSource;
+        
         public void Initialize(Asset asset)
         {
             if (asset.IsStyleAsset())
@@ -33,12 +36,35 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private async void LoadIcon()
         {
-            //TODO add method to get as sprite directly
-            gameObject.SetActive(false);
-            var iconTexture = await fileApi.DownloadImageAsync( Asset.IconUrl );
-            var sprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), Vector2.zero);
-            gameObject.SetActive(true);
-            iconImage.sprite = sprite;
+            try
+            {
+                cancellationTokenSource?.Cancel();
+                cancellationTokenSource = new CancellationTokenSource();
+                
+                gameObject.SetActive(false);
+                
+                var iconTexture = await fileApi.DownloadImageAsync(Asset.IconUrl, cancellationTokenSource.Token);
+
+                cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                if(cancellationTokenSource.Token.IsCancellationRequested || iconImage == null) return;
+                
+                var sprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), Vector2.zero);
+                iconImage.sprite = sprite;
+                gameObject.SetActive(true);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Icon loading was canceled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load icon: {ex.Message}");
+            }
+            finally
+            {
+                cancellationTokenSource?.Dispose();
+                cancellationTokenSource = null;
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -52,6 +78,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             IsSelected = selected;
             OnSelectionChanged?.Invoke(IsSelected);
+        }
+
+        private void OnDestroy()
+        {
+            cancellationTokenSource?.Cancel();
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using ReadyPlayerMe.Api.V1;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,6 +27,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private string assetCategory;
         private Coroutine updateCoroutine;
         
+        private CancellationTokenSource cancellationTokenSource;
+        
         private void OnEnable()
         {
             updateCoroutine = StartCoroutine(CheckForAssetUpdatesPeriodically());
@@ -41,6 +44,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         private void OnDestroy()
         {
+            cancellationTokenSource?.Cancel();
             foreach (var assetButton in assetButtons)
             {
                 Destroy(assetButton.gameObject);
@@ -80,19 +84,39 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 assetApi = new AssetApi();
             }
             assetCategory = category;
-            var response = await assetApi.ListAssetsAsync(new AssetListRequest()
-            {
-                Params = new AssetListQueryParams()
-                 {
-                     Type = category,
-                     Page = page,
-                     Limit = assetPerPage
-                 }
-            });
-            var assets = response.Data;
 
-            CreateButtons(assets);
-            SetDefaultSelectedAsset();
+            try
+            {
+                cancellationTokenSource = new CancellationTokenSource();
+                var response = await assetApi.ListAssetsAsync(new AssetListRequest()
+                {
+                    Params = new AssetListQueryParams()
+                    {
+                        Type = category,
+                        Page = page,
+                        Limit = assetPerPage
+                    }
+                }, cancellationTokenSource.Token);
+                if( cancellationTokenSource.Token.IsCancellationRequested ) return;
+                
+                var assets = response.Data;
+                
+                CreateButtons(assets);
+                SetDefaultSelectedAsset();
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Asset loading was canceled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load assets: {ex.Message}");
+            }
+            finally
+            {
+                cancellationTokenSource?.Dispose();
+                cancellationTokenSource = null;
+            }
         }
 
         private void CreateButtons(Asset[] assets)
