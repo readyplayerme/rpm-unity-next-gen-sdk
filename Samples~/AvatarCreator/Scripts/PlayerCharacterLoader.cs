@@ -13,6 +13,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class PlayerCharacterLoader : MonoBehaviour
     {
         [SerializeField]
+        private CharacterStyleTemplateConfig characterStyleTemplateConfig;
+        [SerializeField]
         private Camera thirdPersonCamera;
         private GameObject character;
         private CharacterApi characterApi;
@@ -35,7 +37,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 Id = characterId
             });
-            character = Instantiate(GetTemplate(styleId));
+            character = Instantiate(characterStyleTemplateConfig.GetTemplate(styleId, "CreatorPlayer"));
             var playerController = character.GetComponent<ThirdPersonMovement>();
             if(playerController == null)
             {
@@ -67,17 +69,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private void OnDestroy()
         {
             cancellationTokenSource?.Cancel();
-        }
-
-        protected virtual GameObject GetTemplate(string templateTagOrId)
-        {
-            if (string.IsNullOrEmpty(templateTagOrId))
-                return null;
-            var templates = Resources.Load<CharacterStyleTemplateConfig>(Constants.CHARACTER_STYLE_TEMPLATE_LABEL).templates.Where( p => p.id.Contains(templateTagOrId));
-            var characterStyleTemplates = templates as CharacterStyleTemplate[] ?? templates.ToArray();
-            Debug.Log( $"   number of templates found {characterStyleTemplates.Count()}");
-            var template = characterStyleTemplates.FirstOrDefault(p =>  p.tags.Contains("Player"));
-            return template?.template;
         }
 
         private void SetupSkeletonAndAnimator(string styleId)

@@ -602,6 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52237da7203d8ad439da7bf7cd018a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterStyleTemplateConfig: {fileID: 11400000, guid: cbbda579b68f24b439bde2581984449d, type: 2}
   thirdPersonCamera: {fileID: 942300054}
   OnCharacterLoaded:
     m_PersistentCalls:

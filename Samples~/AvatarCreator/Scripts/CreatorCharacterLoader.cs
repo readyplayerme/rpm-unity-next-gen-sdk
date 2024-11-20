@@ -24,6 +24,9 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class CreatorCharacterLoader : MonoBehaviour
     {
         [SerializeField]
+        private CharacterStyleTemplateConfig characterStyleTemplateConfig;
+        
+        [SerializeField]
         private string styleId = "665e05e758e847063761c985";
         
         private CharacterApi characterApi;
@@ -143,7 +146,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(CharacterObject);
                 EquippedMeshes.Clear();
             }
-            CharacterObject = Instantiate(GetTemplate(styleId));
+            CharacterObject = Instantiate(characterStyleTemplateConfig.GetTemplate( styleId, "Creator"));
             AssetsMap[Constants.STYLE_ASSET_LABEL] = new Asset {Id = styleId, Type = Constants.STYLE_ASSET_LABEL};
             var skinnedMeshes = CharacterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             EquippedMeshes[Constants.STYLE_ASSET_LABEL] = skinnedMeshes;
@@ -479,17 +482,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             
             OnCharacterLoaded?.Invoke(CharacterObject);
-        }
-        
-        protected virtual GameObject GetTemplate(string templateTagOrId)
-        {
-            if (string.IsNullOrEmpty(templateTagOrId))
-                return null;
-
-            return Resources
-                .Load<CharacterStyleTemplateConfig>(Constants.CHARACTER_STYLE_TEMPLATE_LABEL)?
-                .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
-                .template;
         }
         
         private bool CanUseCache(string assetId)
