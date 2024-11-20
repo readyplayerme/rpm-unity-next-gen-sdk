@@ -240,28 +240,31 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 }
             }
             var nonCachedAssets = assets.Where(asset => !CanUseCache(asset.Id)).ToArray();
-            var nonCachedAssetIds = nonCachedAssets.Select(asset => asset.Id).ToArray();
-            var startTime = Time.realtimeSinceStartup;
-            var response = await assetApi.ListAssetsAsync(new AssetListRequest()
+            if (nonCachedAssets.Length > 0)
             {
-                Params = new AssetListQueryParams()
+                var nonCachedAssetIds = nonCachedAssets.Select(asset => asset.Id).ToArray();
+                var startTime = Time.realtimeSinceStartup;
+                var response = await assetApi.ListAssetsAsync(new AssetListRequest()
                 {
-                    CharacterModelAssetId = styleId,
-                    Ids = nonCachedAssetIds
-                }
-            });
-            Debug.Log($"Time taken to fetch list of assets: {Time.realtimeSinceStartup - startTime}");
-            if (response.Data.Length > 0)
-            {
-                foreach (var refittedAssets in response.Data)
+                    Params = new AssetListQueryParams()
+                    {
+                        CharacterModelAssetId = styleId,
+                        Ids = nonCachedAssetIds
+                    }
+                });
+                Debug.Log($"Time taken to fetch list of assets: {Time.realtimeSinceStartup - startTime}");
+                if (response.Data.Length > 0)
                 {
-                    var loadedOutfit = await LoadAsset(refittedAssets);
-                    loadedOutfits.Add(loadedOutfit);
+                    foreach (var refittedAssets in response.Data)
+                    {
+                        var loadedOutfit = await LoadAsset(refittedAssets);
+                        loadedOutfits.Add(loadedOutfit);
+                    }
                 }
-            }
-            else
-            {
-                Debug.LogError($"Assets not found");
+                else
+                {
+                    Debug.LogError($"Assets not found");
+                }
             }
             foreach (var loadedOutfit in loadedOutfits)
             {
@@ -411,8 +414,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         
         private async Task<LoadedOutfit> LoadAssetFromCache(Asset asset)
         {
-            Debug.Log($"Loading asset {asset.Type} from cache");
-            
             var loadedOutfit = new LoadedOutfit();
             var gltf = new GltfImport();
             var outfit = new GameObject(asset.Id);
