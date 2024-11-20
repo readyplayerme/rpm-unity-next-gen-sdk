@@ -4,6 +4,7 @@ using System.Threading;
 using GLTFast;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Samples.QuickStart;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,6 +12,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class PlayerCharacterLoader : MonoBehaviour
     {
+        [SerializeField]
+        private Camera thirdPersonCamera;
         private GameObject character;
         private CharacterApi characterApi;
         private MeshTransfer meshTransfer;
@@ -33,6 +36,12 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Id = characterId
             });
             character = Instantiate(GetTemplate(styleId));
+            var playerController = character.GetComponent<ThirdPersonMovement>();
+            if(playerController == null)
+            {
+                playerController.SetCamera(thirdPersonCamera.transform);
+                return;
+            }
             character.SetActive(false);
             try
             {
@@ -64,11 +73,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             if (string.IsNullOrEmpty(templateTagOrId))
                 return null;
-
-            return Resources
-                .Load<CharacterStyleTemplateConfig>(Constants.CHARACTER_STYLE_TEMPLATE_LABEL)?
-                .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
-                .template;
+            var templates = Resources.Load<CharacterStyleTemplateConfig>(Constants.CHARACTER_STYLE_TEMPLATE_LABEL).templates.Where( p => p.id.Contains(templateTagOrId));
+            var characterStyleTemplates = templates as CharacterStyleTemplate[] ?? templates.ToArray();
+            Debug.Log( $"   number of templates found {characterStyleTemplates.Count()}");
+            var template = characterStyleTemplates.FirstOrDefault(p =>  p.tags.Contains("Player"));
+            return template?.template;
         }
 
         private void SetupSkeletonAndAnimator(string styleId)

@@ -35,6 +35,11 @@ namespace ReadyPlayerMe.Samples.QuickStart
             controller = GetComponent<CharacterController>();
             groundCheck = GetComponent<GroundCheck>();
         }
+        
+        public void SetCamera(Transform targetCamera)
+        {
+            playerCamera = targetCamera;
+        }
 
         public void Setup(GameObject target)
         {
