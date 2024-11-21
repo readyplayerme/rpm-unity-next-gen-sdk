@@ -311,7 +311,25 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Console.WriteLine(e);
                 throw;
             }
-
+        }
+        
+        public void UpdateCharacter()
+        {
+            Debug.Log($" applying assets to character: {AssetsMap.Count}");
+            // print asset types in AssetsMap
+            foreach (var asset in AssetsMap)
+            {
+                Debug.Log(asset.Value.Type);
+            }
+            var response = characterApi.UpdateAsync( new CharacterUpdateRequest()
+            {
+                Id = characterId,
+                Payload = new CharacterUpdateRequestBody()
+                {
+                    Assets = AssetsMap.ToDictionary(asset => asset.Value.Type, asset => asset.Value.Id)
+                }
+            });
+            Debug.Log($" Character updated: {response}");
         }
         
         public async void LoadAssetPreview(Asset asset)
@@ -386,7 +404,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private async Task<LoadedOutfit> LoadAsset(Asset asset)
         {
-            Debug.Log($"Loading asset {asset.Type} from web");
             cancellationTokenSource = new CancellationTokenSource();
             
             var loadedOutfit = new LoadedOutfit();
