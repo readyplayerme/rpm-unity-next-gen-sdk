@@ -113,7 +113,7 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 8
   gravity: -18
-  jumpHeight: 1
+  jumpHeight: 1.5
 --- !u!114 &303777315
 MonoBehaviour:
   m_ObjectHideFlags: 0

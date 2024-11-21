@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2223751625615617321, guid: 366ab888443b26f4aaa74a7359640f6a, type: 3}
       propertyPath: m_Name
-      value: FemaleNextGen_Player
+      value: FemaleNextGen_Player Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4812511868542361301, guid: 366ab888443b26f4aaa74a7359640f6a, type: 3}
       propertyPath: m_Controller
@@ -117,7 +117,7 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 8
   gravity: -18
-  jumpHeight: 1
+  jumpHeight: 1.5
 --- !u!114 &8968226327220812028
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,7 +6,17 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     {
         [SerializeField] private Transform target; 
         [SerializeField] private float rotationSpeed = 5f; 
+        [SerializeField] private bool hideCursorOnStart = true;
         private float currentRotationY;
+        
+        private void Start()
+        {
+            if (hideCursorOnStart)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
 
         public void SetTarget(GameObject target)
         {
