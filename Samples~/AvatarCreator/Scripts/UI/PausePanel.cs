@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             var isPaused = !gameObject.activeSelf;
             gameObject.SetActive(isPaused);
-            Time.timeScale = isPaused ? 0 : 1;
+            SetTimeScale(isPaused ? 0f : 1f);
             if (isPaused)
             {
                 Cursor.lockState = CursorLockMode.Confined;
@@ -24,6 +24,11 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             OnResume.Invoke();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        public void SetTimeScale(float scale)
+        {
+            Time.timeScale = scale;
         }
     }
 }
