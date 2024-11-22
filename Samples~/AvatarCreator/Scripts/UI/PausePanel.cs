@@ -1,3 +1,4 @@
+using ReadyPlayerMe.Samples.QuickStart;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,12 +8,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     {
         public UnityEvent OnPause;
         public UnityEvent OnResume;
+        private PlayerInput playerInput;
         
         public void TogglePause()
         {
             var isPaused = !gameObject.activeSelf;
             gameObject.SetActive(isPaused);
-            SetTimeScale(isPaused ? 0f : 1f);
+            if (playerInput != null)
+            {
+                playerInput.enabled = !isPaused;
+            }
             if (isPaused)
             {
                 Cursor.lockState = CursorLockMode.Confined;
@@ -25,10 +30,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-
-        public void SetTimeScale(float scale)
+        
+        public void OnCharacterLoaded(GameObject character)
         {
-            Time.timeScale = scale;
+            playerInput = character.GetComponent<PlayerInput>();
         }
     }
 }
