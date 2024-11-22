@@ -16,7 +16,7 @@ public class SceneFadePanel : MonoBehaviour
     [SerializeField]
     private int sceneIndexToLoad = 0;
     
-    void Start()
+    private void Start()
     {
         if(animator == null)
         {
@@ -25,7 +25,6 @@ public class SceneFadePanel : MonoBehaviour
         }
         if(fadeInOnStart)
         {
-            animator.SetTrigger(OpaqueTrigger);
             Invoke(nameof(FadeIn), 0.1f);
         }
     }

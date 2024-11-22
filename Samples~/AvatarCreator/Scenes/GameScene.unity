@@ -131,8 +131,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 1251954557}
     m_Modifications:
     - target: {fileID: 700189578251653098, guid: 7fd8d0e41df4c1c47a81dda68cc1b048, type: 3}
+      propertyPath: fadeInOnStart
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700189578251653098, guid: 7fd8d0e41df4c1c47a81dda68cc1b048, type: 3}
       propertyPath: sceneIndexToLoad
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700189578251653140, guid: 7fd8d0e41df4c1c47a81dda68cc1b048, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 700189578251653141, guid: 7fd8d0e41df4c1c47a81dda68cc1b048, type: 3}
       propertyPath: m_Pivot.x
@@ -746,14 +754,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ReadyPlayerMe.Samples.AvatarCreator.SimpleThirdPersonCamera,
-          Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 78353738}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 78353738}
+        m_TargetAssemblyTypeName: SceneFadePanel, Assembly-CSharp
+        m_MethodName: FadeIn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -912,6 +931,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1251954557}
     m_Modifications:
+    - target: {fileID: 240454764430908063, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 240454764430908063, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 240454764430908063, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 240454764430908063, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -360
+      objectReference: {fileID: 0}
     - target: {fileID: 2750473374270637576, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -983,7 +1018,7 @@ PrefabInstance:
     - target: {fileID: 2750473374852593962, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1294216970}
+      objectReference: {fileID: 0}
     - target: {fileID: 2750473374852593962, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -1036,6 +1071,38 @@ PrefabInstance:
       propertyPath: OnResume.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 484461591}
+    - target: {fileID: 4172472221696104827, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172472221696104827, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172472221696104827, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172472221696104827, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -200
+      objectReference: {fileID: 0}
+    - target: {fileID: 4547238555309276365, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4547238555309276365, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4547238555309276365, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 4547238555309276365, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -280
+      objectReference: {fileID: 0}
     - target: {fileID: 8137525221925807314, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
       propertyPath: m_Name
       value: PausePanel
@@ -1144,17 +1211,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8db1573094ff70149becb666308aea46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1294216970 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3680157011994158605, guid: f074de61c1cd2e44d9bb523e9f0d3756, type: 3}
-  m_PrefabInstance: {fileID: 1294216964}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da219a4a4d6b8db4795081ae1a8eff06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1583913116
