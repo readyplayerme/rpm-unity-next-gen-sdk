@@ -110,10 +110,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 0}
-  walkSpeed: 3
+  walkSpeed: 4
   runSpeed: 8
   gravity: -18
-  jumpHeight: 1.5
+  jumpHeight: 2
 --- !u!114 &303777315
 MonoBehaviour:
   m_ObjectHideFlags: 0
