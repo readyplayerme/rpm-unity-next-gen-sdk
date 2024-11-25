@@ -164,7 +164,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4290360581
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -320,6 +320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonImage: {fileID: 6069163142760003660}
   buttonText: {fileID: 9147737412688918004}
+  disableDeselectOnClick: 1
 --- !u!114 &322818705970590644
 MonoBehaviour:
   m_ObjectHideFlags: 0
