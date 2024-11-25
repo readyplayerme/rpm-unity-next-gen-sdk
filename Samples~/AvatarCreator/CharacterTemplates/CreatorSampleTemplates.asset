@@ -14,22 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   templates:
   - cacheId: d82b51df37804f546931cfd96c8c3525
-    template: {fileID: 3374812052370047911, guid: d82b51df37804f546931cfd96c8c3525, type: 3}
+    template: {fileID: 2076509455048383094, guid: aad03514bc3c97b4295ed897b9e44e58, type: 3}
     tags:
     - Creator
     id: 665e05e758e847063761c985
   - cacheId: d82b51df37804f546931cfd96c8c3525
-    template: {fileID: 8686106618558241413, guid: 92923345407e38f4a8a07df151817409, type: 3}
+    template: {fileID: 4569435926333764122, guid: 49d96106c5d1d8c4a816dc7896a77450, type: 3}
     tags:
     - CreatorPlayer
     id: 665e05e758e847063761c985
   - cacheId: 366ab888443b26f4aaa74a7359640f6a
-    template: {fileID: 2223751625615617321, guid: 366ab888443b26f4aaa74a7359640f6a, type: 3}
+    template: {fileID: 6073806283708594991, guid: 7928b29402aff6b44a662905485ed2ee, type: 3}
     tags:
     - Creator
     id: 5a58f24e-35d1-4859-a61b-a976eebc8efc
   - cacheId: 366ab888443b26f4aaa74a7359640f6a
-    template: {fileID: 5898347523195391785, guid: 274a036e9c310464f930f73b2f77a1a3, type: 3}
+    template: {fileID: 2874618736321144676, guid: c6e1cfce6a1fd70498ecf700cfb5840d, type: 3}
     tags:
     - CreatorPlayer
     id: 5a58f24e-35d1-4859-a61b-a976eebc8efc
