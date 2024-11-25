@@ -583,7 +583,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614583}
   - {fileID: 8926484042661615222}
   dataType: 0
-  capacity: 25
+  capacity: 15
   stripCapacity: 16
   particlePerStripCount: 16
   needsComputeBounds: 0
@@ -8856,7 +8856,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 10
+      m_SerializableObject: 20
     m_Space: 2147483647
   m_Property:
     name: max
@@ -9183,7 +9183,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 10
+      m_SerializableObject: 30
     m_Space: 2147483647
   m_Property:
     name: max
@@ -13167,7 +13167,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615386}
   - {fileID: 8926484042661615394}
   dataType: 0
-  capacity: 150
+  capacity: 100
   stripCapacity: 1
   particlePerStripCount: 128
   needsComputeBounds: 1
