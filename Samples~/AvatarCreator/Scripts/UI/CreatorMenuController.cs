@@ -4,17 +4,18 @@ using ReadyPlayerMe.Demo;
 using ReadyPlayerMe.Samples.AvatarCreator;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class CreatorMenuController : MonoBehaviour
     {
-        [SerializeField] private CategoryPanel categoryPanel;
+        [FormerlySerializedAs("categoryPanel"),SerializeField] private CategoryTextButtonPanel categoryTextButtonPanel;
         [SerializeField] private AssetPanel assetPanelPrefab;
         [SerializeField] private Transform assetPanelContainer;
         [SerializeField] private GameObject loadingCanvas;
         [SerializeField] private Animation menuAnimation;
-        [SerializeField] private DragRotate dragRotate;
+        [FormerlySerializedAs("dragRotate"),SerializeField] private DragRotatePanel dragRotatePanel;
 
         private AssetPanel activeAssetPanel;
         private Dictionary<string, AssetPanel> assetPanelMap = new Dictionary<string, AssetPanel>();
@@ -25,7 +26,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
         private async void Start()
         {
-            categoryPanel.LoadCategories();
+            categoryTextButtonPanel.LoadCategories();
         }
 
         public async void CreatePanelsFromCategories(string[] categories)
