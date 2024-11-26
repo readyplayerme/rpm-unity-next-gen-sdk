@@ -359,9 +359,13 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 var loadedOutfit = await LoadAssetFromCache(asset);
                 meshTransfer.TransferMeshes(characterObject.transform, loadedOutfit.Outfit.transform, characterObject.transform);
-                foreach (var skinnedMesh in equippedMeshes[asset.Type])
+                if(equippedMeshes.ContainsKey(asset.Type))
                 {
-                    Destroy(skinnedMesh.gameObject);
+                    foreach (var skinnedMesh in equippedMeshes[asset.Type])
+                    {
+                        Destroy(skinnedMesh.gameObject);
+                    }
+                    equippedMeshes.Remove(asset.Type);
                 }
                 equippedMeshes[asset.Type] = loadedOutfit.Meshes;
                 Destroy(loadedOutfit.Outfit);
