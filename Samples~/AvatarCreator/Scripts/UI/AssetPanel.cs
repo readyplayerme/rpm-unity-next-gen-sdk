@@ -50,6 +50,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(assetButton.gameObject);
             }
             assetButtons.Clear();
+            StopAllCoroutines();
         }
         
         public void CreateAssetButton(Asset asset)

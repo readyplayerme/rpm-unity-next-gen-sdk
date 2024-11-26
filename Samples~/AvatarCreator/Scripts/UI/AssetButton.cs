@@ -47,7 +47,6 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
                 cancellationTokenSource.Token.ThrowIfCancellationRequested();
                 if(cancellationTokenSource.Token.IsCancellationRequested || iconImage == null) return;
-                
                 var sprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), Vector2.zero);
                 iconImage.sprite = sprite;
                 gameObject.SetActive(true);
