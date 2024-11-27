@@ -14,7 +14,7 @@ Material:
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - _ALPHABLEND_ON
-  m_LightmapFlags: 0
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
@@ -105,7 +105,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _ShadowIntensity: 0.79
-    - _Smoothness: 0.673
+    - _Smoothness: 0.15
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 5
@@ -114,9 +114,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.14871812, b: 0.5, a: 0.57254905}
-    - _Color: {r: 0, g: 0.14871809, b: 0.5, a: 0.57254905}
-    - _EmissionColor: {r: 0, g: 0.14901961, b: 0.43137255, a: 1}
+    - _BaseColor: {r: 0, g: 0.45766506, b: 0.67058825, a: 0.57254905}
+    - _Color: {r: 0, g: 0.45766497, b: 0.67058825, a: 0.57254905}
+    - _EmissionColor: {r: 0, g: 0.07450981, b: 0.21568628, a: 1}
     - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
