@@ -94,5 +94,15 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 
             animator.enabled = true;
         }
+        
+        public void SetInputEnabled(bool isEnabled)
+        {
+            var thirdPersonController = character.GetComponent<ThirdPersonController>();
+            if(thirdPersonController == null)
+            {
+                return;
+            }
+            thirdPersonController.SetInputEnabled(isEnabled);
+        }
     }
 }
