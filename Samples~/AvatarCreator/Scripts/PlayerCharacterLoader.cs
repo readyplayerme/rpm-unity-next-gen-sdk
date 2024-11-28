@@ -4,7 +4,6 @@ using System.Threading;
 using GLTFast;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Samples.QuickStart;
 using UnityEngine;
 using UnityEngine.Events;
 
