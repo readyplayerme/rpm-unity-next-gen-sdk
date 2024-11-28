@@ -35,6 +35,11 @@
       "displayName": "Basic UI Sample",
       "description": "A UI sample that show how to use Asset API of Ready Player Me SDK",
       "path": "Samples~/Basic UI"
+    },
+    {
+      "displayName": "Avatar Creator Sample",
+      "description": "This sample demonstrates how to implement a character customization system using Ready Player Me, and then load an avatar into a scene with a 3rd person controller.",
+      "path": "Samples~/AvatarCreator"
     }
   ]
 }
