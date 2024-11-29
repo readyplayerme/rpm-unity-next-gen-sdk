@@ -1,4 +1,3 @@
-using ReadyPlayerMe.Samples.QuickStart;
 using UnityEngine;
 using UnityEngine.Events;
 
