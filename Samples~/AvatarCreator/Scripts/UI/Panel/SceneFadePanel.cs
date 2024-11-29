@@ -1,12 +1,10 @@
-
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SceneFadePanel : MonoBehaviour
 {
     private static readonly int FadeInTrigger = Animator.StringToHash("FadeIn");
     private static readonly int FadeOutTrigger = Animator.StringToHash("FadeOut");
-    private static readonly int OpaqueTrigger = Animator.StringToHash("Opaque");
-    private static readonly int TransparentTrigger = Animator.StringToHash("Transparent");
     
     [SerializeField]
     private Animator animator;
@@ -14,7 +12,7 @@ public class SceneFadePanel : MonoBehaviour
     [SerializeField]
     private bool fadeInOnStart = true;
     [SerializeField]
-    private int sceneIndexToLoad = 0;
+    private string sceneNameToLoad;
     
     private void Start()
     {
@@ -43,9 +41,6 @@ public class SceneFadePanel : MonoBehaviour
 
     public void OnFadeOutComplete()
     {
-        if(sceneIndexToLoad >= 0 && sceneIndexToLoad < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndexToLoad);
-        }
+        SceneManager.LoadScene(sceneNameToLoad);
     }
 }
