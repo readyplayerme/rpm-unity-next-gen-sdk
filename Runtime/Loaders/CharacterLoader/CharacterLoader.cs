@@ -110,15 +110,6 @@ namespace ReadyPlayerMe
             });
             CharacterData characterData = LoadTemplate(templateTagOrId);
             
-            if (characterData == null)
-            {
-                Debug.LogWarning($" CharacterData is null. Character ID: {characterId}");
-            }
-            
-            if(characterData.gameObject == null)
-            {
-                Debug.LogWarning($" CharacterData GameObject is null. Character ID: {characterId}");
-            }
             characterData.Assets.Add(asset.Type, asset);
             characterData.gameObject.SetActive(false);
             
@@ -183,15 +174,7 @@ namespace ReadyPlayerMe
             
             Character character = response.Data;
             CharacterData characterData = LoadTemplate(templateTagOrId);
-            if (characterData == null)
-            {
-                Debug.LogWarning($" CharacterData is null. Character ID: {character.Id}");
-            }
-            
-            if(characterData.gameObject == null)
-            {
-                Debug.LogWarning($" CharacterData GameObject is null. Character ID: {character.Id}");
-            }
+
             characterData.gameObject.SetActive(false);
             
             var gltf = new GltfImport();
@@ -252,12 +235,12 @@ namespace ReadyPlayerMe
         /// <returns> A CharacterData object representing the loaded template. </returns>
         private CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
-            GameObject template = GetTemplate(templateTagOrId);
-            if(template == null)
+            GameObject templatePrefab = GetTemplate(templateTagOrId);
+            if(templatePrefab == null)
             {
-                Debug.Log($"Template is null. Template Tag or ID: {templateTagOrId}");
+                Debug.Log($"Template is with Tag or Id {templateTagOrId} is null.");
             }
-            GameObject templateInstance = template != null ? Object.Instantiate(template) : null;
+            GameObject templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
 
             var data = templateInstance?.GetComponent<CharacterData>();
 
