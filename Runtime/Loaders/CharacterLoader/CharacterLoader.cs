@@ -90,61 +90,6 @@ namespace ReadyPlayerMe
                 
             return characterData;
         }
-
-        public async Task<CharacterData> LoadAssetPreviewAsync(string characterId, string templateTagOrId, Asset asset)
-        {
-            var assetIdAlreadyExists = equippedAssetMap.ContainsKey(asset.Type) && equippedAssetMap[asset.Type] == asset.Id;
-            equippedAssetMap[asset.Type] = asset.Id;
-            if(assetIdAlreadyExists)
-            {
-                equippedAssetMap.Remove(asset.Type);
-            }
-            
-            var previewUrl = _characterApi.GeneratePreviewUrl( new CharacterPreviewRequest()
-            {
-                Id = characterId,
-                Params = new CharacterPreviewQueryParams()
-                {
-                    Assets = equippedAssetMap
-                }
-            });
-            CharacterData characterData = LoadTemplate(templateTagOrId);
-            
-            characterData.Assets.Add(asset.Type, asset);
-            characterData.gameObject.SetActive(false);
-            
-            var gltf = new GltfImport();
-
-            if (!await gltf.Load(previewUrl))
-                return null;
-
-            var characterObject = new GameObject(characterId);
-            await gltf.InstantiateSceneAsync(characterObject.transform);
-
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
-                .definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
-                .definition;
-
-            characterData.gameObject.TryGetComponent<Animator>(out var animator);
-            animator.enabled = false;
-            
-            var animationAvatar = animator.avatar;
-            if (animationAvatar == null)
-            {
-                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
-                    ? skeletonDefinition.GetHumanBones()
-                    : null
-                );
-            }
-                
-            _meshTransfer.Transfer(characterObject, characterData.gameObject);
-            characterData.gameObject.SetActive(true);
-                
-            animator.enabled = true;
-            
-            return characterData;
-        }
         
         /// <summary>
         ///   Asynchronously loads a character based on the given character ID, template tag or ID, and asset.
