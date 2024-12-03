@@ -181,10 +181,6 @@ namespace ReadyPlayerMe
         private CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
             GameObject templatePrefab = GetTemplate(templateTagOrId);
-            if(templatePrefab == null)
-            {
-                Debug.Log($"Template is with Tag or Id {templateTagOrId} is null.");
-            }
             GameObject templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
 
             var data = templateInstance?.GetComponent<CharacterData>();
