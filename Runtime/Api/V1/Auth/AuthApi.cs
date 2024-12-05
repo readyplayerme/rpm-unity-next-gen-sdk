@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine.Networking;
@@ -7,7 +8,7 @@ namespace ReadyPlayerMe.Api.V1
 {
     public class AuthApi : WebApi
     {
-        public virtual async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request)
+        public virtual async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default)
         {
             return await Dispatch<RefreshTokenResponse, RefreshTokenRequestBody>(
                 new ApiRequest<RefreshTokenRequestBody>()
@@ -19,13 +20,12 @@ namespace ReadyPlayerMe.Api.V1
                         { "Content-Type", "application/json" },
                     },
                     Payload = request.Payload
-                }
-            );
+                },
+            cancellationToken);
         }
 
-        public virtual async Task<SendLoginCodeResponse> SendLoginCodeAsync(SendLoginCodeRequest request)
+        public virtual async Task<SendLoginCodeResponse> SendLoginCodeAsync(SendLoginCodeRequest request, CancellationToken cancellationToken = default)
         {
-            
             var payload = JsonConvert.SerializeObject(request, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
@@ -42,10 +42,10 @@ namespace ReadyPlayerMe.Api.V1
                 },
                 Payload = payload
             };
-            return await Dispatch<SendLoginCodeResponse>(apiRequest);
+            return await Dispatch<SendLoginCodeResponse>(apiRequest, cancellationToken);
         }
         
-        public virtual async Task<LoginWithCodeResponse> LoginWithCodeAsync(LoginWithCodeRequest request)
+        public virtual async Task<LoginWithCodeResponse> LoginWithCodeAsync(LoginWithCodeRequest request, CancellationToken cancellationToken = default)
         {
             
             var payload = JsonConvert.SerializeObject(request, new JsonSerializerSettings
@@ -64,10 +64,10 @@ namespace ReadyPlayerMe.Api.V1
                 },
                 Payload = payload
             };
-            return await Dispatch<LoginWithCodeResponse>(apiRequest);
+            return await Dispatch<LoginWithCodeResponse>(apiRequest, cancellationToken);
         }
 
-        public virtual async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
+        public virtual async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken = default)
         {
             return await Dispatch<CreateUserResponse, CreateUserRequest>(
                 new ApiRequest<CreateUserRequest>()
@@ -79,8 +79,8 @@ namespace ReadyPlayerMe.Api.V1
                         { "Content-Type", "application/json" },
                     },
                     Payload = request
-                }
-            );;
+                }, cancellationToken
+            );
         }
     }
 }

@@ -134,12 +134,15 @@ namespace ReadyPlayerMe
         {
             if (File.Exists(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH))
             {
+                // TODO probably worth adding some sort of date checking to see if the cache is out of date in future to prevent unnecessary re-extraction
                 if (Directory.Exists(CachePaths.CACHE_ASSET_ROOT))
                 {
                     Directory.Delete(CachePaths.CACHE_ASSET_ROOT, true);
                 }
                 ZipFile.ExtractToDirectory(CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH, CachePaths.CACHE_ASSET_ROOT, true);
+                return;
             }
+            Debug.LogWarning($"{CachePaths.PROJECT_CACHE_ASSET_ZIP_PATH} does not exist, cache extraction failed.");
         }
     }
 }

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d454932519364ad697e678bd99295ce7, type: 3}
+  m_Name: CreatorSampleTemplates
+  m_EditorClassIdentifier: 
+  templates:
+  - cacheId: d82b51df37804f546931cfd96c8c3525
+    template: {fileID: 2076509455048383094, guid: aad03514bc3c97b4295ed897b9e44e58, type: 3}
+    tags:
+    - Creator
+    id: 665e05e758e847063761c985
+  - cacheId: d82b51df37804f546931cfd96c8c3525
+    template: {fileID: 4569435926333764122, guid: 49d96106c5d1d8c4a816dc7896a77450, type: 3}
+    tags:
+    - CreatorPlayer
+    id: 665e05e758e847063761c985
+  - cacheId: 366ab888443b26f4aaa74a7359640f6a
+    template: {fileID: 6073806283708594991, guid: 7928b29402aff6b44a662905485ed2ee, type: 3}
+    tags:
+    - Creator
+    id: 5a58f24e-35d1-4859-a61b-a976eebc8efc
+  - cacheId: 366ab888443b26f4aaa74a7359640f6a
+    template: {fileID: 2874618736321144676, guid: c6e1cfce6a1fd70498ecf700cfb5840d, type: 3}
+    tags:
+    - CreatorPlayer
+    id: 5a58f24e-35d1-4859-a61b-a976eebc8efc

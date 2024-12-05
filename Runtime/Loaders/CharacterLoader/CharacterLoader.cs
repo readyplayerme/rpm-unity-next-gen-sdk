@@ -18,6 +18,8 @@ namespace ReadyPlayerMe
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
         
+        private Dictionary<string, string> equippedAssetMap = new Dictionary<string, string>();
+        
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
@@ -57,6 +59,10 @@ namespace ReadyPlayerMe
                 });
                 
                 characterData = LoadTemplate(templateTagOrId, createResponse.Data.Id);
+                foreach (var kvp in characterData.Assets)
+                {
+                    equippedAssetMap.Add(kvp.Key, kvp.Value.Id);
+                }
             }
             
             characterData.gameObject.SetActive(false);
@@ -112,7 +118,8 @@ namespace ReadyPlayerMe
             });
             
             Character character = response.Data;
-            CharacterData characterData = LoadTemplate(templateTagOrId, character.Id);
+            CharacterData characterData = LoadTemplate(templateTagOrId);
+
             characterData.gameObject.SetActive(false);
             
             var gltf = new GltfImport();
@@ -173,8 +180,8 @@ namespace ReadyPlayerMe
         /// <returns> A CharacterData object representing the loaded template. </returns>
         private CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
-            GameObject template = GetTemplate(templateTagOrId);
-            GameObject templateInstance = template != null ? Object.Instantiate(template) : null;
+            GameObject templatePrefab = GetTemplate(templateTagOrId);
+            GameObject templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
 
             var data = templateInstance?.GetComponent<CharacterData>();
 

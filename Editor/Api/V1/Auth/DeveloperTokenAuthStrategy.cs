@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using ReadyPlayerMe.Api;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Editor.Cache;
@@ -15,14 +16,14 @@ namespace ReadyPlayerMe.Editor.Api.V1.Auth
             _authApi = new AuthApi();
         }
 
-        public Task AddAuthToRequestAsync<T>(ApiRequest<T> request)
+        public Task AddAuthToRequestAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default)
         {
             request.Headers.Add("Authorization",$"Bearer {DeveloperAuthCache.Data?.Token}");
 
             return Task.CompletedTask;
         }
 
-        public async Task<bool> TryRefreshAsync<T>(ApiRequest<T> request)
+        public async Task<bool> TryRefreshAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default)
         {
             if (!request.Headers.ContainsKey("Authorization"))
                 return false;
@@ -35,7 +36,7 @@ namespace ReadyPlayerMe.Editor.Api.V1.Auth
                         RefreshToken = DeveloperAuthCache.Data.RefreshToken,
                         Token = DeveloperAuthCache.Data.Token,
                     }
-                });
+                }, cancellationToken);
 
             if (!refreshTokenResponse.IsSuccess)
                 DeveloperAuthCache.Delete();
