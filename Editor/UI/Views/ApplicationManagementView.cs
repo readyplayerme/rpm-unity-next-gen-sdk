@@ -27,7 +27,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
             _selectInput = new SelectInput();
             _textInput = new TextInput();
 
-            var characterBlueprintsViewModel = new CharacterBlueprintsViewModel(viewModel.AssetApi, viewModel.Settings, _viewModel.AnalyticsApi);
+            var characterBlueprintsViewModel = new CharacterBlueprintsViewModel(viewModel.BlueprintApi, viewModel.Settings, _viewModel.AnalyticsApi);
             characterBlueprintsView = new CharacterBlueprintsView(characterBlueprintsViewModel);
             _characterTemplateViews = new List<CharacterTemplateView>();
 

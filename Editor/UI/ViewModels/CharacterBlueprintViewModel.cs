@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class CharacterBlueprintViewModel
     {
-        public Asset CharacterBlueprint { get; private set; }
+        public CharacterBlueprint CharacterBlueprint { get; private set; }
 
         public string BoneDefinitionCacheId { get; private set; }
 
@@ -32,7 +32,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             _analyticsApi = analyticsApi;
         }
 
-        public async Task Init(Asset characterBlueprint)
+        public async Task Init(CharacterBlueprint characterBlueprint)
         {
             _skeletonDefinitionObjectCache =
                 Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
@@ -44,12 +44,12 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             BoneDefinitionCacheId = _skeletonDefinitionObjectCache.definitionLinks
                 .FirstOrDefault(p => p.characterBlueprintId == characterBlueprint.Id)?.definitionCacheId;
             
-            Image = await _fileApi.DownloadImageAsync(CharacterBlueprint.IconUrl);
+            Image = await _fileApi.DownloadImageAsync(CharacterBlueprint.CharacterModel.IconUrl);
         }
 
         public async Task LoadBlueprintAsync()
         {
-            var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterBlueprint.GlbUrl);
+            var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterBlueprint.CharacterModel.ModelUrl);
 
             await _characterBlueprintCache.Save(bytes, CharacterBlueprint.Id);
 

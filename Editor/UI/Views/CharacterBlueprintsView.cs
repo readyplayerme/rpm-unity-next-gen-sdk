@@ -10,7 +10,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
     public class CharacterBlueprintsView
     {
         private readonly CharacterBlueprintsViewModel _viewModel;
-        private IList<CharacterBlueprintView> _characterStyleViews;
+        private IList<CharacterBlueprintView> _characterBlueprintViews;
 
         public CharacterBlueprintsView(CharacterBlueprintsViewModel viewModel)
         {
@@ -21,7 +21,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
         {
             await _viewModel.Init();
 
-            _characterStyleViews = await Task.WhenAll(_viewModel.CharacterBlueprints.Select(async style =>
+            _characterBlueprintViews = await Task.WhenAll(_viewModel.CharacterBlueprints.Select(async style =>
             {
                 var viewModel = new CharacterBlueprintViewModel(_viewModel.AnalyticsApi);
                 var view = new CharacterBlueprintView(viewModel);
@@ -97,10 +97,10 @@ namespace ReadyPlayerMe.Editor.UI.Views
                        margin = new RectOffset(9, 9, 5, 5)
                    }))
             {
-                if (_characterStyleViews == null)
+                if (_characterBlueprintViews == null)
                     return;
                 
-                foreach (var characterStyleView in _characterStyleViews)
+                foreach (var characterStyleView in _characterBlueprintViews)
                 {
                     using (new GUILayout.VerticalScope())
                     {

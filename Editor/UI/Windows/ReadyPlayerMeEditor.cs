@@ -28,9 +28,8 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         {
             var developerAuthApi = new DeveloperAuthApi();
             var developerAccountApi = new DeveloperAccountApi();
-            var assetApi = new AssetApi();
+            var blueprintApi = new BlueprintApi();
             var analyticsApi = new AnalyticsApi();
-            assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
 
             var settingsCache = new ScriptableObjectCache<Settings>();
             var settings = settingsCache.Init("ReadyPlayerMeSettings");
@@ -46,7 +45,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
 
             var projectDetailsViewModel = new ApplicationManagementViewModel(
                 analyticsApi,
-                assetApi,
+                blueprintApi,
                 developerAccountApi,
                 settings
             );

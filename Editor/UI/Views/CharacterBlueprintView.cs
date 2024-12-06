@@ -19,7 +19,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
             _boneDefinitionInput = new ObjectInput<SkeletonDefinition>();
         }
 
-        public async Task Init(Asset characterBlueprint)
+        public async Task Init(CharacterBlueprint characterBlueprint)
         {
             await _viewModel.Init(characterBlueprint);
             
