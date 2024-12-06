@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.1.0] - 2024.12.02
+## [0.2.0] - 2024.12.06
 
 ## Updated
 - Cancellation tokens now added as optional parameter to web requests and other async methods
