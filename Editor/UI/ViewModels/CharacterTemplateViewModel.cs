@@ -5,23 +5,23 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class CharacterTemplateViewModel
     {
-        public CharacterStyleTemplate CharacterStyleTemplate;
+        public CharacterBlueprintTemplate CharacterBlueprintTemplate;
         public bool IsOpen = false;
         
-        public void Init(CharacterStyleTemplate characterStyleTemplate)
+        public void Init(CharacterBlueprintTemplate characterBlueprintTemplate)
         {
-            CharacterStyleTemplate = characterStyleTemplate;
+            CharacterBlueprintTemplate = characterBlueprintTemplate;
         }
 
         public void SaveTemplate(GameObject newTemplate)
         {
-            CharacterStyleTemplate.template = newTemplate;
-            CharacterStyleTemplate.cacheId = Cache.Cache.FindAssetGuid(newTemplate);
+            CharacterBlueprintTemplate.template = newTemplate;
+            CharacterBlueprintTemplate.cacheId = Cache.Cache.FindAssetGuid(newTemplate);
         }
 
         public void SaveTag(string tag)
         {
-            CharacterStyleTemplate.tags[0] = tag;
+            CharacterBlueprintTemplate.tags[0] = tag;
         }
     }
 }

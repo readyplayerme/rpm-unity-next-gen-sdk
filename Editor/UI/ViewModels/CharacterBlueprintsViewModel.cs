@@ -7,19 +7,19 @@ using ReadyPlayerMe.Editor.Api.V1.Analytics;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
-    public class CharacterStylesViewModel
+    public class CharacterBlueprintsViewModel
     {
         private const string BASE_MODEL_LABEL = "baseModel";
         
         public bool Loading { get; private set; }
 
-        public IList<Asset> CharacterStyles { get; private set; } = new List<Asset>();
+        public IList<Asset> CharacterBlueprints { get; private set; } = new List<Asset>();
         
         private readonly AssetApi _assetApi;
         private readonly Settings _settings;
         public readonly AnalyticsApi AnalyticsApi;
 
-        public CharacterStylesViewModel(AssetApi assetApi, Settings settings, AnalyticsApi analyticsApi)
+        public CharacterBlueprintsViewModel(AssetApi assetApi, Settings settings, AnalyticsApi analyticsApi)
         {
             _assetApi = assetApi;
             _settings = settings;
@@ -32,7 +32,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             if (string.IsNullOrEmpty(_settings.ApplicationId))
             {
-                CharacterStyles = new List<Asset>();
+                CharacterBlueprints = new List<Asset>();
                 Loading = false;
                 return;
             }
@@ -46,7 +46,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 }
             });
             
-            CharacterStyles = response.Data.ToList();
+            CharacterBlueprints = response.Data.ToList();
 
             Loading = false;
         }

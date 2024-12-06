@@ -10,9 +10,9 @@ using UnityEngine;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
-    public class CharacterStyleViewModel
+    public class CharacterBlueprintViewModel
     {
-        public Asset CharacterStyle { get; private set; }
+        public Asset CharacterBlueprint { get; private set; }
 
         public string BoneDefinitionCacheId { get; private set; }
 
@@ -21,43 +21,43 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         private SkeletonDefinitionConfig
             _skeletonDefinitionObjectCache;
 
-        private GlbCache _characterStyleCache;
+        private GlbCache _characterBlueprintCache;
         
         private readonly AnalyticsApi _analyticsApi;
         private readonly FileApi _fileApi;
         
-        public CharacterStyleViewModel(AnalyticsApi analyticsApi)
+        public CharacterBlueprintViewModel(AnalyticsApi analyticsApi)
         {
             _fileApi = new FileApi();
             _analyticsApi = analyticsApi;
         }
 
-        public async Task Init(Asset characterStyle)
+        public async Task Init(Asset characterBlueprint)
         {
             _skeletonDefinitionObjectCache =
                 Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
 
-            _characterStyleCache = new GlbCache("Character Templates");
+            _characterBlueprintCache = new GlbCache("Character Blueprints");
 
-            CharacterStyle = characterStyle;
+            CharacterBlueprint = characterBlueprint;
 
             BoneDefinitionCacheId = _skeletonDefinitionObjectCache.definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == characterStyle.Id)?.definitionCacheId;
+                .FirstOrDefault(p => p.characterBlueprintId == characterBlueprint.Id)?.definitionCacheId;
             
-            Image = await _fileApi.DownloadImageAsync(CharacterStyle.IconUrl);
+            Image = await _fileApi.DownloadImageAsync(CharacterBlueprint.IconUrl);
         }
 
-        public async Task LoadStyleAsync()
+        public async Task LoadBlueprintAsync()
         {
-            var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterStyle.GlbUrl);
+            var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterBlueprint.GlbUrl);
 
-            await _characterStyleCache.Save(bytes, CharacterStyle.Id);
+            await _characterBlueprintCache.Save(bytes, CharacterBlueprint.Id);
 
-            var character = _characterStyleCache.Load(CharacterStyle.Id);
+            var character = _characterBlueprintCache.Load(CharacterBlueprint.Id);
             var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
             var skeletonBuilder = new SkeletonBuilder();
             var skeletonDefinition = _skeletonDefinitionObjectCache.definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == CharacterStyle.Id)?
+                .FirstOrDefault(p => p.characterBlueprintId == CharacterBlueprint.Id)?
                 .definition;
             
             _analyticsApi.SendEvent(new AnalyticsEventRequest()
@@ -67,8 +67,8 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                     Event = "next gen unity sdk action",
                     Properties =
                     {
-                        { "type", "Import Character Style" },
-                        { "styleId", CharacterStyle.Id }
+                        { "type", "Import Character Blueprint" },
+                        { "blueprintId", CharacterBlueprint.Id }
                     }
                 }
             });
@@ -85,7 +85,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
             var definitionList = skeletonDefinitionConfig.definitionLinks.ToList();
             var existingDefinitions = definitionList
-                .Where(p => p.characterStyleId != CharacterStyle.Id)
+                .Where(p => p.characterBlueprintId != CharacterBlueprint.Id)
                 .ToList();
 
             if (skeletonDefinitionObject != null)
@@ -93,7 +93,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 var definition = new SkeletonDefinitionLink()
                 {
                     definition = skeletonDefinitionObject,
-                    characterStyleId = CharacterStyle.Id,
+                    characterBlueprintId = CharacterBlueprint.Id,
                     definitionCacheId = Cache.Cache.FindAssetGuid(skeletonDefinitionObject)
                 };
 
@@ -113,7 +113,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                     Properties =
                     {
                         { "type", "Save Skeleton Definition" },
-                        { "styleId", CharacterStyle.Id }
+                        { "blueprintId", CharacterBlueprint.Id }
                     }
                 }
             });

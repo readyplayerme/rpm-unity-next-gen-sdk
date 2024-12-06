@@ -6,21 +6,21 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public static class CharacterTemplateExtensions
     {
-        public static GameObject GetTemplate(this CharacterStyleTemplateConfig characterStyleTemplateConfig, string templateId)
+        public static GameObject GetTemplate(this CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig, string templateId)
         {
             if (string.IsNullOrEmpty(templateId))
                 return null;
 
-            return characterStyleTemplateConfig.templates.FirstOrDefault(p => p.id == templateId)?
+            return characterBlueprintTemplateConfig.templates.FirstOrDefault(p => p.id == templateId)?
                 .template;
         }
         
-        public static GameObject GetTemplate(this CharacterStyleTemplateConfig characterStyleTemplateConfig, string templateId, string tag)
+        public static GameObject GetTemplate(this CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig, string templateId, string tag)
         {
             if (string.IsNullOrEmpty(templateId))
                 return null;
             
-            var templatesWithId = characterStyleTemplateConfig.templates.Where(p => p.id == templateId).ToList();
+            var templatesWithId = characterBlueprintTemplateConfig.templates.Where(p => p.id == templateId).ToList();
             if (templatesWithId.Count == 0)
                 return null;
             

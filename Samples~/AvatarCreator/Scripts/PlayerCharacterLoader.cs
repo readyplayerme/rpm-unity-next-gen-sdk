@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class PlayerCharacterLoader : MonoBehaviour
     {
         [SerializeField]
-        private CharacterStyleTemplateConfig characterStyleTemplateConfig;
+        private CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig;
         [SerializeField]
         private Camera thirdPersonCamera;
         private GameObject character;
@@ -31,12 +31,12 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             characterApi = new CharacterApi();
             meshTransfer = new MeshTransfer();
             var characterId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_PREF);
-            var styleId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_STYLE_PREF);
+            var blueprintId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_STYLE_PREF);
             var findCharacterResponse = await characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId
             });
-            character = Instantiate(characterStyleTemplateConfig.GetTemplate(styleId, "CreatorPlayer"));
+            character = Instantiate(characterBlueprintTemplateConfig.GetTemplate(blueprintId, "CreatorPlayer"));
             var playerController = character.GetComponent<ThirdPersonMovement>();
             if(playerController == null)
             {
@@ -53,7 +53,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 await gltf.InstantiateSceneAsync(outfit.transform, 0, cancellationTokenSource.Token);
                 meshTransfer.TransferMeshes(character.transform, outfit.transform, character.transform);
                 Destroy(outfit);
-                SetupSkeletonAndAnimator(styleId);
+                SetupSkeletonAndAnimator(blueprintId);
                 character.SetActive(true);
             }
             catch (Exception e)
@@ -70,12 +70,12 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             cancellationTokenSource?.Cancel();
         }
 
-        private void SetupSkeletonAndAnimator(string styleId)
+        private void SetupSkeletonAndAnimator(string blueprintId)
         {
 
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(Constants.SKELETON_DEFINITION_LABEL)
                 .definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == styleId)?
+                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
                 .definition;
 
             character.gameObject.TryGetComponent<Animator>(out var animator);

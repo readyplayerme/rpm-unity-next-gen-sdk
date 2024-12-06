@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Editor.PostProcessors
 {
     public class SampleImportPostProcessor : AssetPostprocessor
     {
-        public const string DemoCharacterStyleId = "665e05e758e847063761c985";
+        public const string DemoCharacterBlueprintId = "665e05e758e847063761c985";
         
         private static void OnPostprocessAllAssets(
             string[] importedAssets,
@@ -23,21 +23,21 @@ namespace ReadyPlayerMe.Editor.PostProcessors
         {
             if (importedAssets.FirstOrDefault(p => p.Contains("Character Clothing Example")) != null)
             {
-                var characterStyleConfigCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
-                var characterStyleConfig = characterStyleConfigCache.Init("CharacterStyleTemplateConfig");
-                var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterStyleTemplate>();
-                var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains(DemoCharacterStyleId));
+                var characterStyleConfigCache = new ScriptableObjectCache<CharacterBlueprintTemplateConfig>();
+                var characterStyleConfig = characterStyleConfigCache.Init("CharacterBlueprintTemplateConfig");
+                var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterBlueprintTemplate>();
+                var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains(DemoCharacterBlueprintId));
                 if (existingTemplate == null)
                 {
                     var matchingTemplates = AssetDatabase.FindAssets("RPM_Character_Template");
                     var templatePath = AssetDatabase.GUIDToAssetPath(matchingTemplates[0]);
                     var templateAsset = AssetDatabase.LoadAssetAtPath<GameObject>(templatePath);
 
-                    templates.Add(new CharacterStyleTemplate()
+                    templates.Add(new CharacterBlueprintTemplate()
                     {
                         id = Guid.NewGuid().ToString(),
                         cacheId = matchingTemplates[0],
-                        tags = new List<string>() { DemoCharacterStyleId },
+                        tags = new List<string>() { DemoCharacterBlueprintId },
                         template = templateAsset
                     });
                 }

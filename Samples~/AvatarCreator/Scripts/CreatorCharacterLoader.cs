@@ -24,10 +24,10 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class CreatorCharacterLoader : MonoBehaviour
     {
         [SerializeField]
-        private CharacterStyleTemplateConfig characterStyleTemplateConfig;
+        private CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig;
         
         [SerializeField]
-        private string styleId = "665e05e758e847063761c985";
+        private string blueprintId = "665e05e758e847063761c985";
         
         private CharacterApi characterApi;
         private MeshTransfer meshTransfer;
@@ -82,13 +82,13 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     {
                         Assets =  new Dictionary<string, string>
                         {
-                            {Constants.STYLE_ASSET_LABEL, styleId}
+                            {Constants.STYLE_ASSET_LABEL, blueprintId}
                         }
                     }
                 }, cancellationTokenSource.Token);
                 characterId = createResponse.Data.Id;
                 PlayerPrefs.SetString(STORED_CHARACTER_PREF, characterId);
-                PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, styleId);
+                PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, blueprintId);
                 LoadStyleTemplate();
                 characterObject.SetActive(false);
                 await GetCachedAssets();
@@ -126,7 +126,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     Params = new AssetListQueryParams()
                     {
                         ExcludeTypes = "baseModel",
-                        CharacterModelAssetId = styleId,
+                        CharacterModelAssetId = blueprintId,
                         Limit = 100
                     }
                 }, cancellationTokenSource.Token);
@@ -151,8 +151,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(characterObject);
                 equippedMeshes.Clear();
             }
-            characterObject = Instantiate(characterStyleTemplateConfig.GetTemplate( styleId, "Creator"));
-            assetsMap[Constants.STYLE_ASSET_LABEL] = new Asset {Id = styleId, Type = Constants.STYLE_ASSET_LABEL};
+            characterObject = Instantiate(characterBlueprintTemplateConfig.GetTemplate( blueprintId, "Creator"));
+            assetsMap[Constants.STYLE_ASSET_LABEL] = new Asset {Id = blueprintId, Type = Constants.STYLE_ASSET_LABEL};
             var skinnedMeshes = characterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             equippedMeshes[Constants.STYLE_ASSET_LABEL] = skinnedMeshes;
             OnCharacterLoaded?.Invoke(characterObject);
@@ -163,7 +163,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(Constants.SKELETON_DEFINITION_LABEL)
                 .definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == styleId)?
+                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
                 .definition;
 
             characterObject.gameObject.TryGetComponent<Animator>(out var animator);
@@ -186,7 +186,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             if (useCache && File.Exists(CachePaths.CACHE_ASSET_JSON_PATH))
             {
                 
-                assetsInCache = await LoadAssetsFromCacheAsync(styleId);
+                assetsInCache = await LoadAssetsFromCacheAsync(blueprintId);
             }
         }
 
@@ -260,7 +260,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 {
                     Params = new AssetListQueryParams()
                     {
-                        CharacterModelAssetId = styleId,
+                        CharacterModelAssetId = blueprintId,
                         Ids = nonCachedAssetIds
                     }
                 });
@@ -347,9 +347,9 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         {
             if (asset.IsStyleAsset())
             {
-                styleId = asset.Id;
+                blueprintId = asset.Id;
                 UpdateBaseModel();
-                PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, styleId);
+                PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, blueprintId);
                 return;
             }
             assetsMap[asset.Type] = asset;
@@ -381,7 +381,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                         Params = new AssetListQueryParams()
                         {
                             Type = asset.Type,
-                            CharacterModelAssetId = styleId,
+                            CharacterModelAssetId = blueprintId,
                             Ids = new []{ asset.Id }
                         }
                     }, cancellationTokenSource.Token);
@@ -456,7 +456,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             loadedOutfit.Outfit = outfit;
             outfit.transform.SetParent(loadingObject.transform);
 
-            var path = $"{CachePaths.CACHE_ASSET_ROOT}/{styleId}/{asset.Id}";
+            var path = $"{CachePaths.CACHE_ASSET_ROOT}/{blueprintId}/{asset.Id}";
             try
             {
                 cancellationTokenSource = new CancellationTokenSource();
@@ -490,7 +490,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 var gltf = new GltfImport();
                 var outfit = new GameObject(asset.Id);
                 outfit.transform.SetParent(loadingObject.transform);
-                var path = $"{CachePaths.CACHE_ASSET_ROOT}/{styleId}/{asset.Id}";
+                var path = $"{CachePaths.CACHE_ASSET_ROOT}/{blueprintId}/{asset.Id}";
                 byte[] assetBytes = await File.ReadAllBytesAsync(path);
                 await gltf.Load(assetBytes);
                 await gltf.InstantiateSceneAsync(outfit.transform);
@@ -540,7 +540,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Debug.Log(asset.Type);
             }
             await LoadAssetPreview(assetArray); 
-            PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, styleId);
+            PlayerPrefs.SetString(STORED_CHARACTER_STYLE_PREF, blueprintId);
             var previousRotation = previousCharacterObject.transform.rotation;
             Destroy(previousCharacterObject);
             if (characterObject != null)
