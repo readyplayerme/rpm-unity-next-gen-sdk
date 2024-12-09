@@ -70,7 +70,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                         margin = new RectOffset(9, 10, 0, 0)
                     });
 
-                if (GUILayout.Button("Create first style in Studio", new GUIStyle(GUI.skin.button)
+                if (GUILayout.Button("Create first blueprint in Studio", new GUIStyle(GUI.skin.button)
                     {
                         normal =
                         {
@@ -100,11 +100,11 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 if (_characterBlueprintViews == null)
                     return;
                 
-                foreach (var characterStyleView in _characterBlueprintViews)
+                foreach (var characterBlueprintView in _characterBlueprintViews)
                 {
                     using (new GUILayout.VerticalScope())
                     {
-                        characterStyleView.Render();
+                        characterBlueprintView.Render();
                     }
                 }
             }

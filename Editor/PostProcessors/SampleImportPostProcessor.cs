@@ -23,9 +23,9 @@ namespace ReadyPlayerMe.Editor.PostProcessors
         {
             if (importedAssets.FirstOrDefault(p => p.Contains("Character Clothing Example")) != null)
             {
-                var characterStyleConfigCache = new ScriptableObjectCache<CharacterBlueprintTemplateConfig>();
-                var characterStyleConfig = characterStyleConfigCache.Init("CharacterBlueprintTemplateConfig");
-                var templates = characterStyleConfig.templates?.ToList() ?? new List<CharacterBlueprintTemplate>();
+                var characterBlueprintConfigCache = new ScriptableObjectCache<CharacterBlueprintTemplateConfig>();
+                var characterBlueprintConfig = characterBlueprintConfigCache.Init("CharacterBlueprintTemplateConfig");
+                var templates = characterBlueprintConfig.templates?.ToList() ?? new List<CharacterBlueprintTemplate>();
                 var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains(DemoCharacterBlueprintId));
                 if (existingTemplate == null)
                 {
@@ -42,9 +42,9 @@ namespace ReadyPlayerMe.Editor.PostProcessors
                     });
                 }
             
-                characterStyleConfig.templates = templates.ToArray();
+                characterBlueprintConfig.templates = templates.ToArray();
                 
-                EditorUtility.SetDirty(characterStyleConfig);
+                EditorUtility.SetDirty(characterBlueprintConfig);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
 

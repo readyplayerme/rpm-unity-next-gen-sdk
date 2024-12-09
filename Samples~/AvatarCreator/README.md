@@ -29,8 +29,8 @@ To enable scene switching during runtime, **add both scenes to your Build Settin
 
 Before running the scenes, you must log in to the **Ready Player Me demo account**:
 
-1. Open the **Style Manager** window:
-    - Navigate to `Tools > Ready Player Me > Style Manager` in the Unity menu bar.
+1. Open the *Ready Player Me** window:
+    - Navigate to `Tools > Ready Player Me` in the Unity menu bar.
 2. Enter the provided demo account credentials and log in.
 3. Once logged in, the sample scenes will have access to the necessary features.
 

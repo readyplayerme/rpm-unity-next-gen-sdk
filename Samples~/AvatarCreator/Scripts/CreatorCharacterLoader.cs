@@ -82,7 +82,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     {
                         Assets =  new Dictionary<string, string>
                         {
-                            {Constants.STYLE_ASSET_LABEL, blueprintId}
+                            {Constants.BLUEPRINT_ASSET_LABEL, blueprintId}
                         }
                     }
                 }, cancellationTokenSource.Token);
@@ -152,9 +152,9 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 equippedMeshes.Clear();
             }
             characterObject = Instantiate(characterBlueprintTemplateConfig.GetTemplate( blueprintId, "Creator"));
-            assetsMap[Constants.STYLE_ASSET_LABEL] = new Asset {Id = blueprintId, Type = Constants.STYLE_ASSET_LABEL};
+            assetsMap[Constants.BLUEPRINT_ASSET_LABEL] = new Asset {Id = blueprintId, Type = Constants.BLUEPRINT_ASSET_LABEL};
             var skinnedMeshes = characterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-            equippedMeshes[Constants.STYLE_ASSET_LABEL] = skinnedMeshes;
+            equippedMeshes[Constants.BLUEPRINT_ASSET_LABEL] = skinnedMeshes;
             OnCharacterLoaded?.Invoke(characterObject);
             SetupSkeletonAndAnimator();
         }
