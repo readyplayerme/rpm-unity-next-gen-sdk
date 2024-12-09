@@ -22,20 +22,20 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public IList<Application> Applications { get; private set; } = new List<Application>();
 
         public readonly AnalyticsApi AnalyticsApi;
-        public readonly AssetApi AssetApi;
+        public readonly BlueprintApi BlueprintApi;
         public readonly Settings Settings;
 
         private readonly DeveloperAccountApi _developerAccountApi;
 
         public ApplicationManagementViewModel(
             AnalyticsApi analyticsApi,
-            AssetApi assetApi,
+            BlueprintApi blueprintApi,
             DeveloperAccountApi developerAccountApi,
             Settings settings
         )
         {
             AnalyticsApi = analyticsApi;
-            AssetApi = assetApi;
+            BlueprintApi = blueprintApi;
             Settings = settings;
             _developerAccountApi = developerAccountApi;
         }

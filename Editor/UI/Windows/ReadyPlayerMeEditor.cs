@@ -17,7 +17,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         private DeveloperLoginView _developerLoginView;
         private ApplicationManagementView _applicationManagementView;
 
-        [MenuItem("Tools/Ready Player Me/Style Manager", false, 0)]
+        [MenuItem("Tools/Ready Player Me", false, 0)]
         public static void Generate()
         {
             var window = GetWindow<ReadyPlayerMeEditor>("Ready Player Me");
@@ -28,15 +28,14 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         {
             var developerAuthApi = new DeveloperAuthApi();
             var developerAccountApi = new DeveloperAccountApi();
-            var assetApi = new AssetApi();
+            var blueprintApi = new BlueprintApi();
             var analyticsApi = new AnalyticsApi();
-            assetApi.SetAuthenticationStrategy(new DeveloperTokenAuthStrategy());
 
             var settingsCache = new ScriptableObjectCache<Settings>();
             var settings = settingsCache.Init("ReadyPlayerMeSettings");
 
-            var templateCache = new ScriptableObjectCache<CharacterStyleTemplateConfig>();
-            templateCache.Init("CharacterStyleTemplateConfig");
+            var templateCache = new ScriptableObjectCache<CharacterBlueprintTemplateConfig>();
+            templateCache.Init("CharacterBlueprintTemplateConfig");
             
             var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();
             skeletonDefinitionCache.Init("SkeletonDefinitionConfig");
@@ -46,7 +45,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
 
             var projectDetailsViewModel = new ApplicationManagementViewModel(
                 analyticsApi,
-                assetApi,
+                blueprintApi,
                 developerAccountApi,
                 settings
             );

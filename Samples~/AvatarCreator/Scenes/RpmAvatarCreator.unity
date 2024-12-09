@@ -998,8 +998,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2bf45cf4efd5764da5158bf39b653b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterStyleTemplateConfig: {fileID: 11400000, guid: cbbda579b68f24b439bde2581984449d, type: 2}
-  styleId: 665e05e758e847063761c985
+  characterBlueprintTemplateConfig: {fileID: 11400000, guid: cbbda579b68f24b439bde2581984449d, type: 2}
+  blueprintId: 665e05e758e847063761c985
   OnCharacterLoaded:
     m_PersistentCalls:
       m_Calls:

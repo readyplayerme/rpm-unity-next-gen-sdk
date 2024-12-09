@@ -11,7 +11,7 @@ namespace ReadyPlayerMe.Data
     {
         public string Id { get; private set; }
         
-        public string StyleId { get; private set; }
+        public string BlueprintId { get; private set; }
         
         public readonly Dictionary<string, Asset> Assets = new Dictionary<string, Asset>();
         public readonly Dictionary<string, SkinnedMeshRenderer[]> AssetMeshes = new Dictionary<string, SkinnedMeshRenderer[]>();
@@ -20,11 +20,11 @@ namespace ReadyPlayerMe.Data
         /// Initialize character data with the given id.
         /// </summary>
         /// <param name="id">Ready Player Me Character ID.</param>
-        /// <param name="styleId">Ready Player Me Character style ID.</param>
-        public CharacterData Initialize(string id, string styleId)
+        /// <param name="blueprintId">Ready Player Me Character blueprint ID.</param>
+        public CharacterData Initialize(string id, string blueprintId)
         {
             Id = id;
-            StyleId = styleId;
+            BlueprintId = blueprintId;
 
             return this;
         }

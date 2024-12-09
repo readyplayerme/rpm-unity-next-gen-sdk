@@ -7,12 +7,12 @@ using Application = UnityEngine.Device.Application;
 
 namespace ReadyPlayerMe.Editor.UI.Views
 {
-    public class CharacterStylesView
+    public class CharacterBlueprintsView
     {
-        private readonly CharacterStylesViewModel _viewModel;
-        private IList<CharacterStyleView> _characterStyleViews;
+        private readonly CharacterBlueprintsViewModel _viewModel;
+        private IList<CharacterBlueprintView> _characterBlueprintViews;
 
-        public CharacterStylesView(CharacterStylesViewModel viewModel)
+        public CharacterBlueprintsView(CharacterBlueprintsViewModel viewModel)
         {
             _viewModel = viewModel;
         }
@@ -21,10 +21,10 @@ namespace ReadyPlayerMe.Editor.UI.Views
         {
             await _viewModel.Init();
 
-            _characterStyleViews = await Task.WhenAll(_viewModel.CharacterStyles.Select(async style =>
+            _characterBlueprintViews = await Task.WhenAll(_viewModel.CharacterBlueprints.Select(async style =>
             {
-                var viewModel = new CharacterStyleViewModel(_viewModel.AnalyticsApi);
-                var view = new CharacterStyleView(viewModel);
+                var viewModel = new CharacterBlueprintViewModel(_viewModel.AnalyticsApi);
+                var view = new CharacterBlueprintView(viewModel);
                 await view.Init(style);
                 return view;
             }));
@@ -37,7 +37,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 using (new GUILayout.HorizontalScope())
                 {
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label("Character styles loading...", new GUIStyle()
+                    GUILayout.Label("Character blueprints loading...", new GUIStyle()
                     {
                         alignment = TextAnchor.MiddleCenter,
                         normal = new GUIStyleState() 
@@ -51,7 +51,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 return;
             }
 
-            GUILayout.Label("Character Styles", new GUIStyle()
+            GUILayout.Label("Character Blueprints", new GUIStyle()
             {
                 fontStyle = FontStyle.Bold,
                 fontSize = 14,
@@ -62,15 +62,15 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 margin = new RectOffset(10, 10, 0, 0)
             });
 
-            if (!_viewModel.Loading && _viewModel.CharacterStyles?.Count is null or 0)
+            if (!_viewModel.Loading && _viewModel.CharacterBlueprints?.Count is null or 0)
             {
-                GUILayout.Label("You have no character styles setup for this application.",
+                GUILayout.Label("You have no character blueprints setup for this application.",
                     new GUIStyle(GUI.skin.label)
                     {
                         margin = new RectOffset(9, 10, 0, 0)
                     });
 
-                if (GUILayout.Button("Create first style in Studio", new GUIStyle(GUI.skin.button)
+                if (GUILayout.Button("Create first blueprint in Studio", new GUIStyle(GUI.skin.button)
                     {
                         normal =
                         {
@@ -86,7 +86,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 return;
             }
 
-            GUILayout.Label("Here you can import your character styles from Studio.",
+            GUILayout.Label("Here you can import your character blueprints from Studio.",
                 new GUIStyle(GUI.skin.label)
                 {
                     margin = new RectOffset(9, 10, 0, 0)
@@ -97,14 +97,14 @@ namespace ReadyPlayerMe.Editor.UI.Views
                        margin = new RectOffset(9, 9, 5, 5)
                    }))
             {
-                if (_characterStyleViews == null)
+                if (_characterBlueprintViews == null)
                     return;
                 
-                foreach (var characterStyleView in _characterStyleViews)
+                foreach (var characterBlueprintView in _characterBlueprintViews)
                 {
                     using (new GUILayout.VerticalScope())
                     {
-                        characterStyleView.Render();
+                        characterBlueprintView.Render();
                     }
                 }
             }

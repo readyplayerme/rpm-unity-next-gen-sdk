@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace ReadyPlayerMe.Data
 {
-    public class CharacterStyleTemplateConfig : ScriptableObject
+    public class CharacterBlueprintTemplateConfig : ScriptableObject
     {
-        public CharacterStyleTemplate[] templates;
+        public CharacterBlueprintTemplate[] templates;
     }
 
     [Serializable]
-    public class CharacterStyleTemplate
+    public class CharacterBlueprintTemplate
     {
         public string cacheId;
         

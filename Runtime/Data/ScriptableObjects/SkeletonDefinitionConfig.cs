@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Data
 {
@@ -15,6 +16,6 @@ namespace ReadyPlayerMe.Data
         
         public SkeletonDefinition definition;
 
-        public string characterStyleId;
+        public string characterBlueprintId;
     }
 }
