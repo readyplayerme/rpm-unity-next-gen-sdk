@@ -31,7 +31,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             characterApi = new CharacterApi();
             meshTransfer = new MeshTransfer();
             var characterId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_PREF);
-            var blueprintId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_STYLE_PREF);
+            var blueprintId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_BLUEPRINT_PREF);
             var findCharacterResponse = await characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId
