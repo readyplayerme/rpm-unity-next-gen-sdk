@@ -13,7 +13,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
     {
         private readonly AnalyticsApi _analyticsApi;
         
-        public CharacterStyleTemplate Template = new CharacterStyleTemplate();
+        public CharacterBlueprintTemplate Template = new CharacterBlueprintTemplate();
 
         public string Error = string.Empty;
         public string Tag = string.Empty;
@@ -33,7 +33,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 return;
             }
 
-            var newTemplate = new CharacterStyleTemplate();
+            var newTemplate = new CharacterBlueprintTemplate();
             newTemplate.template = Template.template;
             newTemplate.id = Guid.NewGuid().ToString();
             newTemplate.cacheId = Cache.Cache.FindAssetGuid(Template.template);
@@ -42,7 +42,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 Tag
             };
 
-            var templateConfig = Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
+            var templateConfig = Resources.Load<CharacterBlueprintTemplateConfig>("CharacterBlueprintTemplateConfig");
             var templateList = templateConfig.templates.ToList();
             templateList.Add(newTemplate);
             templateConfig.templates = templateList.ToArray();

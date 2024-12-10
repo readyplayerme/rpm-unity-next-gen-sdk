@@ -14,7 +14,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
         private readonly ApplicationManagementViewModel _viewModel;
         private readonly SelectInput _selectInput;
         private readonly TextInput _textInput;
-        private readonly CharacterStylesView _characterStylesView;
+        private readonly CharacterBlueprintsView characterBlueprintsView;
         private readonly CreateCharacterTemplateView _createCharacterTemplateView;
 
         private IList<CharacterTemplateView> _characterTemplateViews;
@@ -27,8 +27,8 @@ namespace ReadyPlayerMe.Editor.UI.Views
             _selectInput = new SelectInput();
             _textInput = new TextInput();
 
-            var characterStylesViewModel = new CharacterStylesViewModel(viewModel.AssetApi, viewModel.Settings, _viewModel.AnalyticsApi);
-            _characterStylesView = new CharacterStylesView(characterStylesViewModel);
+            var characterBlueprintsViewModel = new CharacterBlueprintsViewModel(viewModel.BlueprintApi, viewModel.Settings, _viewModel.AnalyticsApi);
+            characterBlueprintsView = new CharacterBlueprintsView(characterBlueprintsViewModel);
             _characterTemplateViews = new List<CharacterTemplateView>();
 
             _createCharacterTemplateView =
@@ -53,16 +53,16 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
             _textInput.Init(_viewModel.Settings.ApiKey);
 
-            await _characterStylesView.InitAsync();
+            await characterBlueprintsView.InitAsync();
         }
 
-        private void RefreshTemplateView(CharacterStyleTemplateConfig characterStyleTemplateConfig)
+        private void RefreshTemplateView(CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig)
         {
             _characterTemplateViews = new List<CharacterTemplateView>();
-            if (characterStyleTemplateConfig == null || characterStyleTemplateConfig.templates == null)
+            if (characterBlueprintTemplateConfig == null || characterBlueprintTemplateConfig.templates == null)
                 return;
             
-            foreach (var template in characterStyleTemplateConfig.templates)
+            foreach (var template in characterBlueprintTemplateConfig.templates)
             {
                 var templateView = new CharacterTemplateView(new CharacterTemplateViewModel());
                 templateView.Init(template);
@@ -72,11 +72,11 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
         public void Render()
         {
-            var characterStyleTemplateConfig =
-                Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
+            var characterBlueprintTemplateConfig =
+                Resources.Load<CharacterBlueprintTemplateConfig>("CharacterBlueprintTemplateConfig");
 
-            if (_characterTemplateViews.Count != characterStyleTemplateConfig.templates?.Length)
-                RefreshTemplateView(characterStyleTemplateConfig);
+            if (_characterTemplateViews.Count != characterBlueprintTemplateConfig.templates?.Length)
+                RefreshTemplateView(characterBlueprintTemplateConfig);
 
             using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
             _scrollPosition = scrollViewScope.scrollPosition;
@@ -132,7 +132,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
 
-                    await _characterStylesView.InitAsync();
+                    await characterBlueprintsView.InitAsync();
                 });
             }
 
@@ -153,7 +153,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
             GUILayout.Space(20);
 
-            _characterStylesView.Render();
+            characterBlueprintsView.Render();
 
             GUILayout.Space(20);
 

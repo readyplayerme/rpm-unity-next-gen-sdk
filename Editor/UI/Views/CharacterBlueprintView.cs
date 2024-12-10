@@ -8,20 +8,20 @@ using UnityEngine;
 
 namespace ReadyPlayerMe.Editor.UI.Views
 {
-    public class CharacterStyleView
+    public class CharacterBlueprintView
     {
-        private readonly CharacterStyleViewModel _viewModel;
+        private readonly CharacterBlueprintViewModel _viewModel;
         private readonly ObjectInput<SkeletonDefinition> _boneDefinitionInput;
 
-        public CharacterStyleView(CharacterStyleViewModel viewModel)
+        public CharacterBlueprintView(CharacterBlueprintViewModel viewModel)
         {
             _viewModel = viewModel;
             _boneDefinitionInput = new ObjectInput<SkeletonDefinition>();
         }
 
-        public async Task Init(Asset characterStyle)
+        public async Task Init(CharacterBlueprint characterBlueprint)
         {
-            await _viewModel.Init(characterStyle);
+            await _viewModel.Init(characterBlueprint);
             
             _boneDefinitionInput.Init(_viewModel.BoneDefinitionCacheId);
         }
@@ -57,10 +57,10 @@ namespace ReadyPlayerMe.Editor.UI.Views
                         GUILayout.FlexibleSpace();
                     }
 
-                    if (GUILayout.Button("Load Style"))
+                    if (GUILayout.Button("Load Blueprint"))
                     {
 #pragma warning disable CS4014
-                        _viewModel.LoadStyleAsync();
+                        _viewModel.LoadBlueprintAsync();
 #pragma warning restore CS4014
                     }
                 }
@@ -68,7 +68,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 using (new EditorGUILayout.VerticalScope())
                 {
                     GUILayout.Space(8);
-                    EditorGUILayout.SelectableLabel("ID: " + _viewModel.CharacterStyle.Id);
+                    EditorGUILayout.SelectableLabel("ID: " + _viewModel.CharacterBlueprint.Id);
                     GUILayout.Label("Skeleton Definition");
                     _boneDefinitionInput.Render(onChange: o => { _viewModel.SaveBoneDefinition(o); });
                 }

@@ -20,22 +20,22 @@ namespace ReadyPlayerMe.Editor.UI.Views
             _tagInput = new TextInput();
         }
 
-        public void Init(CharacterStyleTemplate template)
+        public void Init(CharacterBlueprintTemplate template)
         {
             _viewModel.Init(template);
-            _templateInput.Init(_viewModel.CharacterStyleTemplate.cacheId);
-            _tagInput.Init(_viewModel.CharacterStyleTemplate.tags.FirstOrDefault());
+            _templateInput.Init(_viewModel.CharacterBlueprintTemplate.cacheId);
+            _tagInput.Init(_viewModel.CharacterBlueprintTemplate.tags.FirstOrDefault());
         }
 
         public void Render()
         {
-            var hasTag = _viewModel.CharacterStyleTemplate.tags.Count > 0 &&
-                         !string.IsNullOrEmpty(_viewModel.CharacterStyleTemplate.tags[0]);
+            var hasTag = _viewModel.CharacterBlueprintTemplate.tags.Count > 0 &&
+                         !string.IsNullOrEmpty(_viewModel.CharacterBlueprintTemplate.tags[0]);
 
             _viewModel.IsOpen = EditorGUILayout.Foldout(_viewModel.IsOpen,
                 hasTag
-                    ? _viewModel.CharacterStyleTemplate.tags[0]
-                    : _viewModel.CharacterStyleTemplate.id
+                    ? _viewModel.CharacterBlueprintTemplate.tags[0]
+                    : _viewModel.CharacterBlueprintTemplate.id
             );
 
             if (!_viewModel.IsOpen)
@@ -45,7 +45,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
             {
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    GUILayout.Label($"ID: {_viewModel.CharacterStyleTemplate.id}");
+                    GUILayout.Label($"ID: {_viewModel.CharacterBlueprintTemplate.id}");
                     _templateInput.Render(onChange: o => { _viewModel.SaveTemplate(o); }, "Template");
                     _tagInput.Render("Tag", onChange: o => { _viewModel.SaveTag(o); });
 
@@ -55,10 +55,10 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     if (GUILayout.Button("Delete"))
                     {
                         var templateConfig =
-                            Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
+                            Resources.Load<CharacterBlueprintTemplateConfig>("CharacterBlueprintTemplateConfig");
                         
                         templateConfig.templates = templateConfig.templates
-                            .Where(p => p.id != _viewModel.CharacterStyleTemplate.id)
+                            .Where(p => p.id != _viewModel.CharacterBlueprintTemplate.id)
                             .ToArray();
 
                         EditorUtility.SetDirty(templateConfig);
