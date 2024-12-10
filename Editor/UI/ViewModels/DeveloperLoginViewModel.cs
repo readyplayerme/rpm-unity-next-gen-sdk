@@ -20,7 +20,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         private readonly DeveloperAuthApi _developerAuthApi;
         private readonly AnalyticsApi _analyticsApi;
-
+        
         public string Username { get; set; }
 
         public string Password { get; set; }
@@ -143,7 +143,9 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             });
 
             Loading = false;
+            
             onSuccess();
+            CharacterTemplateCreator.LoadAndCreateTemplateList(DemoApplicationId);
         }
     }
 }

@@ -4,14 +4,11 @@ using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.Api.V1.Analytics;
-using UnityEngine;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
     public class CharacterBlueprintsViewModel
     {
-        private const string BASE_MODEL_LABEL = "baseModel";
-        
         public bool Loading { get; private set; }
 
         public IList<CharacterBlueprint> CharacterBlueprints { get; private set; } = new List<CharacterBlueprint>();

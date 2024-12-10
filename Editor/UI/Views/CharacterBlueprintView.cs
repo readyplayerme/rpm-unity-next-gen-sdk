@@ -67,10 +67,14 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    GUILayout.Space(8);
-                    EditorGUILayout.SelectableLabel("ID: " + _viewModel.CharacterBlueprint.Id);
-                    GUILayout.Label("Skeleton Definition");
+                    EditorGUILayout.LabelField("Name: " + _viewModel.CharacterBlueprint.Name, EditorStyles.boldLabel);
+                    EditorGUILayout.LabelField("ID: " + _viewModel.CharacterBlueprint.Id, EditorStyles.label);
+        
+                    GUILayout.Space(5); 
+        
+                    EditorGUILayout.LabelField("Skeleton Definition", EditorStyles.boldLabel);
                     _boneDefinitionInput.Render(onChange: o => { _viewModel.SaveBoneDefinition(o); });
+                    GUILayout.FlexibleSpace();
                 }
             }
         }

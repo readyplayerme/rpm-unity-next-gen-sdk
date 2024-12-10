@@ -12,7 +12,7 @@ namespace ReadyPlayerMe
     {
         private const string BASE_MODEL_LABEL = "baseModel";
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
-        private const string CHARACTER_BLUEPRINT_TEMPLATE_LABEL = "CharacterBlueprintTemplateConfig";
+        private const string CHARACTER_BLUEPRINT_TEMPLATE_LABEL = "CharacterBlueprintTemplateList";
         
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
@@ -165,11 +165,12 @@ namespace ReadyPlayerMe
         {
             if (string.IsNullOrEmpty(templateTagOrId))
                 return null;
-
-            return Resources
-                .Load<CharacterBlueprintTemplateConfig>(CHARACTER_BLUEPRINT_TEMPLATE_LABEL)?
-                .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
-                .template;
+            
+            var templateList = Resources.Load<CharacterBlueprintTemplateList>(CHARACTER_BLUEPRINT_TEMPLATE_LABEL);
+            if (templateList == null)
+                return null;
+            var blueprintTemplate = templateList.templates.FirstOrDefault(p => p.id == templateTagOrId);
+            return blueprintTemplate.GetPrefabByTag(templateTagOrId);
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using AssetListQueryParams = ReadyPlayerMe.Api.V1.AssetListQueryParams;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
@@ -23,8 +24,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     
     public class CreatorCharacterLoader : MonoBehaviour
     {
-        [SerializeField]
-        private CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig;
+        [FormerlySerializedAs("characterBlueprintTemplateConfig"),SerializeField]
+        private CharacterBlueprintTemplateList characterBlueprintTemplateList;
         
         [SerializeField]
         private string blueprintId = "665e05e758e847063761c985";
@@ -151,7 +152,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(characterObject);
                 equippedMeshes.Clear();
             }
-            characterObject = Instantiate(characterBlueprintTemplateConfig.GetTemplate( blueprintId, "Creator"));
+            characterObject = Instantiate(characterBlueprintTemplateList.GetTemplate( blueprintId, "Creator"));
             assetsMap[Constants.BLUEPRINT_ASSET_LABEL] = new Asset {Id = blueprintId, Type = Constants.BLUEPRINT_ASSET_LABEL};
             var skinnedMeshes = characterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             equippedMeshes[Constants.BLUEPRINT_ASSET_LABEL] = skinnedMeshes;

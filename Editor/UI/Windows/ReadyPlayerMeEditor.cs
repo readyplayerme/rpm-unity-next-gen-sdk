@@ -34,7 +34,7 @@ namespace ReadyPlayerMe.Editor.UI.Windows
             var settingsCache = new ScriptableObjectCache<Settings>();
             var settings = settingsCache.Init("ReadyPlayerMeSettings");
 
-            var templateCache = new ScriptableObjectCache<CharacterBlueprintTemplateConfig>();
+            var templateCache = new ScriptableObjectCache<CharacterBlueprintTemplateList>();
             templateCache.Init("CharacterBlueprintTemplateConfig");
             
             var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();

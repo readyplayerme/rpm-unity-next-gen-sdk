@@ -6,13 +6,14 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class PlayerCharacterLoader : MonoBehaviour
     {
-        [SerializeField]
-        private CharacterBlueprintTemplateConfig characterBlueprintTemplateConfig;
+        [FormerlySerializedAs("characterBlueprintTemplateConfig"),SerializeField]
+        private CharacterBlueprintTemplateList characterBlueprintTemplateList;
         [SerializeField]
         private Camera thirdPersonCamera;
         private GameObject character;
@@ -36,7 +37,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 Id = characterId
             });
-            character = Instantiate(characterBlueprintTemplateConfig.GetTemplate(blueprintId, "CreatorPlayer"));
+            character = Instantiate(characterBlueprintTemplateList.GetTemplate(blueprintId, "CreatorPlayer"));
             var playerController = character.GetComponent<ThirdPersonMovement>();
             if(playerController == null)
             {

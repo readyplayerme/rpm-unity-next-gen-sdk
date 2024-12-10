@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
@@ -10,6 +11,7 @@ using UnityEngine;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
+    [Serializable]
     public class CharacterBlueprintViewModel
     {
         public CharacterBlueprint CharacterBlueprint { get; private set; }
