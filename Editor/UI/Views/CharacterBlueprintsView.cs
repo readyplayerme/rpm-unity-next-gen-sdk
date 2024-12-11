@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.UI.ViewModels;
+using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
@@ -20,7 +22,6 @@ namespace ReadyPlayerMe.Editor.UI.Views
         public async Task InitAsync()
         {
             await _viewModel.Init();
-
             _characterBlueprintViews = await Task.WhenAll(_viewModel.CharacterBlueprints.Select(async style =>
             {
                 var viewModel = new CharacterBlueprintViewModel(_viewModel.AnalyticsApi);

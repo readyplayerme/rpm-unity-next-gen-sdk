@@ -12,11 +12,13 @@ namespace ReadyPlayerMe.Editor.UI.Views
     {
         private readonly CharacterBlueprintViewModel _viewModel;
         private readonly ObjectInput<SkeletonDefinition> _boneDefinitionInput;
+        private readonly ObjectInput<CharacterBlueprintTemplate> _defaultBlueprintInput;
 
         public CharacterBlueprintView(CharacterBlueprintViewModel viewModel)
         {
             _viewModel = viewModel;
             _boneDefinitionInput = new ObjectInput<SkeletonDefinition>();
+            _defaultBlueprintInput = new ObjectInput<CharacterBlueprintTemplate>();
         }
 
         public async Task Init(CharacterBlueprint characterBlueprint)
@@ -67,13 +69,12 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    EditorGUILayout.LabelField("Name: " + _viewModel.CharacterBlueprint.Name, EditorStyles.boldLabel);
                     EditorGUILayout.LabelField("ID: " + _viewModel.CharacterBlueprint.Id, EditorStyles.label);
-        
-                    GUILayout.Space(5); 
-        
+                    GUILayout.Space(3); 
                     EditorGUILayout.LabelField("Skeleton Definition", EditorStyles.boldLabel);
                     _boneDefinitionInput.Render(onChange: o => { _viewModel.SaveBoneDefinition(o); });
+                    EditorGUILayout.LabelField("Character Template", EditorStyles.boldLabel);
+                    _defaultBlueprintInput.Render(onChange: x => { _viewModel.SaveCharacterBlueprintTemplate(x); });
                     GUILayout.FlexibleSpace();
                 }
             }

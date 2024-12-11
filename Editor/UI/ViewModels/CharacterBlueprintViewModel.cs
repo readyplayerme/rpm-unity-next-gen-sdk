@@ -120,5 +120,10 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
                 }
             });
         }
+
+        public void SaveCharacterBlueprintTemplate(CharacterBlueprintTemplate characterBlueprintTemplate)
+        {
+            Debug.Log($"SaveCharacterBlueprintTemplate: {characterBlueprintTemplate.name}");
+        }
     }
 }
