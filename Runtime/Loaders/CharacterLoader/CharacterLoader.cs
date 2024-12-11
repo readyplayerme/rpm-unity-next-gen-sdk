@@ -124,7 +124,7 @@ namespace ReadyPlayerMe
             
             var gltf = new GltfImport();
 
-            if (!await gltf.Load(character.GlbUrl))
+            if (!await gltf.Load(character.ModelUrl))
                 return null;
 
             var characterObject = new GameObject(character.Id);
