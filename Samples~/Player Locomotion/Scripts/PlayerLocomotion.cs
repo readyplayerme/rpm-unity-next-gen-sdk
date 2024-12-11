@@ -12,6 +12,8 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         [SerializeField] private ScrollRect baseModelScrollView;
         [SerializeField] private ScrollRect topsScrollView;
         [SerializeField] private GameObject loadingPanel;
+        [Space]
+        [SerializeField, Tooltip("If set to null it will fallback DefaultTemplateList if it exists")] private CharacterBlueprintTemplateList characterBlueprintTemplateList;
         
         private AssetLoader assetLoader;
         private CharacterLoader characterLoader;
@@ -22,7 +24,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         private async void Start()
         {
             assetLoader = new AssetLoader();
-            characterLoader = new CharacterLoader();
+            characterLoader = new CharacterLoader(characterBlueprintTemplateList);
             
             baseModelId = await LoadBaseModels();
             LoadTops();

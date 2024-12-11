@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using UnityEditor;
@@ -10,25 +11,31 @@ namespace ReadyPlayerMe.Editor
     public static class CharacterTemplateCreator
     {
         private static string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
-        public static string DEFAULT_TEMPLATES_LIST_ASSET = "CharacterBlueprintTemplateList";
+        public static string DEFAULT_TEMPLATES_LIST_ASSET = "DefaultTemplateList";
         
-        public static async void LoadAndCreateTemplateList(string applicationId)
+        public static async Task LoadAndCreateTemplateList(string applicationId)
         {
-            var blueprintApi = new BlueprintApi();
-            var blueprints = await blueprintApi.ListAsync(new BlueprintListRequest
+            ValidateFolders();
+            var blueprints = await GetBlueprints(applicationId);
+            var templateListObject = await LoadAndCreateBlueprintTemplateList(blueprints);
+            
+            // Create or update the template list asset
+            if (AssetDatabase.LoadAssetAtPath<CharacterBlueprintTemplateList>($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset") != null)
             {
-                ApplicationId = applicationId
-            });
+                AssetDatabase.DeleteAsset($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
+            }
+            AssetDatabase.CreateAsset(templateListObject, $"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
+            AssetDatabase.SaveAssetIfDirty(templateListObject);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log( "Templates created" );
+        }
+
+        private static async Task<CharacterBlueprintTemplateList> LoadAndCreateBlueprintTemplateList(CharacterBlueprint[] blueprints)
+        {
             var fileApi = new FileApi();
             var templates = new List<CharacterBlueprintTemplate>();
-            
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me"))
-                AssetDatabase.CreateFolder("Assets", "Ready Player Me"); 
-            
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Templates"))
-                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Templates"); 
-            
-            foreach (var blueprint in blueprints.Data)
+            foreach (var blueprint in blueprints)
             {
                 var template = ScriptableObject.CreateInstance<CharacterBlueprintTemplate>();
                 template.name = blueprint.Name;
@@ -57,20 +64,27 @@ namespace ReadyPlayerMe.Editor
             
             var templateListObject = ScriptableObject.CreateInstance<CharacterBlueprintTemplateList>();
             templateListObject.templates = templates.ToArray();
+            return templateListObject;
+        }
 
+        private static async Task<CharacterBlueprint[]> GetBlueprints(string applicationId)
+        {
+            var blueprintApi = new BlueprintApi();
+            var blueprints = await blueprintApi.ListAsync(new BlueprintListRequest
+            {
+                ApplicationId = applicationId
+            });
+            return blueprints.Data;
+        }
+
+        private static void ValidateFolders()
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me"))
+                AssetDatabase.CreateFolder("Assets", "Ready Player Me"); 
+            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Templates"))
+                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Templates"); 
             if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Resources"))
                 AssetDatabase.CreateFolder("Assets/Ready Player Me", "Resources");
-            
-            // Create or update the template list asset
-            if (AssetDatabase.LoadAssetAtPath<CharacterBlueprintTemplateList>($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset") != null)
-            {
-                AssetDatabase.DeleteAsset($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
-            }
-            AssetDatabase.CreateAsset(templateListObject, $"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
-            AssetDatabase.SaveAssetIfDirty(templateListObject);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            Debug.Log( "Templates created" );
         }
     }
 }

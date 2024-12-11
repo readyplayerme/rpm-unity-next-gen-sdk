@@ -18,7 +18,9 @@ namespace ReadyPlayerMe.Samples.UseCache
         [SerializeField] private GameObject mainUI;
         [SerializeField] private GameObject topMenu;
         [SerializeField] private Transform characterPosition;
-        
+        [Space]
+        [SerializeField, Tooltip("If set to null it will fallback DefaultTemplateList if it exists")] private CharacterBlueprintTemplateList characterBlueprintTemplateList;
+
         private AssetLoader assetLoader;
         private CharacterLoader characterLoader;
         
@@ -33,7 +35,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             EventAggregator.Instance.OnPageChanged += OnPageChanged;
 
             assetLoader = new AssetLoader();
-            characterLoader = new CharacterLoader();
+            characterLoader = new CharacterLoader(characterBlueprintTemplateList);
         }
 
         public void DisplayUI()
