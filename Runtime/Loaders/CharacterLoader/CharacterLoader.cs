@@ -1,10 +1,12 @@
-﻿using GLTFast;
+﻿using System;
+using GLTFast;
 using System.Linq;
 using UnityEngine;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
@@ -160,16 +162,16 @@ namespace ReadyPlayerMe
             {
                 Id = characterId,
             });
-            Debug.Log($" found character with ID {characterId}.");
             var blueprintId = response.Data.BlueprintId;
             var templatePrefab = GetTemplate(blueprintId);
+
             var templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
             if (templateInstance == null)
             {
                 Debug.LogError( $"Failed to load character template for character with ID {characterId}." );
                 return null;
             }
- 
+
             var characterData = templateInstance.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
@@ -179,8 +181,7 @@ namespace ReadyPlayerMe
                 Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
                 return null;
             }
-   
-
+            
             var characterObject = new GameObject(characterId);
 
             await gltf.InstantiateSceneAsync(characterObject.transform);
@@ -192,7 +193,7 @@ namespace ReadyPlayerMe
 
             characterData.gameObject.TryGetComponent<Animator>(out var animator);
             animator.enabled = false;
-            
+        
             var animationAvatar = animator.avatar;
             if (animationAvatar == null)
             {
@@ -201,13 +202,14 @@ namespace ReadyPlayerMe
                     : null
                 );
             }
-                
+            
             _meshTransfer.Transfer(characterObject, characterData.gameObject);
             characterData.gameObject.SetActive(true);
-                
-            animator.enabled = true;
             
+            animator.enabled = true;
+        
             return characterData;
+
         }
         
 
@@ -216,9 +218,9 @@ namespace ReadyPlayerMe
         /// </summary>
         /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
         /// <returns> A GameObject representing the template. </returns>
-        protected virtual GameObject GetTemplate(string templateTagOrId)
+        protected virtual GameObject GetTemplate(string blueprintId, string tag = "")
         {
-            if (string.IsNullOrEmpty(templateTagOrId))
+            if (string.IsNullOrEmpty(blueprintId))
                 return null;
 
             if (templateConfig == null) // load default if not set
@@ -230,9 +232,12 @@ namespace ReadyPlayerMe
                 templateConfig = Resources.Load<CharacterTemplateConfig>(applicationId);
             }
             if (templateConfig == null)
+            {
+                Debug.LogError("Character template config not found.");
                 return null;
-            var blueprintTemplate = templateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateTagOrId);
-            return blueprintTemplate.GetPrefabByTag(templateTagOrId);
+            }
+            var blueprintTemplate = templateConfig.Templates.ToList().FirstOrDefault(p => p.BlueprintId == blueprintId) ?? templateConfig.Templates[0];
+            return blueprintTemplate.GetPrefabByTag(tag);
         }
 
         /// <summary>

@@ -50,27 +50,17 @@ namespace ReadyPlayerMe.Api.V1
 
         public virtual async Task<CharacterFindByIdResponse> FindByIdAsync(CharacterFindByIdRequest request, CancellationToken cancellationToken = default)
         {
-            var url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}";
-            Debug.Log($"Making request to |{url}|");
-            try
-            {
-                return await Dispatch<CharacterFindByIdResponse>(
-                    new ApiRequest<string>()
+            return await Dispatch<CharacterFindByIdResponse>(
+                new ApiRequest<string>()
+                {
+                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}",
+                    Method = "GET",
+                    Headers = new Dictionary<string, string>()
                     {
-                        Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}",
-                        Method = "GET",
-                        Headers = new Dictionary<string, string>()
-                        {
-                            { "Content-Type", "application/json" },
-                        }
-                    }, cancellationToken
-                );
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+                        { "Content-Type", "application/json" },
+                    }
+                }, cancellationToken
+            );
         }
 
         public virtual string GeneratePreviewUrl(CharacterPreviewRequest request)

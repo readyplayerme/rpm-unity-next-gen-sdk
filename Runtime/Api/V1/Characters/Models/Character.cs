@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Api.V1
         public string ModelUrl { get; set; }
         
         [JsonProperty("assets")]
-        public IDictionary<string, string> Assets { get; set; }
+        public IDictionary<string, string[]> Assets { get; set; }
         
         [JsonProperty("createdAt")]
         public DateTime CreatedAt { get; set; }
