@@ -177,31 +177,5 @@ namespace ReadyPlayerMe
             Debug.LogError(request.error);
             return null;
         }
-        
-        /// <summary>
-        ///     Swaps an asset on a character with a new asset.
-        /// </summary>
-        /// <param name="original">The character data object to swap the asset on.</param>
-        /// <param name="asset">The new asset to swap in.</param>
-        /// <param name="outfit">The outfit game object to swap in.</param>
-        public void SwapAsset(CharacterData original, Asset asset, GameObject outfit)
-        {
-            if(original.AssetMeshes.ContainsKey(asset.Type))
-            {
-                foreach (var mesh in original.AssetMeshes[asset.Type])
-                {
-                    if(mesh != null)
-                        Object.Destroy(mesh.gameObject);
-                }
-            
-                original.AssetMeshes.Remove(asset.Type);
-            }
-
-            var meshes = outfit.GetComponentsInChildren<SkinnedMeshRenderer>();
-            original.AssetMeshes.Add(asset.Type, meshes);
-        
-            meshTransfer.TransferMeshes(original.transform, outfit.transform, original.transform);
-            Object.Destroy(outfit);
-        }
     }
 }

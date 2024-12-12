@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,17 +50,27 @@ namespace ReadyPlayerMe.Api.V1
 
         public virtual async Task<CharacterFindByIdResponse> FindByIdAsync(CharacterFindByIdRequest request, CancellationToken cancellationToken = default)
         {
-            return await Dispatch<CharacterFindByIdResponse>(
-                new ApiRequest<string>()
-                {
-                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}",
-                    Method = UnityWebRequest.kHttpVerbGET,
-                    Headers = new Dictionary<string, string>()
+            var url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}";
+            Debug.Log($"Making request to |{url}|");
+            try
+            {
+                return await Dispatch<CharacterFindByIdResponse>(
+                    new ApiRequest<string>()
                     {
-                        { "Content-Type", "application/json" },
-                    }
-                }, cancellationToken
-            );
+                        Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}",
+                        Method = "GET",
+                        Headers = new Dictionary<string, string>()
+                        {
+                            { "Content-Type", "application/json" },
+                        }
+                    }, cancellationToken
+                );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public virtual string GeneratePreviewUrl(CharacterPreviewRequest request)
