@@ -13,21 +13,20 @@ namespace ReadyPlayerMe.Editor.Cache
 
         public T Init(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (!string.IsNullOrEmpty(fileName))
             {
-                Debug.LogWarning("Invalid Filename.");
-                return null;
+                var scriptableObject = Resources.Load<T>(fileName);
+
+                if (scriptableObject != null)
+                {
+                    return scriptableObject;
+                }
             }
-      
-            var scriptableObject = Resources.Load<T>($"{CacheDirectory}/{fileName}.asset");
-            
-            if (scriptableObject != null)
-                return scriptableObject;
 
             var cache = new ObjectCache<T>(_name);
-            scriptableObject = ScriptableObject.CreateInstance<T>();
-            cache.Save(scriptableObject, fileName);
-            return scriptableObject;
+            var newObject = ScriptableObject.CreateInstance<T>();
+            cache.Save(newObject, fileName);
+            return newObject;
         }
     }
 }

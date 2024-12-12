@@ -17,8 +17,6 @@ namespace ReadyPlayerMe.Editor.UI.Windows
         private DeveloperLoginView _developerLoginView;
         private ApplicationManagementView _applicationManagementView;
         
-        private string applicationId;
-        
         [MenuItem("Tools/Ready Player Me", false, 0)]
         public static void Generate()
         {
@@ -35,10 +33,6 @@ namespace ReadyPlayerMe.Editor.UI.Windows
 
             var settingsCache = new ScriptableObjectCache<Settings>();
             var settings = settingsCache.Init("ReadyPlayerMeSettings");
-            applicationId = settings.ApplicationId;
-
-            var templateCache = new ScriptableObjectCache<CharacterTemplateConfig>();
-            templateCache.Init(applicationId);
             
             var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();
             skeletonDefinitionCache.Init("SkeletonDefinitionConfig");
