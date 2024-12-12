@@ -178,7 +178,7 @@ namespace ReadyPlayerMe
             }
             if (templateConfig == null)
                 return null;
-            var blueprintTemplate = templateConfig.Templates.FirstOrDefault(p => p.ID == templateTagOrId);
+            var blueprintTemplate = templateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateTagOrId);
             return blueprintTemplate.GetPrefabByTag(templateTagOrId);
         }
 

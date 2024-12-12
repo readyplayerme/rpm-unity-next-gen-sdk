@@ -14,7 +14,7 @@ namespace ReadyPlayerMe
         {
             if (string.IsNullOrEmpty(templateId) || characterTemplateConfig == null || characterTemplateConfig.Templates == null)
                 return null;
-            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateId);
             if(template == null)
             {
                 Debug.LogWarning($"Template with ID {templateId} not found.");
@@ -31,7 +31,7 @@ namespace ReadyPlayerMe
         {
             if (string.IsNullOrEmpty(templateId))
                 return null;
-            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateId);
             return template;
         }
         
@@ -39,7 +39,7 @@ namespace ReadyPlayerMe
         {
             if (string.IsNullOrEmpty(templateId))
                 return null;
-            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateId);
             return template?.GetPrefabByTag("");
         }
         
@@ -48,7 +48,7 @@ namespace ReadyPlayerMe
             if (string.IsNullOrEmpty(templateId))
                 return null;
             
-            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateId);
             return template?.GetPrefabByTag(tag);
         }
         

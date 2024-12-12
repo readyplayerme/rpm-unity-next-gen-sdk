@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Data
 {
@@ -12,12 +13,24 @@ namespace ReadyPlayerMe.Data
     public class CharacterTemplate 
     {
         public string Name;
-        // TODO: Hide later if we don't want this to be editable in inspector
-        public string ID;
-        [HideInInspector] // TODO: remove this later once we remove caching
-        public string CacheId;
+        
+        [ReadOnly] 
+        [SerializeField]
+        private string blueprintId;
+        
+        public string BlueprintId => blueprintId;
+        
+        [FormerlySerializedAs("CacheId"),HideInInspector] // TODO: remove this later once we remove caching
+        public string cacheBlueprintId;
       
         public BlueprintPrefab[] Prefabs;
+        
+        public CharacterTemplate(string name, string blueprintId)
+        {
+            this.blueprintId = blueprintId;
+            Name = name;
+            cacheBlueprintId = blueprintId;
+        }
     }
     
     [Serializable]
