@@ -5,7 +5,6 @@ namespace ReadyPlayerMe.Editor.Cache
     public class ScriptableObjectCache<T> : ObjectCache<T> where T : ScriptableObject
     {
         private readonly string _name;
-        private T _scriptableObject;
         
         public ScriptableObjectCache(string name = "") : base(name)
         {
@@ -20,18 +19,15 @@ namespace ReadyPlayerMe.Editor.Cache
                 return null;
             }
       
-            if(_scriptableObject == null)
-            {
-                _scriptableObject = Resources.Load<T>(fileName);
-            }
+            var scriptableObject = Resources.Load<T>($"{CacheDirectory}/{fileName}.asset");
             
-            if (_scriptableObject != null)
-                return _scriptableObject;
+            if (scriptableObject != null)
+                return scriptableObject;
 
             var cache = new ObjectCache<T>(_name);
-            _scriptableObject = ScriptableObject.CreateInstance<T>();
-            cache.Save(_scriptableObject, fileName);
-            return _scriptableObject;
+            scriptableObject = ScriptableObject.CreateInstance<T>();
+            cache.Save(scriptableObject, fileName);
+            return scriptableObject;
         }
     }
 }

@@ -13,10 +13,11 @@ namespace ReadyPlayerMe.Data
     {
         public string Name;
         // TODO: Hide later if we don't want this to be editable in inspector
+        [HideInInspector]
         public string ID;
         [HideInInspector] // TODO: remove this later once we remove caching
         public string CacheId;
-
+      
         public BlueprintPrefab[] Prefabs;
     }
     

@@ -11,9 +11,8 @@ namespace ReadyPlayerMe.Editor
 {
     public static class CharacterTemplateCreator
     {
-        private static readonly string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
-        private static readonly string RPM_CHARACTER_BLUEPRINTS_PATH = "Assets/Ready Player Me/Character Blueprints";
-        
+        private const string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
+
         public static async Task LoadAndCreateTemplateList(string applicationId)
         {
             ValidateFolders();
