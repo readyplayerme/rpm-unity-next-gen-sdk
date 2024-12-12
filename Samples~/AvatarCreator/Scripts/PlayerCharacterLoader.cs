@@ -12,8 +12,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
 {
     public class PlayerCharacterLoader : MonoBehaviour
     {
-        [FormerlySerializedAs("characterBlueprintTemplateConfig"),SerializeField]
-        private CharacterBlueprintTemplateList characterBlueprintTemplateList;
+        [SerializeField]
+        private CharacterTemplateList characterBlueprintTemplateList;
         [SerializeField]
         private Camera thirdPersonCamera;
         private GameObject character;
@@ -31,8 +31,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             }
             characterApi = new CharacterApi();
             meshTransfer = new MeshTransfer();
-            var characterId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_PREF);
-            var blueprintId = PlayerPrefs.GetString(Constants.STORED_CHARACTER_BLUEPRINT_PREF);
+            var characterId = PlayerPrefs.GetString(CreatorConstants.STORED_CHARACTER_PREF);
+            var blueprintId = PlayerPrefs.GetString(CreatorConstants.STORED_CHARACTER_BLUEPRINT_PREF);
             var findCharacterResponse = await characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId
@@ -74,7 +74,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
         private void SetupSkeletonAndAnimator(string blueprintId)
         {
 
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(Constants.SKELETON_DEFINITION_LABEL)
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(CreatorConstants.SKELETON_DEFINITION_LABEL)
                 .definitionLinks
                 .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
                 .definition;

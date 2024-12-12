@@ -121,9 +121,9 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             });
         }
 
-        public void SaveCharacterBlueprintTemplate(CharacterBlueprintTemplate characterBlueprintTemplate)
+        public void SaveCharacterBlueprintTemplate(CharacterTemplate characterTemplate)
         {
-            Debug.Log($"SaveCharacterBlueprintTemplate: {characterBlueprintTemplate.name}");
+            Debug.Log($"SaveCharacterBlueprintTemplate: {characterTemplate.name}");
         }
     }
 }

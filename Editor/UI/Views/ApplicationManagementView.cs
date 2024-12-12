@@ -50,7 +50,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
         public void Render()
         {
             var characterBlueprintTemplateConfig =
-                Resources.Load<CharacterBlueprintTemplateList>("CharacterBlueprintTemplateConfig");
+                Resources.Load<CharacterTemplateList>(CharacterTemplateList.AssetName);
 
             using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
             _scrollPosition = scrollViewScope.scrollPosition;

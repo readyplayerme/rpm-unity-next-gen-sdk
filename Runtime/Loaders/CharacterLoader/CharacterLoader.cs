@@ -18,12 +18,12 @@ namespace ReadyPlayerMe
         private readonly SkeletonBuilder _skeletonBuilder;
 
         private Dictionary<string, string> equippedAssetMap = new Dictionary<string, string>();
-        private CharacterBlueprintTemplateList _templateList;
+        private CharacterTemplateList _templateList;
         
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
-        public CharacterLoader(CharacterBlueprintTemplateList templateList = null)
+        public CharacterLoader(CharacterTemplateList templateList = null)
         {
             _characterApi = new CharacterApi();
             _meshTransfer = new MeshTransfer();
@@ -169,7 +169,7 @@ namespace ReadyPlayerMe
 
             if (_templateList == null) // load default if not set
             {
-                _templateList = Resources.Load<CharacterBlueprintTemplateList>("DefaultTemplateList");
+                _templateList = Resources.Load<CharacterTemplateList>("DefaultTemplateList");
             }
             if (_templateList == null)
                 return null;

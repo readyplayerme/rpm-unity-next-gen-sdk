@@ -24,8 +24,8 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     
     public class CreatorCharacterLoader : MonoBehaviour
     {
-        [FormerlySerializedAs("characterBlueprintTemplateConfig"),SerializeField]
-        private CharacterBlueprintTemplateList characterBlueprintTemplateList;
+        [SerializeField]
+        private CharacterTemplateList characterBlueprintTemplateList;
         
         [SerializeField]
         private string blueprintId = "665e05e758e847063761c985";
@@ -83,7 +83,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                     {
                         Assets =  new Dictionary<string, string>
                         {
-                            {Constants.BLUEPRINT_ASSET_LABEL, blueprintId}
+                            {CreatorConstants.BLUEPRINT_ASSET_LABEL, blueprintId}
                         }
                     }
                 }, cancellationTokenSource.Token);
@@ -153,16 +153,16 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 equippedMeshes.Clear();
             }
             characterObject = Instantiate(characterBlueprintTemplateList.GetTemplate( blueprintId, "Creator"));
-            assetsMap[Constants.BLUEPRINT_ASSET_LABEL] = new Asset {Id = blueprintId, Type = Constants.BLUEPRINT_ASSET_LABEL};
+            assetsMap[CreatorConstants.BLUEPRINT_ASSET_LABEL] = new Asset {Id = blueprintId, Type = CreatorConstants.BLUEPRINT_ASSET_LABEL};
             var skinnedMeshes = characterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-            equippedMeshes[Constants.BLUEPRINT_ASSET_LABEL] = skinnedMeshes;
+            equippedMeshes[CreatorConstants.BLUEPRINT_ASSET_LABEL] = skinnedMeshes;
             OnCharacterLoaded?.Invoke(characterObject);
             SetupSkeletonAndAnimator();
         }
 
         private void SetupSkeletonAndAnimator()
         {
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(Constants.SKELETON_DEFINITION_LABEL)
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(CreatorConstants.SKELETON_DEFINITION_LABEL)
                 .definitionLinks
                 .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
                 .definition;

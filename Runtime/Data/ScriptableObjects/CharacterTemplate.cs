@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Data
 {
-    [Serializable, CreateAssetMenu(fileName = "CharacterBlueprintTemplate", menuName = "Ready Player Me/CharacterBlueprintTemplate")]
-    public class CharacterBlueprintTemplate : ScriptableObject
+    [Serializable, CreateAssetMenu(fileName = "CharacterTemplate", menuName = "Ready Player Me/CharacterTemplate")]
+    public class CharacterTemplate : ScriptableObject
     {
         public string name;
         
@@ -14,7 +13,7 @@ namespace ReadyPlayerMe.Data
 
         public string cacheId;
 
-        [FormerlySerializedAs("blueprintPrefabs")] public BlueprintPrefab[] prefabs;
+        public BlueprintPrefab[] prefabs;
     }
     
     [Serializable]

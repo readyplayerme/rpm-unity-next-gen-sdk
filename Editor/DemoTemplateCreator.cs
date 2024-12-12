@@ -20,7 +20,7 @@ namespace ReadyPlayerMe.Editor
             var templateListObject = await LoadAndCreateBlueprintTemplateList(blueprints);
             
             // Create or update the template list asset
-            if (AssetDatabase.LoadAssetAtPath<CharacterBlueprintTemplateList>($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset") != null)
+            if (AssetDatabase.LoadAssetAtPath<CharacterTemplateList>($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset") != null)
             {
                 AssetDatabase.DeleteAsset($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
             }
@@ -31,13 +31,13 @@ namespace ReadyPlayerMe.Editor
             Debug.Log( "Templates created" );
         }
 
-        private static async Task<CharacterBlueprintTemplateList> LoadAndCreateBlueprintTemplateList(CharacterBlueprint[] blueprints)
+        private static async Task<CharacterTemplateList> LoadAndCreateBlueprintTemplateList(CharacterBlueprint[] blueprints)
         {
             var fileApi = new FileApi();
-            var templates = new List<CharacterBlueprintTemplate>();
+            var templates = new List<CharacterTemplate>();
             foreach (var blueprint in blueprints)
             {
-                var template = ScriptableObject.CreateInstance<CharacterBlueprintTemplate>();
+                var template = ScriptableObject.CreateInstance<CharacterTemplate>();
                 template.name = blueprint.Name;
                 template.id = blueprint.Id;
                 template.cacheId = blueprint.Id ;
@@ -62,7 +62,7 @@ namespace ReadyPlayerMe.Editor
                 Debug.Log($"Created template {blueprint.Name} ");
             }
             
-            var templateListObject = ScriptableObject.CreateInstance<CharacterBlueprintTemplateList>();
+            var templateListObject = ScriptableObject.CreateInstance<CharacterTemplateList>();
             templateListObject.templates = templates.ToArray();
             return templateListObject;
         }

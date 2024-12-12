@@ -12,13 +12,13 @@ namespace ReadyPlayerMe.Editor.UI.Views
     {
         private readonly CharacterBlueprintViewModel _viewModel;
         private readonly ObjectInput<SkeletonDefinition> _boneDefinitionInput;
-        private readonly ObjectInput<CharacterBlueprintTemplate> _defaultBlueprintInput;
+        private readonly ObjectInput<CharacterTemplate> _defaultBlueprintInput;
 
         public CharacterBlueprintView(CharacterBlueprintViewModel viewModel)
         {
             _viewModel = viewModel;
             _boneDefinitionInput = new ObjectInput<SkeletonDefinition>();
-            _defaultBlueprintInput = new ObjectInput<CharacterBlueprintTemplate>();
+            _defaultBlueprintInput = new ObjectInput<CharacterTemplate>();
         }
 
         public async Task Init(CharacterBlueprint characterBlueprint)

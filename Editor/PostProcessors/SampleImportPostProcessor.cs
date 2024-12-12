@@ -25,8 +25,8 @@ namespace ReadyPlayerMe.Editor.PostProcessors
             // if (importedAssets.FirstOrDefault(p => p.Contains("Character Clothing Example")) != null)
             // {
             //     var characterBlueprintConfigCache = new ScriptableObjectCache<CharacterBlueprintTemplateList>();
-            //     var characterBlueprintConfig = characterBlueprintConfigCache.Init("CharacterBlueprintTemplateConfig");
-            //     var templates = characterBlueprintConfig.templates?.ToList() ?? new List<CharacterBlueprintTemplate>();
+            //     var characterBlueprintConfig = characterBlueprintConfigCache.Init(CharacterTemplateList.AssetName);
+            //     var templates = characterBlueprintConfig.templates?.ToList() ?? new List<CharacterTemplate>();
             //     var existingTemplate = templates.FirstOrDefault(p => p.tags.Contains(DemoCharacterBlueprintId));
             //     if (existingTemplate == null)
             //     {
