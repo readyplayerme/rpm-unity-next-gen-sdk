@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
+using ReadyPlayerMe.Editor.Cache;
 using UnityEditor;
 using UnityEngine;
 using CharacterTemplateConfig = ReadyPlayerMe.Data.CharacterTemplateConfig;
@@ -12,6 +12,7 @@ namespace ReadyPlayerMe.Editor
     public static class CharacterTemplateCreator
     {
         private static readonly string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
+        private static readonly string RPM_CHARACTER_BLUEPRINTS_PATH = "Assets/Ready Player Me/Character Blueprints";
         
         public static async Task LoadAndCreateTemplateList(string applicationId)
         {
@@ -36,7 +37,7 @@ namespace ReadyPlayerMe.Editor
 
         private static async Task<CharacterTemplate[]> LoadAndCreateCharacterTemplates(CharacterBlueprint[] blueprints)
         {
-            var fileApi = new FileApi();
+           
             var templates = new List<CharacterTemplate>();
             foreach (var blueprint in blueprints)
             {
@@ -45,17 +46,9 @@ namespace ReadyPlayerMe.Editor
                 template.ID = blueprint.Id;
                 template.CacheId = blueprint.Id ;
                 //TODO: similar logic for loading and storing .glb is in GlbCache.cs, need to revisit or refactor in future
-                var bytes = await fileApi.DownloadFileIntoMemoryAsync(blueprint.CharacterModel.ModelUrl);
-                
-                var path = $"Assets/Ready Player Me/Character Blueprints/{blueprint.Id}.glb";
-                await File.WriteAllBytesAsync(path, bytes);
-                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                var loadedAsset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                var loadedAsset = await LoadBlueprintModel(blueprint);
                 if (loadedAsset == null)
                 {
-                    Debug.Log($"Asset not found at {path}");
                     continue;
                 }
                 var blueprintPrefab = new BlueprintPrefab();
@@ -65,6 +58,16 @@ namespace ReadyPlayerMe.Editor
                 templates.Add(template);
             }
             return templates.ToArray();
+        }
+
+        private static async Task<GameObject> LoadBlueprintModel(CharacterBlueprint blueprint)
+        {
+            var fileApi = new FileApi();
+            var bytes = await fileApi.DownloadFileIntoMemoryAsync(blueprint.CharacterModel.ModelUrl);
+            var glbCache = new GlbCache("Character Blueprints");
+            await glbCache.Save(bytes, blueprint.Id);
+            var loadedAsset = glbCache.Load(blueprint.Id);
+            return loadedAsset;
         }
 
         private static async Task<CharacterBlueprint[]> GetBlueprints(string applicationId)
@@ -81,8 +84,6 @@ namespace ReadyPlayerMe.Editor
         {
             if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me"))
                 AssetDatabase.CreateFolder("Assets", "Ready Player Me"); 
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Character Blueprints"))
-                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Character Blueprints"); 
             if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Resources"))
                 AssetDatabase.CreateFolder("Assets/Ready Player Me", "Resources");
         }
