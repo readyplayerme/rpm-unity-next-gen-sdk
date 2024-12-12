@@ -79,7 +79,6 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     GUILayout.Space(3); 
                     EditorGUILayout.LabelField("Default Template Prefab", EditorStyles.boldLabel);
                     _defaultTemplatePrefab.Render(OnTemplatePrefabChange);
-                    GUILayout.FlexibleSpace();
                 }
             }
         }

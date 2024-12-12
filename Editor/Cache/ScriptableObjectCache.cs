@@ -15,7 +15,7 @@ namespace ReadyPlayerMe.Editor.Cache
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                Debug.LogError("Invalid Filename.");
+                Debug.LogWarning("Invalid Filename.");
                 return null;
             }
       
