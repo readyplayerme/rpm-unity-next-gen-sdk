@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Editor.UI.ViewModels;
-using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
@@ -11,29 +10,32 @@ namespace ReadyPlayerMe.Editor.UI.Views
 {
     public class CharacterBlueprintsView
     {
-        private readonly CharacterBlueprintsViewModel _viewModel;
+        private readonly CharacterBlueprintListViewModel blueprintListViewModel;
         private IList<CharacterBlueprintView> _characterBlueprintViews;
 
-        public CharacterBlueprintsView(CharacterBlueprintsViewModel viewModel)
+        public CharacterBlueprintsView(CharacterBlueprintListViewModel blueprintListViewModel)
         {
-            _viewModel = viewModel;
+            this.blueprintListViewModel = blueprintListViewModel;
         }
 
         public async Task InitAsync()
         {
-            await _viewModel.Init();
-            _characterBlueprintViews = await Task.WhenAll(_viewModel.CharacterBlueprints.Select(async style =>
+            await blueprintListViewModel.Init();
+            var applicationId = Resources.Load<Settings>( "ReadyPlayerMeSettings" )?.ApplicationId;
+            var characterTemplateList = Resources.Load<CharacterTemplateConfig>(applicationId);
+  
+            _characterBlueprintViews = await Task.WhenAll(blueprintListViewModel.CharacterBlueprints.Select(async blueprint =>
             {
-                var viewModel = new CharacterBlueprintViewModel(_viewModel.AnalyticsApi);
-                var view = new CharacterBlueprintView(viewModel);
-                await view.Init(style);
-                return view;
+                var blueprintViewModel = new CharacterBlueprintViewModel(blueprintListViewModel.AnalyticsApi);
+                var blueprintView = new CharacterBlueprintView(blueprintViewModel);
+                await blueprintView.Init(blueprint, characterTemplateList);
+                return blueprintView;
             }));
         }
 
         public void Render()
         {
-            if (_viewModel.Loading)
+            if (blueprintListViewModel.Loading)
             {
                 using (new GUILayout.HorizontalScope())
                 {
@@ -63,7 +65,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 margin = new RectOffset(10, 10, 0, 0)
             });
 
-            if (!_viewModel.Loading && _viewModel.CharacterBlueprints?.Count is null or 0)
+            if (!blueprintListViewModel.Loading && blueprintListViewModel.CharacterBlueprints?.Count is null or 0)
             {
                 GUILayout.Label("You have no character blueprints setup for this application.",
                     new GUIStyle(GUI.skin.label)

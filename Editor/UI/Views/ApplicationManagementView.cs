@@ -15,21 +15,22 @@ namespace ReadyPlayerMe.Editor.UI.Views
         private readonly TextInput _textInput;
         private readonly CharacterBlueprintsView characterBlueprintsView;
         private Vector2 _scrollPosition = Vector2.zero;
-
+        private string applicationId;
+        
         public ApplicationManagementView(ApplicationManagementViewModel viewModel)
         {
             _viewModel = viewModel;
             _selectInput = new SelectInput();
             _textInput = new TextInput();
 
-            var characterBlueprintsViewModel = new CharacterBlueprintsViewModel(viewModel.BlueprintApi, viewModel.Settings, _viewModel.AnalyticsApi);
+            var characterBlueprintsViewModel = new CharacterBlueprintListViewModel(viewModel.BlueprintApi, viewModel.Settings, _viewModel.AnalyticsApi);
             characterBlueprintsView = new CharacterBlueprintsView(characterBlueprintsViewModel);
         }
 
         public async Task Init()
         {
             await _viewModel.Init();
-
+            
             _selectInput.Init(
                 _viewModel.Applications
                     .ToList()
@@ -41,16 +42,16 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     .ToArray(),
                 _viewModel.Settings.ApplicationId
             );
-
             _textInput.Init(_viewModel.Settings.ApiKey);
-            
+            applicationId = _viewModel.Settings.ApplicationId;
+            await CharacterTemplateCreator.LoadAndCreateTemplateList(applicationId);
             await characterBlueprintsView.InitAsync();
         }
 
         public void Render()
         {
             var characterBlueprintTemplateConfig =
-                Resources.Load<CharacterTemplateList>(CharacterTemplateList.AssetName);
+                Resources.Load<CharacterTemplateConfig>(applicationId);
 
             using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
             _scrollPosition = scrollViewScope.scrollPosition;

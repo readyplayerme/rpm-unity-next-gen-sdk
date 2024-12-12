@@ -20,8 +20,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public Texture2D Image { get; private set; }
 
-        private SkeletonDefinitionConfig
-            _skeletonDefinitionObjectCache;
+        private SkeletonDefinitionConfig _skeletonDefinitionObjectCache;
 
         private GlbCache _characterBlueprintCache;
         
@@ -38,7 +37,6 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         {
             _skeletonDefinitionObjectCache =
                 Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
-
             _characterBlueprintCache = new GlbCache("Character Blueprints");
 
             CharacterBlueprint = characterBlueprint;
@@ -123,7 +121,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         public void SaveCharacterBlueprintTemplate(CharacterTemplate characterTemplate)
         {
-            Debug.Log($"SaveCharacterBlueprintTemplate: {characterTemplate.name}");
+            Debug.Log($"SaveCharacterBlueprintTemplate: {characterTemplate.Name}");
         }
     }
 }

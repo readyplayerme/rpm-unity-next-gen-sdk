@@ -13,7 +13,7 @@ namespace ReadyPlayerMe.Samples.PlayerLocomotion
         [SerializeField] private ScrollRect topsScrollView;
         [SerializeField] private GameObject loadingPanel;
         [Space]
-        [SerializeField, Tooltip("If set to null it will fallback DefaultTemplateList if it exists")] private CharacterTemplateList characterBlueprintTemplateList;
+        [SerializeField, Tooltip("If set to null it will fallback DefaultTemplateList if it exists")] private CharacterTemplateConfig characterBlueprintTemplateList;
         
         private AssetLoader assetLoader;
         private CharacterLoader characterLoader;

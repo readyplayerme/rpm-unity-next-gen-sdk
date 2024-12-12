@@ -1,26 +1,55 @@
 using System.Linq;
 using ReadyPlayerMe.Data;
+using UnityEditor;
 using UnityEngine;
 
 namespace ReadyPlayerMe
 {
     public static class CharacterTemplateExtensions
     {
-        public static GameObject GetTemplate(this CharacterTemplateList characterTemplateList, string templateId)
+        /// <summary>
+        /// Gets the GUID of the CharacterTemplate by ID.
+        /// </summary>
+        public static string GetTemplatePrefabGUID(this CharacterTemplateConfig characterTemplateConfig, string templateId)
+        {
+            if (string.IsNullOrEmpty(templateId) || characterTemplateConfig == null || characterTemplateConfig.Templates == null)
+                return null;
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            if(template == null)
+            {
+                Debug.LogWarning($"Template with ID {templateId} not found.");
+                return null;
+            }
+            var prefab = template.GetPrefabByTag("");
+            var path = AssetDatabase.GetAssetPath(prefab);
+            var guid = AssetDatabase.AssetPathToGUID(path);
+            
+            return guid;
+        }
+        
+        public static CharacterTemplate GetTemplate(this CharacterTemplateConfig characterTemplateConfig, string templateId)
         {
             if (string.IsNullOrEmpty(templateId))
                 return null;
-            var template = characterTemplateList.templates.FirstOrDefault(p => p.id == templateId);
-            return template == null ? null : template.GetPrefabByTag("");
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            return template;
         }
         
-        public static GameObject GetTemplate(this CharacterTemplateList characterTemplateList, string templateId, string tag)
+        public static GameObject GetTemplatePrefab(this CharacterTemplateConfig characterTemplateConfig, string templateId)
+        {
+            if (string.IsNullOrEmpty(templateId))
+                return null;
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            return template?.GetPrefabByTag("");
+        }
+        
+        public static GameObject GetTemplatePrefab(this CharacterTemplateConfig characterTemplateConfig, string templateId, string tag)
         {
             if (string.IsNullOrEmpty(templateId))
                 return null;
             
-            var template = characterTemplateList.templates.FirstOrDefault(p => p.id == templateId);
-            return template == null ? null : template.GetPrefabByTag(tag);
+            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.ID == templateId);
+            return template?.GetPrefabByTag(tag);
         }
         
         /// <summary>
@@ -32,22 +61,23 @@ namespace ReadyPlayerMe
         /// <returns>Returns the GameObject prefab that matches the tag, or the first prefab if no tag is matched.</returns>
         public static GameObject GetPrefabByTag(this CharacterTemplate template, string tag)
         {
-            if (template == null || template.prefabs == null || template.prefabs.Length == 0)
+            if (template?.Prefabs == null || template.Prefabs.Length == 0)
             {
                 Debug.LogWarning("BlueprintTemplate or its prefab list is null/empty.");
                 return null;
             }
 
             // Search for a prefab with a matching tag
-            var matchingPrefab = template.prefabs
-                .FirstOrDefault(bp => bp.tags != null && bp.tags.Contains(tag))?.prefab;
+            var matchingPrefab = template.Prefabs
+                .FirstOrDefault(bp => bp.Tags != null && bp.Tags.Contains(tag))?.Prefab;
 
             // If no prefab with the tag was found, fall back to the first prefab in the list
-            if (matchingPrefab == null)
+            if (matchingPrefab != null) return matchingPrefab;
+            if (tag != "")
             {
-                Debug.Log($"No prefab found with tag '{tag}', defaulting to the first prefab.");
-                matchingPrefab = template.prefabs[0].prefab;
+                Debug.LogWarning($"No prefab found with tag '{tag}', defaulting to the first prefab.");
             }
+            matchingPrefab = template.Prefabs[0].Prefab;
 
             return matchingPrefab;
         }

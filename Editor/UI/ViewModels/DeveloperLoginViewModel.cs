@@ -145,7 +145,6 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             Loading = false;
             
             onSuccess();
-            CharacterTemplateCreator.LoadAndCreateTemplateList(DemoApplicationId);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class PlayerCharacterLoader : MonoBehaviour
     {
         [SerializeField]
-        private CharacterTemplateList characterBlueprintTemplateList;
+        private CharacterTemplateConfig characterTemplateConfig;
         [SerializeField]
         private Camera thirdPersonCamera;
         private GameObject character;
@@ -37,7 +37,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
             {
                 Id = characterId
             });
-            character = Instantiate(characterBlueprintTemplateList.GetTemplate(blueprintId, "CreatorPlayer"));
+            character = Instantiate(characterTemplateConfig.GetTemplatePrefab(blueprintId, "CreatorPlayer"));
             var playerController = character.GetComponent<ThirdPersonMovement>();
             if(playerController == null)
             {

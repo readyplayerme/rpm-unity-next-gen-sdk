@@ -7,7 +7,7 @@ using ReadyPlayerMe.Editor.Api.V1.Analytics;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
 {
-    public class CharacterBlueprintsViewModel
+    public class CharacterBlueprintListViewModel
     {
         public bool Loading { get; private set; }
 
@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         private readonly Settings _settings;
         public readonly AnalyticsApi AnalyticsApi;
 
-        public CharacterBlueprintsViewModel(BlueprintApi blueprintApi, Settings settings, AnalyticsApi analyticsApi)
+        public CharacterBlueprintListViewModel(BlueprintApi blueprintApi, Settings settings, AnalyticsApi analyticsApi)
         {
             _blueprintApi = blueprintApi;
             _settings = settings;

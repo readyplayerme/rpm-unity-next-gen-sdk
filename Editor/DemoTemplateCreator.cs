@@ -5,44 +5,49 @@ using ReadyPlayerMe.Api.V1;
 using ReadyPlayerMe.Data;
 using UnityEditor;
 using UnityEngine;
+using CharacterTemplateConfig = ReadyPlayerMe.Data.CharacterTemplateConfig;
 
 namespace ReadyPlayerMe.Editor
 {
     public static class CharacterTemplateCreator
     {
-        private static string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
-        public static string DEFAULT_TEMPLATES_LIST_ASSET = "DefaultTemplateList";
+        private static readonly string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
         
         public static async Task LoadAndCreateTemplateList(string applicationId)
         {
             ValidateFolders();
-            var blueprints = await GetBlueprints(applicationId);
-            var templateListObject = await LoadAndCreateBlueprintTemplateList(blueprints);
-            
-            // Create or update the template list asset
-            if (AssetDatabase.LoadAssetAtPath<CharacterTemplateList>($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset") != null)
-            {
-                AssetDatabase.DeleteAsset($"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
+            if (string.IsNullOrEmpty(applicationId)) return;
+            var templateListObject = AssetDatabase.LoadAssetAtPath<CharacterTemplateConfig>($"{RPM_RESOURCES_PATH}/{applicationId}.asset");
+            if (templateListObject != null && templateListObject.Templates is { Length: > 0 }) {
+                return; // config for this application already exists return so we dont overwrite settings
             }
-            AssetDatabase.CreateAsset(templateListObject, $"{RPM_RESOURCES_PATH}/{DEFAULT_TEMPLATES_LIST_ASSET}.asset");
+
+            templateListObject = ScriptableObject.CreateInstance<CharacterTemplateConfig>();
+            AssetDatabase.CreateAsset(templateListObject, $"{RPM_RESOURCES_PATH}/{applicationId}.asset");
+            var blueprints = await GetBlueprints(applicationId);
+            var templateList = await LoadAndCreateCharacterTemplates(blueprints);
+            
+            templateListObject.Templates = templateList;
             AssetDatabase.SaveAssetIfDirty(templateListObject);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log( "Templates created" );
+            Debug.Log( $"Template config created with {templateListObject.Templates.Length} templates." );
         }
 
-        private static async Task<CharacterTemplateList> LoadAndCreateBlueprintTemplateList(CharacterBlueprint[] blueprints)
+        private static async Task<CharacterTemplate[]> LoadAndCreateCharacterTemplates(CharacterBlueprint[] blueprints)
         {
             var fileApi = new FileApi();
             var templates = new List<CharacterTemplate>();
             foreach (var blueprint in blueprints)
             {
-                var template = ScriptableObject.CreateInstance<CharacterTemplate>();
-                template.name = blueprint.Name;
-                template.id = blueprint.Id;
-                template.cacheId = blueprint.Id ;
+                var template = new CharacterTemplate();
+                template.Name = blueprint.Name;
+                template.ID = blueprint.Id;
+                template.CacheId = blueprint.Id ;
+                //TODO: similar logic for loading and storing .glb is in GlbCache.cs, need to revisit or refactor in future
                 var bytes = await fileApi.DownloadFileIntoMemoryAsync(blueprint.CharacterModel.ModelUrl);
-                var path = $"Assets/Ready Player Me/Templates/{blueprint.Id}.glb";
+                
+                var path = $"Assets/Ready Player Me/Character Blueprints/{blueprint.Id}.glb";
                 await File.WriteAllBytesAsync(path, bytes);
                 AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
                 AssetDatabase.SaveAssets();
@@ -54,17 +59,12 @@ namespace ReadyPlayerMe.Editor
                     continue;
                 }
                 var blueprintPrefab = new BlueprintPrefab();
-                blueprintPrefab.prefab = loadedAsset;
-                blueprintPrefab.tags = new List<string> {""};
-                template.prefabs = new[] { blueprintPrefab };
+                blueprintPrefab.Prefab = loadedAsset;
+                blueprintPrefab.Tags = new string[] {"Default"};
+                template.Prefabs = new[] { blueprintPrefab };
                 templates.Add(template);
-                AssetDatabase.CreateAsset(template, $"Assets/Ready Player Me/Templates/Template_{blueprint.Id}.asset");
-                Debug.Log($"Created template {blueprint.Name} ");
             }
-            
-            var templateListObject = ScriptableObject.CreateInstance<CharacterTemplateList>();
-            templateListObject.templates = templates.ToArray();
-            return templateListObject;
+            return templates.ToArray();
         }
 
         private static async Task<CharacterBlueprint[]> GetBlueprints(string applicationId)
@@ -81,8 +81,8 @@ namespace ReadyPlayerMe.Editor
         {
             if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me"))
                 AssetDatabase.CreateFolder("Assets", "Ready Player Me"); 
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Templates"))
-                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Templates"); 
+            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Character Blueprints"))
+                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Character Blueprints"); 
             if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Resources"))
                 AssetDatabase.CreateFolder("Assets/Ready Player Me", "Resources");
         }

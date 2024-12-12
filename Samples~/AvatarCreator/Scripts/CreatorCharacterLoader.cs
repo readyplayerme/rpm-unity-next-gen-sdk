@@ -25,7 +25,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
     public class CreatorCharacterLoader : MonoBehaviour
     {
         [SerializeField]
-        private CharacterTemplateList characterBlueprintTemplateList;
+        private CharacterTemplateConfig characterTemplateConfig;
         
         [SerializeField]
         private string blueprintId = "665e05e758e847063761c985";
@@ -152,7 +152,7 @@ namespace ReadyPlayerMe.Samples.AvatarCreator
                 Destroy(characterObject);
                 equippedMeshes.Clear();
             }
-            characterObject = Instantiate(characterBlueprintTemplateList.GetTemplate( blueprintId, "Creator"));
+            characterObject = Instantiate(characterTemplateConfig.GetTemplatePrefab( blueprintId, "Creator"));
             assetsMap[CreatorConstants.BLUEPRINT_ASSET_LABEL] = new Asset {Id = blueprintId, Type = CreatorConstants.BLUEPRINT_ASSET_LABEL};
             var skinnedMeshes = characterObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             equippedMeshes[CreatorConstants.BLUEPRINT_ASSET_LABEL] = skinnedMeshes;

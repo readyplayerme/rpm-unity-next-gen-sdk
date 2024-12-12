@@ -18,17 +18,18 @@ namespace ReadyPlayerMe
         private readonly SkeletonBuilder _skeletonBuilder;
 
         private Dictionary<string, string> equippedAssetMap = new Dictionary<string, string>();
-        private CharacterTemplateList _templateList;
+        private CharacterTemplateConfig templateConfig;
+        private string applicationId;
         
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
-        public CharacterLoader(CharacterTemplateList templateList = null)
+        public CharacterLoader(CharacterTemplateConfig templateConfig = null)
         {
             _characterApi = new CharacterApi();
             _meshTransfer = new MeshTransfer();
             _skeletonBuilder = new SkeletonBuilder();
-            _templateList = templateList;
+            this.templateConfig = templateConfig;
         }
 
         /// <summary>
@@ -167,13 +168,17 @@ namespace ReadyPlayerMe
             if (string.IsNullOrEmpty(templateTagOrId))
                 return null;
 
-            if (_templateList == null) // load default if not set
+            if (templateConfig == null) // load default if not set
             {
-                _templateList = Resources.Load<CharacterTemplateList>("DefaultTemplateList");
+                if (string.IsNullOrEmpty(applicationId))
+                {
+                    applicationId = Resources.Load<Settings>( "ReadyPlayerMeSettings")?.ApplicationId;
+                }
+                templateConfig = Resources.Load<CharacterTemplateConfig>(applicationId);
             }
-            if (_templateList == null)
+            if (templateConfig == null)
                 return null;
-            var blueprintTemplate = _templateList.templates.FirstOrDefault(p => p.id == templateTagOrId);
+            var blueprintTemplate = templateConfig.Templates.FirstOrDefault(p => p.ID == templateTagOrId);
             return blueprintTemplate.GetPrefabByTag(templateTagOrId);
         }
 
