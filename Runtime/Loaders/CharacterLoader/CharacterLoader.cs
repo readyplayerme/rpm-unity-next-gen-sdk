@@ -156,14 +156,14 @@ namespace ReadyPlayerMe
         }
 
 
-        public async Task<CharacterData> LoadCharacterAsync(string characterId)
+        public async Task<CharacterData> LoadCharacterAsync(string characterId, string tag = "")
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId,
             });
             var blueprintId = response.Data.BlueprintId;
-            var templatePrefab = GetTemplate(blueprintId);
+            var templatePrefab = GetTemplate(blueprintId, tag);
 
             var templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
             if (templateInstance == null)
