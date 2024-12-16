@@ -15,6 +15,6 @@ namespace ReadyPlayerMe.Data
         
         public SkeletonDefinition definition;
 
-        public string characterStyleId;
+        public string characterBlueprintId;
     }
 }

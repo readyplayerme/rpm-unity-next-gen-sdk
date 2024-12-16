@@ -20,7 +20,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
         private readonly DeveloperAuthApi _developerAuthApi;
         private readonly AnalyticsApi _analyticsApi;
-
+        
         public string Username { get; set; }
 
         public string Password { get; set; }
@@ -108,7 +108,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             var skeletonDefinitionConfig = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
 
             var links = skeletonDefinitionConfig.definitionLinks?.ToList() ?? new List<SkeletonDefinitionLink>();
-            var existingLink = links.FirstOrDefault(p => p.characterStyleId == "665e05e758e847063761c985");
+            var existingLink = links.FirstOrDefault(p => p.characterBlueprintId == "665e05e758e847063761c985");
             if (existingLink == null)
             {
                 var matchingAssets = AssetDatabase.FindAssets("RPM_Character_Skeleton_Definition");
@@ -117,7 +117,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
                 links.Add(new SkeletonDefinitionLink()
                 {
-                    characterStyleId = "665e05e758e847063761c985",
+                    characterBlueprintId = "665e05e758e847063761c985",
                     definitionCacheId = matchingAssets[0],
                     definition = asset
                 });
@@ -143,6 +143,7 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
             });
 
             Loading = false;
+            
             onSuccess();
         }
     }

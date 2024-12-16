@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 
@@ -12,7 +13,7 @@ namespace ReadyPlayerMe.Api.V1
             SetAuthenticationStrategy(new ApiKeyAuthStrategy());
         }
 
-        public virtual async Task<AssetListResponse> ListAssetsAsync(AssetListRequest request)
+        public virtual async Task<AssetListResponse> ListAssetsAsync(AssetListRequest request, CancellationToken cancellationToken = default)
         {
             var queryString = BuildQueryString(request.Params);
             
@@ -20,11 +21,11 @@ namespace ReadyPlayerMe.Api.V1
                 {
                     Url = $"{Settings.ApiBaseUrl}/v1/{Resource}{queryString}",
                     Method = UnityWebRequest.kHttpVerbGET,
-                }
+                }, cancellationToken
             );
         }
         
-        public virtual async Task<AssetTypeListResponse> ListAssetTypesAsync(AssetTypeListRequest request)
+        public virtual async Task<AssetTypeListResponse> ListAssetTypesAsync(AssetTypeListRequest request, CancellationToken cancellationToken = default)
         {
             var queryString = BuildQueryString(request.Params);
             
@@ -32,7 +33,7 @@ namespace ReadyPlayerMe.Api.V1
                 {
                     Url = $"{Settings.ApiBaseUrl}/v1/{Resource}/types{queryString}",
                     Method = UnityWebRequest.kHttpVerbGET,
-                }
+                }, cancellationToken
             );
         }
     }

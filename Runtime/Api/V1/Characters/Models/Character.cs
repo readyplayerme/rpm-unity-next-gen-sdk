@@ -8,18 +8,15 @@ namespace ReadyPlayerMe.Api.V1
     {
         [JsonProperty("_id")]
         public string Id { get; set; }
-
-        [JsonProperty("createdByApplicationId")]
-        public string CreatedByApplicationId { get; set; }
-
-        [JsonProperty("glbUrl")]
-        public string GlbUrl { get; set; }
         
-        [JsonProperty("iconUrl")]
-        public string IconUrl { get; set; }
+        [JsonProperty("blueprintId")]
+        public string BlueprintId { get; set; }
+
+        [JsonProperty("modelUrl")]
+        public string ModelUrl { get; set; }
         
         [JsonProperty("assets")]
-        public IDictionary<string, string> Assets { get; set; }
+        public IDictionary<string, string[]> Assets { get; set; }
         
         [JsonProperty("createdAt")]
         public DateTime CreatedAt { get; set; }

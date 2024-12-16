@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
+using UnityEngine.Serialization;
 
 namespace ReadyPlayerMe.Samples.UseCache
 {
@@ -18,7 +19,9 @@ namespace ReadyPlayerMe.Samples.UseCache
         [SerializeField] private GameObject mainUI;
         [SerializeField] private GameObject topMenu;
         [SerializeField] private Transform characterPosition;
-        
+        [FormerlySerializedAs("characterBlueprintTemplateList"),Space]
+        [SerializeField, Tooltip("If set to null it will fallback DefaultTemplateList if it exists")] private CharacterTemplateConfig characterTemplateConfig;
+
         private AssetLoader assetLoader;
         private CharacterLoader characterLoader;
         
@@ -33,7 +36,7 @@ namespace ReadyPlayerMe.Samples.UseCache
             EventAggregator.Instance.OnPageChanged += OnPageChanged;
 
             assetLoader = new AssetLoader();
-            characterLoader = new CharacterLoader();
+            characterLoader = new CharacterLoader(characterTemplateConfig);
         }
 
         public void DisplayUI()

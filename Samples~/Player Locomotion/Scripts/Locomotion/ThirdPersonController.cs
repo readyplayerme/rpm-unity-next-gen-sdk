@@ -50,7 +50,7 @@ namespace ReadyPlayerMe.Samples.QuickStart
         private void UpdateAnimator()
         {
             var isGrounded = thirdPersonMovement.IsGrounded();
-            animator.SetFloat(MoveSpeedHash, thirdPersonMovement.CurrentMoveSpeed);
+            animator.SetFloat(MoveSpeedHash,inputEnabled ? thirdPersonMovement.CurrentMoveSpeed : 0f);
             animator.SetBool(IsGroundedHash, isGrounded);
             if (isGrounded)
             {
@@ -76,6 +76,11 @@ namespace ReadyPlayerMe.Samples.QuickStart
             {
                 animator.SetTrigger(JumpHash);
             }
+        }
+        
+        public void SetInputEnabled(bool isEnabled)
+        {
+            inputEnabled = isEnabled;
         }
     }
 }

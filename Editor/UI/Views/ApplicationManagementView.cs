@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using ReadyPlayerMe.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using ReadyPlayerMe.Editor.UI.Components;
 using ReadyPlayerMe.Editor.UI.ViewModels;
 
@@ -14,31 +13,24 @@ namespace ReadyPlayerMe.Editor.UI.Views
         private readonly ApplicationManagementViewModel _viewModel;
         private readonly SelectInput _selectInput;
         private readonly TextInput _textInput;
-        private readonly CharacterStylesView _characterStylesView;
-        private readonly CreateCharacterTemplateView _createCharacterTemplateView;
-
-        private IList<CharacterTemplateView> _characterTemplateViews;
-
+        private readonly CharacterBlueprintsView characterBlueprintsView;
         private Vector2 _scrollPosition = Vector2.zero;
-
+        private string applicationId;
+        
         public ApplicationManagementView(ApplicationManagementViewModel viewModel)
         {
             _viewModel = viewModel;
             _selectInput = new SelectInput();
             _textInput = new TextInput();
 
-            var characterStylesViewModel = new CharacterStylesViewModel(viewModel.AssetApi, viewModel.Settings, _viewModel.AnalyticsApi);
-            _characterStylesView = new CharacterStylesView(characterStylesViewModel);
-            _characterTemplateViews = new List<CharacterTemplateView>();
-
-            _createCharacterTemplateView =
-                new CreateCharacterTemplateView(new CreateCharacterTemplateViewModel(viewModel.AnalyticsApi));
+            var characterBlueprintsViewModel = new CharacterBlueprintListViewModel(viewModel.BlueprintApi, viewModel.Settings, _viewModel.AnalyticsApi);
+            characterBlueprintsView = new CharacterBlueprintsView(characterBlueprintsViewModel);
         }
 
         public async Task Init()
         {
             await _viewModel.Init();
-
+            
             _selectInput.Init(
                 _viewModel.Applications
                     .ToList()
@@ -50,33 +42,16 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     .ToArray(),
                 _viewModel.Settings.ApplicationId
             );
-
             _textInput.Init(_viewModel.Settings.ApiKey);
-
-            await _characterStylesView.InitAsync();
-        }
-
-        private void RefreshTemplateView(CharacterStyleTemplateConfig characterStyleTemplateConfig)
-        {
-            _characterTemplateViews = new List<CharacterTemplateView>();
-            if (characterStyleTemplateConfig == null || characterStyleTemplateConfig.templates == null)
-                return;
-            
-            foreach (var template in characterStyleTemplateConfig.templates)
-            {
-                var templateView = new CharacterTemplateView(new CharacterTemplateViewModel());
-                templateView.Init(template);
-                _characterTemplateViews.Add(templateView);
-            }
+            applicationId = _viewModel.Settings.ApplicationId;
+            await CharacterTemplateCreator.LoadAndCreateTemplateList(applicationId);
+            await characterBlueprintsView.InitAsync();
         }
 
         public void Render()
         {
-            var characterStyleTemplateConfig =
-                Resources.Load<CharacterStyleTemplateConfig>("CharacterStyleTemplateConfig");
-
-            if (_characterTemplateViews.Count != characterStyleTemplateConfig.templates?.Length)
-                RefreshTemplateView(characterStyleTemplateConfig);
+            var characterBlueprintTemplateConfig =
+                Resources.Load<CharacterTemplateConfig>(applicationId);
 
             using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
             _scrollPosition = scrollViewScope.scrollPosition;
@@ -132,7 +107,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
 
-                    await _characterStylesView.InitAsync();
+                    await characterBlueprintsView.InitAsync();
                 });
             }
 
@@ -153,44 +128,10 @@ namespace ReadyPlayerMe.Editor.UI.Views
 
             GUILayout.Space(20);
 
-            _characterStylesView.Render();
+            characterBlueprintsView.Render();
 
             GUILayout.Space(20);
-
-            GUILayout.Label("Your Character Templates", new GUIStyle()
-            {
-                fontStyle = FontStyle.Bold,
-                normal = new GUIStyleState()
-                {
-                    textColor = Color.white
-                },
-                margin = new RectOffset(10, 10, 0, 0),
-                fontSize = 14
-            });
-            GUILayout.Label("Here you can add template prefabs for characters.",
-                new GUIStyle(GUI.skin.label)
-                {
-                    margin = new RectOffset(9, 10, 0, 0)
-                });
-
-
-            using (new GUILayout.VerticalScope(new GUIStyle()
-                   {
-                       margin = new RectOffset(7, 7, 5, 0)
-                   }))
-            {
-                foreach (var characterTemplateView in _characterTemplateViews)
-                {
-                    characterTemplateView.Render();
-                }
-
-                GUILayout.Space(10);
-
-                _createCharacterTemplateView.Render();
-            }
-
-            GUILayout.Space(20);
-
+            
             GUILayout.Label("Auth Settings", new GUIStyle()
             {
                 fontStyle = FontStyle.Bold,

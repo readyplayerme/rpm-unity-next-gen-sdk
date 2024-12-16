@@ -19,10 +19,10 @@ namespace ReadyPlayerMe.Tests.Api.V1
             
             // Act
             var response = await _characterApi.CreateAsync(request);
-            Debug.Log(response.Data.GlbUrl);
+            Debug.Log(response.Data.ModelUrl);
             
             // Assert
-            Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
+            Assert.IsTrue(Uri.TryCreate(response.Data.ModelUrl, UriKind.Absolute, out _));
         }
         
         [Test, Order(1)]
@@ -69,7 +69,7 @@ namespace ReadyPlayerMe.Tests.Api.V1
             Debug.Log(response.Data.Id);
             
             // Assert
-            Assert.IsTrue(Uri.TryCreate(response.Data.GlbUrl, UriKind.Absolute, out _));
+            Assert.IsTrue(Uri.TryCreate(response.Data.ModelUrl, UriKind.Absolute, out _));
         }
     }
 }

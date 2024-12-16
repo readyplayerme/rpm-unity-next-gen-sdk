@@ -1,10 +1,12 @@
-﻿using GLTFast;
+﻿using System;
+using GLTFast;
 using System.Linq;
 using UnityEngine;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
@@ -12,20 +14,23 @@ namespace ReadyPlayerMe
     {
         private const string BASE_MODEL_LABEL = "baseModel";
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
-        private const string CHARACTER_STYLE_TEMPLATE_LABEL = "CharacterStyleTemplateConfig";
         
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
         
+        private CharacterTemplateConfig templateConfig;
+        private string applicationId;
+        
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
-        public CharacterLoader()
+        public CharacterLoader(CharacterTemplateConfig templateConfig = null)
         {
             _characterApi = new CharacterApi();
             _meshTransfer = new MeshTransfer();
             _skeletonBuilder = new SkeletonBuilder();
+            this.templateConfig = templateConfig;
         }
 
         /// <summary>
@@ -63,7 +68,7 @@ namespace ReadyPlayerMe
             
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
                 .definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
+                .FirstOrDefault(p => p.characterBlueprintId == templateTagOrId)?
                 .definition;
 
             characterData.gameObject.TryGetComponent<Animator>(out var animator);
@@ -112,12 +117,13 @@ namespace ReadyPlayerMe
             });
             
             Character character = response.Data;
-            CharacterData characterData = LoadTemplate(templateTagOrId, character.Id);
+            CharacterData characterData = LoadTemplate(templateTagOrId);
+
             characterData.gameObject.SetActive(false);
             
             var gltf = new GltfImport();
 
-            if (!await gltf.Load(character.GlbUrl))
+            if (!await gltf.Load(character.ModelUrl))
                 return null;
 
             var characterObject = new GameObject(character.Id);
@@ -126,7 +132,7 @@ namespace ReadyPlayerMe
 
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
                 .definitionLinks
-                .FirstOrDefault(p => p.characterStyleId == templateTagOrId)?
+                .FirstOrDefault(p => p.characterBlueprintId == templateTagOrId)?
                 .definition;
 
             characterData.gameObject.TryGetComponent<Animator>(out var animator);
@@ -148,21 +154,93 @@ namespace ReadyPlayerMe
             
             return characterData;
         }
+
+
+        public async Task<CharacterData> LoadCharacterAsync(string characterId, string tag = "")
+        {
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = characterId,
+            });
+            var blueprintId = response.Data.BlueprintId;
+            var templatePrefab = GetTemplate(blueprintId, tag);
+
+            var templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
+            if (templateInstance == null)
+            {
+                Debug.LogError( $"Failed to load character template for character with ID {characterId}." );
+                return null;
+            }
+
+            var characterData = templateInstance.AddComponent<CharacterData>();
+            characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
+            var gltf = new GltfImport();
+
+            if (!await gltf.Load(response.Data.ModelUrl))
+            {
+                Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
+                return null;
+            }
+            
+            var characterObject = new GameObject(characterId);
+
+            await gltf.InstantiateSceneAsync(characterObject.transform);
+
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
+                .definitionLinks
+                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
+                .definition;
+            var animator = characterData.gameObject.GetComponent<Animator>();
+            if( animator == null )
+            {
+                animator = characterData.gameObject.AddComponent<Animator>();
+            }
+            animator.enabled = false;
         
+            var animationAvatar = animator.avatar;
+            if (animationAvatar == null)
+            {
+                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                    ? skeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
+            
+            _meshTransfer.Transfer(characterObject, characterData.gameObject);
+            characterData.gameObject.SetActive(true);
+            
+            animator.enabled = true;
+        
+            return characterData;
+
+        }
+        
+
         /// <summary>
         ///     Retrieves a template based on the given template tag or ID.
         /// </summary>
         /// <param name="templateTagOrId"> The template tag or ID of the character to load. </param>
         /// <returns> A GameObject representing the template. </returns>
-        protected virtual GameObject GetTemplate(string templateTagOrId)
+        protected virtual GameObject GetTemplate(string blueprintId, string tag = "")
         {
-            if (string.IsNullOrEmpty(templateTagOrId))
+            if (string.IsNullOrEmpty(blueprintId))
                 return null;
 
-            return Resources
-                .Load<CharacterStyleTemplateConfig>(CHARACTER_STYLE_TEMPLATE_LABEL)?
-                .templates.FirstOrDefault(p => p.id == templateTagOrId || p.tags.Contains(templateTagOrId))?
-                .template;
+            if (templateConfig == null) // load default if not set
+            {
+                if (string.IsNullOrEmpty(applicationId))
+                {
+                    applicationId = Resources.Load<Settings>( "ReadyPlayerMeSettings")?.ApplicationId;
+                }
+                templateConfig = Resources.Load<CharacterTemplateConfig>(applicationId);
+            }
+            if (templateConfig == null)
+            {
+                Debug.LogError("Character template config not found.");
+                return null;
+            }
+            var blueprintTemplate = templateConfig.Templates.ToList().FirstOrDefault(p => p.BlueprintId == blueprintId) ?? templateConfig.Templates[0];
+            return blueprintTemplate.GetPrefabByTag(tag);
         }
 
         /// <summary>
@@ -173,15 +251,15 @@ namespace ReadyPlayerMe
         /// <returns> A CharacterData object representing the loaded template. </returns>
         private CharacterData LoadTemplate(string templateTagOrId, string characterId = null)
         {
-            GameObject template = GetTemplate(templateTagOrId);
-            GameObject templateInstance = template != null ? Object.Instantiate(template) : null;
+            GameObject templatePrefab = GetTemplate(templateTagOrId);
+            GameObject templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
 
             var data = templateInstance?.GetComponent<CharacterData>();
 
             if (data == null)
                 data = templateInstance?.AddComponent<CharacterData>();
             
-            data?.Initialize(characterId, templateTagOrId);
+            //data?.Initialize(characterId, templateTagOrId);
 
             return data;
         }

@@ -9,6 +9,7 @@ using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
 using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models;
 using ReadyPlayerMe.Editor.Cache.EditorPrefs;
 using UnityEditor;
+using UnityEngine;
 using Application = ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models.Application;
 
 namespace ReadyPlayerMe.Editor.UI.ViewModels
@@ -22,20 +23,20 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
         public IList<Application> Applications { get; private set; } = new List<Application>();
 
         public readonly AnalyticsApi AnalyticsApi;
-        public readonly AssetApi AssetApi;
+        public readonly BlueprintApi BlueprintApi;
         public readonly Settings Settings;
 
         private readonly DeveloperAccountApi _developerAccountApi;
 
         public ApplicationManagementViewModel(
             AnalyticsApi analyticsApi,
-            AssetApi assetApi,
+            BlueprintApi blueprintApi,
             DeveloperAccountApi developerAccountApi,
             Settings settings
         )
         {
             AnalyticsApi = analyticsApi;
-            AssetApi = assetApi;
+            BlueprintApi = blueprintApi;
             Settings = settings;
             _developerAccountApi = developerAccountApi;
         }
@@ -81,14 +82,21 @@ namespace ReadyPlayerMe.Editor.UI.ViewModels
 
             Applications = applicationListResponse.Data?.ToList() ?? new List<Application>();
 
-            if (Applications?.FirstOrDefault(p => p.Id == Settings.ApplicationId) == null)
-            {
-                Settings.ApplicationId = string.Empty;
-                EditorUtility.SetDirty(Settings);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
+            // Check if the ID exists in the application list
+            var matchingApplication = Applications.FirstOrDefault(p => p.Id == Settings.ApplicationId);
 
+            if (matchingApplication == null)
+            {
+                Settings.ApplicationId = Applications.Count > 0 ? Applications[0].Id : string.Empty; 
+            }
+            else
+            {
+                Settings.ApplicationId = matchingApplication.Id; // Use the matched application
+            }
+            
+            EditorUtility.SetDirty(Settings);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             Loading = false;
         }
     }
