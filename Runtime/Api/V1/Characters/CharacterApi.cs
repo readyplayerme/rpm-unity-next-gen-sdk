@@ -27,12 +27,5 @@ namespace ReadyPlayerMe.Api.V1
                 }, cancellationToken
             );
         }
-
-        public virtual string GeneratePreviewUrl(CharacterPreviewRequest request)
-        {
-            var queryString = BuildQueryString(request.Params);
-
-            return $"{Settings.ApiBaseUrl}/v1/{Resource}/{request.Id}/preview{queryString}";
-        }
     }
 }
