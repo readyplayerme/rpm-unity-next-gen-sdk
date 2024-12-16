@@ -31,7 +31,7 @@ namespace ReadyPlayerMe
             this.templateConfig = templateConfig;
         }
         
-        public async Task<CharacterData> LoadCharacterAsync(string characterId)
+        public async Task<CharacterData> LoadCharacterAsync(string characterId, string tag = "")
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
