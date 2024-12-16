@@ -190,8 +190,11 @@ namespace ReadyPlayerMe
                 .definitionLinks
                 .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
                 .definition;
-
-            characterData.gameObject.TryGetComponent<Animator>(out var animator);
+            var animator = characterData.gameObject.GetComponent<Animator>();
+            if( animator == null )
+            {
+                animator = characterData.gameObject.AddComponent<Animator>();
+            }
             animator.enabled = false;
         
             var animationAvatar = animator.avatar;

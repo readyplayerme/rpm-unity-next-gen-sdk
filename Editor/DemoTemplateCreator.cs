@@ -26,7 +26,8 @@ namespace ReadyPlayerMe.Editor
             }
             var blueprints = await GetBlueprints(applicationId);
             var missingBlueprints = templateListObject.Templates == null || templateListObject.Templates.Length == 0  ? blueprints : blueprints.Where(blueprint => templateListObject.Templates.All(template => template.BlueprintId != blueprint.Id)).ToArray();
-            if(missingBlueprints.Length == 0) return;
+            if (missingBlueprints.Length == 0) return;
+            
             var missingTemplates = await LoadAndCreateCharacterTemplates(missingBlueprints);
             var list = new List<CharacterTemplate>();
             if (templateListObject.Templates != null)
@@ -34,6 +35,7 @@ namespace ReadyPlayerMe.Editor
                 list.AddRange(templateListObject.Templates);
             }
             list.AddRange(missingTemplates);
+            if(list.Count == 0) return;
             templateListObject.Templates = list.ToArray();
             AssetDatabase.SaveAssetIfDirty(templateListObject);
             AssetDatabase.SaveAssets();
