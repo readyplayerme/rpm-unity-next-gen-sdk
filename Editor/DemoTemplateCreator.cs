@@ -22,6 +22,7 @@ namespace ReadyPlayerMe.Editor
             if (templateListObject == null) {
                 templateListObject = ScriptableObject.CreateInstance<CharacterTemplateConfig>();
                 AssetDatabase.CreateAsset(templateListObject, $"{RPM_RESOURCES_PATH}/{applicationId}.asset");
+                templateListObject = AssetDatabase.LoadAssetAtPath<CharacterTemplateConfig>($"{RPM_RESOURCES_PATH}/{applicationId}.asset");
                 Debug.Log( $"New CharacterTemplateConfig created for" );
             }
             var blueprints = await GetBlueprints(applicationId);
@@ -30,9 +31,9 @@ namespace ReadyPlayerMe.Editor
             
             var missingTemplates = await LoadAndCreateCharacterTemplates(missingBlueprints);
             var list = new List<CharacterTemplate>();
-            if (templateListObject.Templates != null)
+            if (templateListObject.Templates is { Length: > 0 })
             {
-                list.AddRange(templateListObject.Templates);
+                list = new List<CharacterTemplate>(templateListObject.Templates);
             }
             list.AddRange(missingTemplates);
             if(list.Count == 0) return;
