@@ -1,6 +1,4 @@
 using UnityEngine;
-using ReadyPlayerMe.Api.V1;
-using System.Collections.Generic;
 
 namespace ReadyPlayerMe.Data
 {
@@ -13,9 +11,6 @@ namespace ReadyPlayerMe.Data
         
         public string BlueprintId { get; private set; }
         
-        public readonly Dictionary<string, Asset> Assets = new Dictionary<string, Asset>();
-        public readonly Dictionary<string, SkinnedMeshRenderer[]> AssetMeshes = new Dictionary<string, SkinnedMeshRenderer[]>();
-
         /// <summary>
         /// Initialize character data with the given id.
         /// </summary>
