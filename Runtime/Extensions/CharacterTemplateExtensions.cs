@@ -1,32 +1,11 @@
 using System.Linq;
 using ReadyPlayerMe.Data;
-using UnityEditor;
 using UnityEngine;
 
 namespace ReadyPlayerMe
 {
     public static class CharacterTemplateExtensions
     {
-        /// <summary>
-        /// Gets the GUID of the CharacterTemplate by ID.
-        /// </summary>
-        public static string GetTemplatePrefabGUID(this CharacterTemplateConfig characterTemplateConfig, string templateId)
-        {
-            if (string.IsNullOrEmpty(templateId) || characterTemplateConfig == null || characterTemplateConfig.Templates == null)
-                return null;
-            var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateId);
-            if(template == null)
-            {
-                Debug.LogWarning($"Template with ID {templateId} not found.");
-                return null;
-            }
-            var prefab = template.GetPrefabByTag("");
-            var path = AssetDatabase.GetAssetPath(prefab);
-            var guid = AssetDatabase.AssetPathToGUID(path);
-            
-            return guid;
-        }
-        
         public static CharacterTemplate GetTemplate(this CharacterTemplateConfig characterTemplateConfig, string templateId)
         {
             if (string.IsNullOrEmpty(templateId))
