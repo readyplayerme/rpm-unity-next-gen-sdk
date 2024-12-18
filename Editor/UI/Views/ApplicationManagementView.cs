@@ -44,15 +44,12 @@ namespace ReadyPlayerMe.Editor.UI.Views
             );
             _textInput.Init(_viewModel.Settings.ApiKey);
             applicationId = _viewModel.Settings.ApplicationId;
-            await CharacterTemplateCreator.LoadAndCreateTemplateList(applicationId);
+            await CharacterTemplateConfigCreator.LoadAndCreateTemplateList(applicationId);
             await characterBlueprintsView.InitAsync();
         }
 
         public void Render()
         {
-            var characterBlueprintTemplateConfig =
-                Resources.Load<CharacterTemplateConfig>(applicationId);
-
             using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
             _scrollPosition = scrollViewScope.scrollPosition;
 

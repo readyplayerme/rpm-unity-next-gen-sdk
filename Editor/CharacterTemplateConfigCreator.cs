@@ -10,7 +10,7 @@ using CharacterTemplateConfig = ReadyPlayerMe.Data.CharacterTemplateConfig;
 
 namespace ReadyPlayerMe.Editor
 {
-    public static class CharacterTemplateCreator
+    public static class CharacterTemplateConfigCreator
     {
         private const string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
 
@@ -18,11 +18,13 @@ namespace ReadyPlayerMe.Editor
         {
             ValidateFolders();
             if (string.IsNullOrEmpty(applicationId)) return;
-            var templateListObject = AssetDatabase.LoadAssetAtPath<CharacterTemplateConfig>($"{RPM_RESOURCES_PATH}/{applicationId}.asset");
+            var templateListObject = Resources.Load<CharacterTemplateConfig>(applicationId);
             if (templateListObject == null) {
                 templateListObject = ScriptableObject.CreateInstance<CharacterTemplateConfig>();
                 AssetDatabase.CreateAsset(templateListObject, $"{RPM_RESOURCES_PATH}/{applicationId}.asset");
-                templateListObject = AssetDatabase.LoadAssetAtPath<CharacterTemplateConfig>($"{RPM_RESOURCES_PATH}/{applicationId}.asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                templateListObject = Resources.Load<CharacterTemplateConfig>(applicationId);
                 Debug.Log( $"New CharacterTemplateConfig created for" );
             }
             var blueprints = await GetBlueprints(applicationId);
@@ -38,6 +40,7 @@ namespace ReadyPlayerMe.Editor
             list.AddRange(missingTemplates);
             if(list.Count == 0) return;
             templateListObject.Templates = list.ToArray();
+            EditorUtility.SetDirty(templateListObject);
             AssetDatabase.SaveAssetIfDirty(templateListObject);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
