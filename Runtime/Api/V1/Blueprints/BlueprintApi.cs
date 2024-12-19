@@ -11,7 +11,7 @@ namespace ReadyPlayerMe.Api.V1
         {
             var apiRequest = new ApiRequest<string>()
             {
-                Url = $"https://api.readyplayer.me/v1/public/blueprints?applicationId={request.ApplicationId}&archived={request.Archived.ToString().ToLower()}",
+                Url = $"{Settings.ApiBaseUrl}/v1/public/blueprints?applicationId={request.ApplicationId}&archived={request.Archived.ToString().ToLower()}",
                 Method = UnityWebRequest.kHttpVerbGET,
                 Headers = new Dictionary<string, string>()
                 {
