@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GLTFast;
 using System.Linq;
 using UnityEngine;
@@ -9,6 +10,44 @@ using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
+    
+    /// <summary>
+    ///     This enumeration describes the avatar mesh LOD (Level of Detail) options.
+    /// </summary>
+    public enum Lod
+    {
+        [InspectorName("High (LOD0)")]
+        High,
+        [InspectorName("Medium (LOD1)")]
+        Medium,
+        [InspectorName("Low (LOD2)")]
+        Low
+    }
+    
+    /// <summary>
+    ///     This enumeration describes the pose options for the avatar skeleton.
+    /// </summary>
+    public enum Pose
+    {
+        APose,
+        TPose
+    }
+
+    /// <summary>
+    ///     This enumeration describes the TextureAtlas setting options.
+    /// </summary>
+    /// <remarks>If set to <c>None</c> the avatar meshes, materials and textures will NOT be combined.</remarks>
+    public enum TextureAtlas
+    {
+        None,
+        [InspectorName("High (1024)")]
+        High,
+        [InspectorName("Medium (512)")]
+        Medium,
+        [InspectorName("Low (256)")]
+        Low
+    }
+    
     public class CharacterLoader
     {
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
