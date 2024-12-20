@@ -15,23 +15,21 @@ namespace ReadyPlayerMe
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
-        private readonly CharacterLoaderConfig loaderConfig;
         private CharacterTemplateConfig templateConfig;
         private string applicationId;
         
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
-        public CharacterLoader(CharacterLoaderConfig config = null, CharacterTemplateConfig templateConfig = null)
+        public CharacterLoader(CharacterTemplateConfig templateConfig = null)
         {
             _characterApi = new CharacterApi();
             _meshTransfer = new MeshTransfer();
             _skeletonBuilder = new SkeletonBuilder();
             this.templateConfig = templateConfig;
-            loaderConfig = config;
         }
         
-        public async Task<CharacterData> LoadAsync(string characterId, string tag = "")
+        public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -49,7 +47,7 @@ namespace ReadyPlayerMe
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
 
-            var url = loaderConfig !=null ? $"{response.Data.ModelUrl}?{loaderConfig.BuildQueryParams()}" : response.Data.ModelUrl;
+            var url = config !=null ? $"{response.Data.ModelUrl}?{config.BuildQueryParams()}" : response.Data.ModelUrl;
 
             if (!await gltf.Load(url))
             {
