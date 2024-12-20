@@ -4,11 +4,12 @@ using UnityEngine;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
+using ReadyPlayerMe.Api;
 using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
-    public class CharacterLoader
+    public class CharacterLoader : WebApi
     {
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
         
@@ -47,7 +48,8 @@ namespace ReadyPlayerMe
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
 
-            var url = config !=null ? $"{response.Data.ModelUrl}?{config.BuildQueryParams()}" : response.Data.ModelUrl;
+             var query= BuildQueryString(config);
+            var url = config !=null ? $"{response.Data.ModelUrl}?{query}" : response.Data.ModelUrl;
 
             if (!await gltf.Load(url))
             {
