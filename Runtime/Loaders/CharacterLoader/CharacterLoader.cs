@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
-    public class CharacterLoader : WebApi
+    public class CharacterLoader 
     {
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
         
@@ -48,7 +48,7 @@ namespace ReadyPlayerMe
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
 
-             var query= BuildQueryString(config);
+             var query= QueryBuilder.BuildQueryString(config);
             var url = config !=null ? $"{response.Data.ModelUrl}?{query}" : response.Data.ModelUrl;
 
             if (!await gltf.Load(url))
