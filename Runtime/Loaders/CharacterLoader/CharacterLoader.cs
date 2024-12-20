@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
 using GLTFast;
 using System.Linq;
 using UnityEngine;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
-using UnityEditor.Scripting;
 using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
-    
     public class CharacterLoader
     {
         private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
@@ -19,22 +15,23 @@ namespace ReadyPlayerMe
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
         private readonly SkeletonBuilder _skeletonBuilder;
-        
+        private readonly CharacterLoaderConfig loaderConfig;
         private CharacterTemplateConfig templateConfig;
         private string applicationId;
         
         /// <summary>
         ///     Initializes a new instance of the CharacterLoader class.
         /// </summary>
-        public CharacterLoader(CharacterTemplateConfig templateConfig = null)
+        public CharacterLoader(CharacterLoaderConfig config = null, CharacterTemplateConfig templateConfig = null)
         {
             _characterApi = new CharacterApi();
             _meshTransfer = new MeshTransfer();
             _skeletonBuilder = new SkeletonBuilder();
             this.templateConfig = templateConfig;
+            loaderConfig = config;
         }
         
-        public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
+        public async Task<CharacterData> LoadAsync(string characterId, string tag = "")
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -52,8 +49,8 @@ namespace ReadyPlayerMe
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
 
-            var url = config!=null ? $"{response.Data.ModelUrl}?{config.BuildQueryParams()}" : response.Data.ModelUrl;
-            Debug.Log($"Loading from {url}");
+            var url = loaderConfig !=null ? $"{response.Data.ModelUrl}?{loaderConfig.BuildQueryParams()}" : response.Data.ModelUrl;
+
             if (!await gltf.Load(url))
             {
                 Debug.LogError( $"Failed to load character model for character with ID {characterId}." );

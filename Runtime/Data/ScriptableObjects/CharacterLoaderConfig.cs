@@ -40,7 +40,7 @@ namespace ReadyPlayerMe
     }
     
     
-    [CreateAssetMenu(fileName = "CharacterLoaderSettings", menuName = "Ready Player Me/Character Loader Settings", order = 2)]
+    [CreateAssetMenu(fileName = "CharacterLoaderConfig", menuName = "Ready Player Me/Character Loader Config", order = 2)]
     public class CharacterLoaderConfig : ScriptableObject
     {
         [Tooltip("The mesh level of detail.")]
