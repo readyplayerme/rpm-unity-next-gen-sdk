@@ -6,47 +6,11 @@ using UnityEngine;
 using ReadyPlayerMe.Data;
 using ReadyPlayerMe.Api.V1;
 using System.Threading.Tasks;
+using UnityEditor.Scripting;
 using Object = UnityEngine.Object;
 
 namespace ReadyPlayerMe
 {
-    
-    /// <summary>
-    ///     This enumeration describes the avatar mesh LOD (Level of Detail) options.
-    /// </summary>
-    public enum Lod
-    {
-        [InspectorName("High (LOD0)")]
-        High,
-        [InspectorName("Medium (LOD1)")]
-        Medium,
-        [InspectorName("Low (LOD2)")]
-        Low
-    }
-    
-    /// <summary>
-    ///     This enumeration describes the pose options for the avatar skeleton.
-    /// </summary>
-    public enum Pose
-    {
-        APose,
-        TPose
-    }
-
-    /// <summary>
-    ///     This enumeration describes the TextureAtlas setting options.
-    /// </summary>
-    /// <remarks>If set to <c>None</c> the avatar meshes, materials and textures will NOT be combined.</remarks>
-    public enum TextureAtlas
-    {
-        None,
-        [InspectorName("High (1024)")]
-        High,
-        [InspectorName("Medium (512)")]
-        Medium,
-        [InspectorName("Low (256)")]
-        Low
-    }
     
     public class CharacterLoader
     {
@@ -70,7 +34,7 @@ namespace ReadyPlayerMe
             this.templateConfig = templateConfig;
         }
         
-        public async Task<CharacterData> LoadAsync(string characterId, string tag = "")
+        public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -78,19 +42,19 @@ namespace ReadyPlayerMe
             });
             var blueprintId = response.Data.BlueprintId;
             var templatePrefab = GetTemplate(blueprintId, tag);
-
-            var templateInstance = templatePrefab != null ? Object.Instantiate(templatePrefab) : null;
-            if (templateInstance == null)
+            if (templatePrefab == null)
             {
                 Debug.LogError( $"Failed to load character template for character with ID {characterId}." );
                 return null;
             }
-
+            var templateInstance = Object.Instantiate(templatePrefab);
             var characterData = templateInstance.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
 
-            if (!await gltf.Load(response.Data.ModelUrl))
+            var url = config!=null ? $"{response.Data.ModelUrl}?{config.BuildQueryParams()}" : response.Data.ModelUrl;
+            Debug.Log($"Loading from {url}");
+            if (!await gltf.Load(url))
             {
                 Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
                 return null;
