@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts
 
         public async Task<ApplicationListResponse> ListApplicationsAsync(ApplicationListRequest request)
         {
-            var queryString = BuildQueryString(request.Params);
+            var queryString = QueryBuilder.BuildQueryString(request.Params);
 
             return await Dispatch<ApplicationListResponse>(new ApiRequest<string>()
                 {
@@ -28,7 +28,7 @@ namespace ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts
 
         public async Task<OrganizationListResponse> ListOrganizationsAsync(OrganizationListRequest request)
         {
-            var queryString = BuildQueryString(request.Params);
+            var queryString = QueryBuilder.BuildQueryString(request.Params);
 
             return await Dispatch<OrganizationListResponse>(new ApiRequest<string>()
                 {
