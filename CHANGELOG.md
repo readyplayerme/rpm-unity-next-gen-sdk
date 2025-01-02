@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] - 2025.01.02
+
+## Added
+- CharacterLoaderConfig class for configuring character loading settings
+
 ## [1.0.0] - 2024.12.06
 
 ## Added
