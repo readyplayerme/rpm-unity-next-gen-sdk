@@ -48,8 +48,9 @@ namespace ReadyPlayerMe
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
             var gltf = new GltfImport();
 
-             var query= QueryBuilder.BuildQueryString(config);
-            var url = config !=null ? $"{response.Data.ModelUrl}?{query}" : response.Data.ModelUrl;
+            config ??= new CharacterLoaderConfig();
+            var query= QueryBuilder.BuildQueryString(config);
+            var url = $"{response.Data.ModelUrl}?{query}";
 
             if (!await gltf.Load(url))
             {
