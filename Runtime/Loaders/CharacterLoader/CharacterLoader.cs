@@ -38,7 +38,7 @@ namespace ReadyPlayerMe
             var characterData = blueprint.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
 
-            var characterObject = LoadAndInstantiateCharacter(response.Data.ModelUrl, config, characterId);
+            var characterObject = await LoadAndInstantiateCharacter(response.Data.ModelUrl, config, characterId);
             if (characterObject == null)
                 return null;
 
