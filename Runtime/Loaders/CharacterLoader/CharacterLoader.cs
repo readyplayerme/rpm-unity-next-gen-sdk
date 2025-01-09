@@ -40,7 +40,7 @@ namespace ReadyPlayerMe
             var characterData = blueprint.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
 
-            return await SetupCharacter(characterData, config, response.Data.ModelUrl, response.Data.BlueprintId, response.Data.Id);
+            return await SetupCharacter(characterData, config, meshParent, response.Data.ModelUrl, response.Data.BlueprintId, response.Data.Id);
         }
 
         public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
@@ -60,10 +60,10 @@ namespace ReadyPlayerMe
             var characterData = templateInstance.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, blueprintId);
             
-            return await SetupCharacter(characterData, config, response.Data.ModelUrl, blueprintId, response.Data.Id);
+            return await SetupCharacter(characterData, config, null, response.Data.ModelUrl, blueprintId, response.Data.Id);
         }
 
-        private async Task<CharacterData> SetupCharacter(CharacterData characterData, CharacterLoaderConfig config, string modelUrl, string blueprintId, string characterId)
+        private async Task<CharacterData> SetupCharacter(CharacterData characterData, CharacterLoaderConfig config, GameObject meshParent, string modelUrl, string blueprintId, string characterId)
         {
             config ??= new CharacterLoaderConfig();
             var query= QueryBuilder.BuildQueryString(config);
@@ -100,7 +100,7 @@ namespace ReadyPlayerMe
                 );
             }
             
-            _meshTransfer.Transfer(characterObject, characterData.gameObject);
+            _meshTransfer.Transfer(characterObject, meshParent ?? characterData.gameObject);
             characterData.gameObject.SetActive(true);
             
             animator.enabled = true;
