@@ -86,7 +86,7 @@ namespace ReadyPlayerMe
             }
 
             var characterObject = new GameObject(characterId);
-            gltf.InstantiateSceneAsync(characterObject.transform).Wait();
+            await gltf.InstantiateSceneAsync(characterObject.transform);
 
             return characterObject;
         }
