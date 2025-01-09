@@ -32,83 +32,116 @@ namespace ReadyPlayerMe
 
         public async Task<CharacterData> LoadOnBlueprintAsync(string characterId, GameObject blueprint, GameObject meshParent = null, CharacterLoaderConfig config = null)
         {
-            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest { Id = characterId });
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = characterId,
+            });
             var blueprintId = response.Data.BlueprintId;
-
+            
             var characterData = blueprint.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
+            var gltf = new GltfImport();
 
-            var characterObject = await LoadAndInstantiateCharacter(response.Data.ModelUrl, config, characterId);
-            if (characterObject == null)
+            config ??= new CharacterLoaderConfig();
+            var query= QueryBuilder.BuildQueryString(config);
+            var url = $"{response.Data.ModelUrl}?{query}";
+
+            if (!await gltf.Load(url))
+            {
+                Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
                 return null;
+            }
+            
+            var characterObject = new GameObject(characterId);
 
-            SetupCharacter(characterObject, blueprintId, characterData, meshParent ?? characterData.gameObject);
+            await gltf.InstantiateSceneAsync(characterObject.transform);
 
+            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
+                .definitionLinks
+                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
+                .definition;
+            var animator = characterData.gameObject.GetComponent<Animator>();
+            if( animator == null )
+            {
+                animator = characterData.gameObject.AddComponent<Animator>();
+            }
+            animator.enabled = false;
+        
+            var animationAvatar = animator.avatar;
+            if (animationAvatar == null)
+            {
+                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                    ? skeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
+            
+            _meshTransfer.Transfer(characterObject, meshParent ?? characterData.gameObject);
+            characterData.gameObject.SetActive(true);
+            
+            animator.enabled = true;
+        
             return characterData;
         }
 
         public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
         {
-            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest { Id = characterId });
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = characterId,
+            });
             var blueprintId = response.Data.BlueprintId;
-
             var templatePrefab = GetTemplate(blueprintId, tag);
             if (templatePrefab == null)
             {
-                Debug.LogError($"Failed to load character template for character with ID {characterId}.");
+                Debug.LogError( $"Failed to load character template for character with ID {characterId}." );
                 return null;
             }
-
             var templateInstance = Object.Instantiate(templatePrefab);
             var characterData = templateInstance.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
-
-            var characterObject = await LoadAndInstantiateCharacter(response.Data.ModelUrl, config, characterId);
-            if (characterObject == null)
-                return null;
-
-            SetupCharacter(characterObject, blueprintId, characterData, characterData.gameObject);
-
-            return characterData;
-        }
-
-        private async Task<GameObject> LoadAndInstantiateCharacter(string modelUrl, CharacterLoaderConfig config, string characterId)
-        {
-            config ??= new CharacterLoaderConfig();
-            var query = QueryBuilder.BuildQueryString(config);
-            var url = $"{modelUrl}?{query}";
-
             var gltf = new GltfImport();
+
+            config ??= new CharacterLoaderConfig();
+            var query= QueryBuilder.BuildQueryString(config);
+            var url = $"{response.Data.ModelUrl}?{query}";
+
             if (!await gltf.Load(url))
             {
-                Debug.LogError($"Failed to load character model for character with ID {characterId}.");
+                Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
                 return null;
             }
-
+            
             var characterObject = new GameObject(characterId);
+
             await gltf.InstantiateSceneAsync(characterObject.transform);
 
-            return characterObject;
-        }
-
-        private void SetupCharacter(GameObject characterObject, string blueprintId, CharacterData characterData, GameObject meshParent)
-        {
             var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
                 .definitionLinks
-                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?.definition;
-
-            var animator = characterData.gameObject.GetComponent<Animator>() ?? characterData.gameObject.AddComponent<Animator>();
-            animator.enabled = false;
-
-            if (animator.avatar == null)
+                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
+                .definition;
+            var animator = characterData.gameObject.GetComponent<Animator>();
+            if( animator == null )
             {
-                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition?.GetHumanBones());
+                animator = characterData.gameObject.AddComponent<Animator>();
             }
-
-            _meshTransfer.Transfer(characterObject, meshParent);
+            animator.enabled = false;
+        
+            var animationAvatar = animator.avatar;
+            if (animationAvatar == null)
+            {
+                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
+                    ? skeletonDefinition.GetHumanBones()
+                    : null
+                );
+            }
+            
+            _meshTransfer.Transfer(characterObject, characterData.gameObject);
             characterData.gameObject.SetActive(true);
-
+            
             animator.enabled = true;
+        
+            return characterData;
         }
         
         /// <summary>
