@@ -63,7 +63,7 @@ namespace ReadyPlayerMe
             var characterData = templateInstance.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
 
-            var characterObject = LoadAndInstantiateCharacter(response.Data.ModelUrl, config, characterId);
+            var characterObject = await LoadAndInstantiateCharacter(response.Data.ModelUrl, config, characterId);
             if (characterObject == null)
                 return null;
 
@@ -72,14 +72,14 @@ namespace ReadyPlayerMe
             return characterData;
         }
 
-        private GameObject LoadAndInstantiateCharacter(string modelUrl, CharacterLoaderConfig config, string characterId)
+        private async Task<GameObject> LoadAndInstantiateCharacter(string modelUrl, CharacterLoaderConfig config, string characterId)
         {
             config ??= new CharacterLoaderConfig();
             var query = QueryBuilder.BuildQueryString(config);
             var url = $"{modelUrl}?{query}";
 
             var gltf = new GltfImport();
-            if (!gltf.Load(url).Result)
+            if (!await gltf.Load(url))
             {
                 Debug.LogError($"Failed to load character model for character with ID {characterId}.");
                 return null;
