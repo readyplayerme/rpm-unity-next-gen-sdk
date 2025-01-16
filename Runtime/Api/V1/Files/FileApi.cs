@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Api.V1
+namespace PlayerZero.Api.V1
 {
     public class FileApi
     {

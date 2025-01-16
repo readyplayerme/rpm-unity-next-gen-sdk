@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe.Data
+namespace PlayerZero.Data
 {
     /// <summary>
     ///  This component is attached to the character game object to store character metadata.

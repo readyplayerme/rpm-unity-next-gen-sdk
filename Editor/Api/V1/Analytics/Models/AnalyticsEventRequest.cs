@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Editor.Api.V1.Analytics.Models
+namespace PlayerZero.Editor.Api.V1.Analytics.Models
 {
     public class AnalyticsEventRequest
     {

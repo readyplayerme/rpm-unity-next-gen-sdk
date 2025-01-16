@@ -1,6 +1,6 @@
-﻿using ReadyPlayerMe.Api.V1;
+﻿using PlayerZero.Api.V1;
 
-namespace ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models
+namespace PlayerZero.Editor.Api.V1.DeveloperAccounts.Models
 {
     public class OrganizationListRequest
     {

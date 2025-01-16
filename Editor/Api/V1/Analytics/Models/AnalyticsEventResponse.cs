@@ -1,6 +1,6 @@
-﻿using ReadyPlayerMe.Api;
+﻿using PlayerZero.Api;
 
-namespace ReadyPlayerMe.Editor.Api.V1.Analytics.Models
+namespace PlayerZero.Editor.Api.V1.Analytics.Models
 {
     public class AnalyticsEventResponse : ApiResponse { }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReadyPlayerMe.Api.Exceptions
+namespace PlayerZero.Api.Exceptions
 {
     public class ApiException : Exception
     {

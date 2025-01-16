@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Api
+namespace PlayerZero.Api
 {
     public abstract class WebApi
     {

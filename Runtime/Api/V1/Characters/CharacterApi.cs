@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ReadyPlayerMe.Api.V1
+namespace PlayerZero.Api.V1
 {
     public class CharacterApi : WebApiWithAuth
     {

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace ReadyPlayerMe.Data
+namespace PlayerZero.Data
 {
     public class CharacterTemplateConfig : ScriptableObject
     {

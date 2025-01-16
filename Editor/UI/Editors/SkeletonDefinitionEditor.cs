@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using UnityEditor;
 
-namespace ReadyPlayerMe.Editor.UI.Editors
+namespace PlayerZero.Editor.UI.Editors
 {
     [CustomEditor(typeof(SkeletonDefinition))]
     public class SkeletonDefinitionEditor : UnityEditor.Editor

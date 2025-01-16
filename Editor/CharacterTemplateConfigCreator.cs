@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.Cache;
+using PlayerZero.Api.V1;
+using PlayerZero.Data;
+using PlayerZero.Editor.Cache;
 using UnityEditor;
 using UnityEngine;
-using CharacterTemplateConfig = ReadyPlayerMe.Data.CharacterTemplateConfig;
+using CharacterTemplateConfig = PlayerZero.Data.CharacterTemplateConfig;
 
-namespace ReadyPlayerMe.Editor
+namespace PlayerZero.Editor
 {
     public static class CharacterTemplateConfigCreator
     {

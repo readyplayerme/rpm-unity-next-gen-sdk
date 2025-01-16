@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe.Api
+namespace PlayerZero.Api
 {
     public class ApiRequest<T>
     {

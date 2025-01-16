@@ -1,11 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api;
-using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Editor.Cache;
-using ReadyPlayerMe.Editor.Cache.EditorPrefs;
+using PlayerZero.Api;
+using PlayerZero.Api.V1;
+using PlayerZero.Editor.Cache.EditorPrefs;
 
-namespace ReadyPlayerMe.Editor.Api.V1.Auth
+namespace PlayerZero.Editor.Api.V1.Auth
 {
     public class DeveloperTokenAuthStrategy : IAuthenticationStrategy
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEditor;
 
-namespace ReadyPlayerMe.Editor.UI.Components
+namespace PlayerZero.Editor.UI.Components
 {
     public class TextInput
     {

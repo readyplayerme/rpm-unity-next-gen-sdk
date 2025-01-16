@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace ReadyPlayerMe.Api
+namespace PlayerZero.Api
 {
     public interface IAuthenticationStrategy
     {

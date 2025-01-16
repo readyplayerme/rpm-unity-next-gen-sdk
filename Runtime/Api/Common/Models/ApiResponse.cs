@@ -1,4 +1,4 @@
-﻿namespace ReadyPlayerMe.Api
+﻿namespace PlayerZero.Api
 {
     public abstract class ApiResponse
     {

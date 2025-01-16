@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.Cache
+namespace PlayerZero.Editor.Cache
 {
     public class ScriptableObjectCache<T> : ObjectCache<T> where T : ScriptableObject
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     [Serializable]
     public class CharacterLoaderConfig 

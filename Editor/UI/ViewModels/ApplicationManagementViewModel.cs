@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.Api.V1.Analytics;
-using ReadyPlayerMe.Editor.Api.V1.Auth;
-using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
-using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models;
-using ReadyPlayerMe.Editor.Cache.EditorPrefs;
+using PlayerZero.Api.V1;
+using PlayerZero.Data;
+using PlayerZero.Editor.Api.V1.Analytics;
+using PlayerZero.Editor.Api.V1.Auth;
+using PlayerZero.Editor.Api.V1.DeveloperAccounts;
+using PlayerZero.Editor.Api.V1.DeveloperAccounts.Models;
+using PlayerZero.Editor.Cache.EditorPrefs;
 using UnityEditor;
-using UnityEngine;
-using Application = ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models.Application;
+using Application = PlayerZero.Editor.Api.V1.DeveloperAccounts.Models.Application;
 
-namespace ReadyPlayerMe.Editor.UI.ViewModels
+namespace PlayerZero.Editor.UI.ViewModels
 {
     public class ApplicationManagementViewModel
     {

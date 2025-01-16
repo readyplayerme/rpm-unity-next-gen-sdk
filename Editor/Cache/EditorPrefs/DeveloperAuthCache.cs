@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.Cache.EditorPrefs
+namespace PlayerZero.Editor.Cache.EditorPrefs
 {
     public class DeveloperAuth
     {
