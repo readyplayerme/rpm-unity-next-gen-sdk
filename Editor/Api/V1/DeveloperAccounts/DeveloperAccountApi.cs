@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using ReadyPlayerMe.Api;
-using ReadyPlayerMe.Editor.Api.V1.Auth;
-using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts.Models;
+using PlayerZero.Api;
+using PlayerZero.Editor.Api.V1.Auth;
+using PlayerZero.Editor.Api.V1.DeveloperAccounts.Models;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts
+namespace PlayerZero.Editor.Api.V1.DeveloperAccounts
 {
     public sealed class DeveloperAccountApi : WebApiWithAuth
     {

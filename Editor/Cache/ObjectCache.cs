@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.Cache
+namespace PlayerZero.Editor.Cache
 {
     public class ObjectCache<T> : Cache where T : Object
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 using AssetDatabase = UnityEditor.AssetDatabase;
 using TextAsset = UnityEngine.TextCore.Text.TextAsset;
 
-namespace ReadyPlayerMe.Editor.Cache
+namespace PlayerZero.Editor.Cache
 {
     public abstract class Cache
     {

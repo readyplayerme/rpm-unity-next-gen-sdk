@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     /// <summary>
     /// Attribute to mark a property as read-only so that it is visible in the inspector but not settable.

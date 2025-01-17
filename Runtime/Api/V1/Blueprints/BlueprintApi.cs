@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Api.V1
+namespace PlayerZero.Api.V1
 {
     public class BlueprintApi : WebApi
     {

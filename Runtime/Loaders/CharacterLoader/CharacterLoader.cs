@@ -1,13 +1,13 @@
 using GLTFast;
 using System.Linq;
 using UnityEngine;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Api.V1;
+using PlayerZero.Data;
+using PlayerZero.Api.V1;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api;
+using PlayerZero.Api;
 using Object = UnityEngine.Object;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     public class CharacterLoader 
     {

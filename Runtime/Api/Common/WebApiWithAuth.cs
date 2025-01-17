@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ReadyPlayerMe.Api
+namespace PlayerZero.Api
 {
     public abstract class WebApiWithAuth : WebApi
     {

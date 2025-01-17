@@ -1,4 +1,4 @@
-﻿namespace ReadyPlayerMe.Api.Exceptions
+﻿namespace PlayerZero.Api.Exceptions
 {
     public class ApiError
     {

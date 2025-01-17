@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Api.V1
+namespace PlayerZero.Api.V1
 {
     public class Asset
     {

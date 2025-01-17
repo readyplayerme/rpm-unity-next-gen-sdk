@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.Api.V1.Analytics;
-using ReadyPlayerMe.Editor.Api.V1.Analytics.Models;
-using ReadyPlayerMe.Editor.Api.V1.Auth;
-using ReadyPlayerMe.Editor.Api.V1.Auth.Models;
-using ReadyPlayerMe.Editor.Cache.EditorPrefs;
+using PlayerZero.Data;
+using PlayerZero.Editor.Api.V1.Analytics;
+using PlayerZero.Editor.Api.V1.Analytics.Models;
+using PlayerZero.Editor.Api.V1.Auth;
+using PlayerZero.Editor.Api.V1.Auth.Models;
+using PlayerZero.Editor.Cache.EditorPrefs;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.UI.ViewModels
+namespace PlayerZero.Editor.UI.ViewModels
 {
     public class DeveloperLoginViewModel
     {

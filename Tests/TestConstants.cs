@@ -1,4 +1,4 @@
-namespace ReadyPlayerMe.Tests
+namespace PlayerZero.Tests
 {
     public class TestConstants
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.Cache
+namespace PlayerZero.Editor.Cache
 {
     public class GlbCache : Cache
     {

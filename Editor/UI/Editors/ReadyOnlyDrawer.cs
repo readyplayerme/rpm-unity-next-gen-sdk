@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor
+namespace PlayerZero.Editor
 {
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer

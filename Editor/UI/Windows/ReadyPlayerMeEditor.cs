@@ -1,26 +1,26 @@
-using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.Api.V1.Analytics;
-using ReadyPlayerMe.Editor.Api.V1.Auth;
-using ReadyPlayerMe.Editor.Api.V1.DeveloperAccounts;
-using ReadyPlayerMe.Editor.Cache;
-using ReadyPlayerMe.Editor.Cache.EditorPrefs;
-using ReadyPlayerMe.Editor.UI.ViewModels;
-using ReadyPlayerMe.Editor.UI.Views;
+using PlayerZero.Api.V1;
+using PlayerZero.Data;
+using PlayerZero.Editor.Api.V1.Analytics;
+using PlayerZero.Editor.Api.V1.Auth;
+using PlayerZero.Editor.Api.V1.DeveloperAccounts;
+using PlayerZero.Editor.Cache;
+using PlayerZero.Editor.Cache.EditorPrefs;
+using PlayerZero.Editor.UI.ViewModels;
+using PlayerZero.Editor.UI.Views;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.UI.Windows
+namespace PlayerZero.Editor.UI.Windows
 {
     public class ReadyPlayerMeEditor : EditorWindow
     {
         private DeveloperLoginView _developerLoginView;
         private ApplicationManagementView _applicationManagementView;
         
-        [MenuItem("Tools/Ready Player Me", false, 0)]
+        [MenuItem("Tools/Player Zero", false, 0)]
         public static void Generate()
         {
-            var window = GetWindow<ReadyPlayerMeEditor>("Ready Player Me");
+            var window = GetWindow<ReadyPlayerMeEditor>("Player Zero");
             window.minSize = new Vector2(700, 120);
         }
 

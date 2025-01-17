@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Api.V1
+namespace PlayerZero.Api.V1
 {
     public class ApiKeyAuthStrategy : IAuthenticationStrategy
     {

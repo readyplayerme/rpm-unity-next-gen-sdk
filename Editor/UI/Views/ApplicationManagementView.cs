@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Editor.UI.Components;
-using ReadyPlayerMe.Editor.UI.ViewModels;
+using PlayerZero.Editor.UI.Components;
+using PlayerZero.Editor.UI.ViewModels;
 
-namespace ReadyPlayerMe.Editor.UI.Views
+namespace PlayerZero.Editor.UI.Views
 {
     public class ApplicationManagementView
     {
@@ -85,7 +85,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                 fontSize = 14
             });
 
-            GUILayout.Label("Select the Ready Player Me application to link to project",
+            GUILayout.Label("Select the Player Zero application to link to project",
                 new GUIStyle(GUI.skin.label)
                 {
                     margin = new RectOffset(9, 10, 0, 0)

@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     public class SkeletonBuilder
     {

@@ -1,9 +1,9 @@
 ﻿using System;
-using ReadyPlayerMe.Editor.UI.ViewModels;
+using PlayerZero.Editor.UI.ViewModels;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.UI.Views
+namespace PlayerZero.Editor.UI.Views
 {
     public class DeveloperLoginView
     {
@@ -21,7 +21,7 @@ namespace ReadyPlayerMe.Editor.UI.Views
                        margin = new RectOffset(9, 9, 9, 0),
                    }))
             {
-                EditorGUILayout.LabelField("Sign in with your Ready Player Me Studio account to start.");
+                EditorGUILayout.LabelField("Sign in with your Player Zero developer account to start.");
 
                 EditorGUILayout.Space(10);
 

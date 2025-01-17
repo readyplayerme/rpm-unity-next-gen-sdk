@@ -2,7 +2,7 @@
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace ReadyPlayerMe.Editor.UI.Components
+namespace PlayerZero.Editor.UI.Components
 {
     public class ObjectInput<T> where T : Object
     {

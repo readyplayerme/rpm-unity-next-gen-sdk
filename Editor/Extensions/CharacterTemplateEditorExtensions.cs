@@ -1,9 +1,9 @@
 using System.Linq;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor
+namespace PlayerZero.Editor
 {
     public static class CharacterTemplateEditorExtensions
     {

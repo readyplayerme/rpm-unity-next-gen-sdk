@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe.Data
+namespace PlayerZero.Data
 {
     public class Settings : ScriptableObject
     {

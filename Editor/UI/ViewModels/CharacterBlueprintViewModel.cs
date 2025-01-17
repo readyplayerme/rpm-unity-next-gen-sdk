@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api.V1;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.Api.V1.Analytics;
-using ReadyPlayerMe.Editor.Api.V1.Analytics.Models;
-using ReadyPlayerMe.Editor.Cache;
+using PlayerZero.Api.V1;
+using PlayerZero.Data;
+using PlayerZero.Editor.Api.V1.Analytics;
+using PlayerZero.Editor.Api.V1.Analytics.Models;
+using PlayerZero.Editor.Cache;
 using UnityEditor;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Editor.UI.ViewModels
+namespace PlayerZero.Editor.UI.ViewModels
 {
     [Serializable]
     public class CharacterBlueprintViewModel

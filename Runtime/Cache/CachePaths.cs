@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     public class CachePaths
     {

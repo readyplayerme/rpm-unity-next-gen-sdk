@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ReadyPlayerMe.Data
+namespace PlayerZero.Data
 {
 	[System.Serializable]
 	public class BoneGroup
@@ -11,7 +11,7 @@ namespace ReadyPlayerMe.Data
 		public string[] BonesValues;
 	}
 
-	[CreateAssetMenu(fileName = "SkeletonDefinition", menuName = "Ready Player Me/Skeleton Definition", order = 1)]
+	[CreateAssetMenu(fileName = "SkeletonDefinition", menuName = "Player Zero/Skeleton Definition", order = 1)]
 	public class SkeletonDefinition : ScriptableObject
 	{
 		public string cacheId;

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api;
-using ReadyPlayerMe.Editor.Api.V1.Auth.Models;
+using PlayerZero.Api;
+using PlayerZero.Editor.Api.V1.Auth.Models;
 using UnityEngine.Networking;
 
-namespace ReadyPlayerMe.Editor.Api.V1.Auth
+namespace PlayerZero.Editor.Api.V1.Auth
 {
     public sealed class DeveloperAuthApi : WebApi
     {

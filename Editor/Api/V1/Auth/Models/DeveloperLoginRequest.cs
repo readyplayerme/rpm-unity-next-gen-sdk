@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ReadyPlayerMe.Editor.Api.V1.Auth.Models
+namespace PlayerZero.Editor.Api.V1.Auth.Models
 {
     public class DeveloperLoginRequest
     {

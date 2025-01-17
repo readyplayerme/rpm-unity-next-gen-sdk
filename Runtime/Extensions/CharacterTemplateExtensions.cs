@@ -1,8 +1,8 @@
 using System.Linq;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using UnityEngine;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     public static class CharacterTemplateExtensions
     {

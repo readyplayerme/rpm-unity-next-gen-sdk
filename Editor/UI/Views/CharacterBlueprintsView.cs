@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Data;
-using ReadyPlayerMe.Editor.UI.ViewModels;
+using PlayerZero.Data;
+using PlayerZero.Editor.UI.ViewModels;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
-namespace ReadyPlayerMe.Editor.UI.Views
+namespace PlayerZero.Editor.UI.Views
 {
     public class CharacterBlueprintsView
     {

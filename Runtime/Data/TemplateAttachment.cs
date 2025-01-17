@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ReadyPlayerMe.Data
+namespace PlayerZero.Data
 {
     /// <summary>
     ///     Represents an GameObject that is attached to the Template Character.

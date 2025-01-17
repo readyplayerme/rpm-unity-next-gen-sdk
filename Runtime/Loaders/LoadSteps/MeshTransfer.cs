@@ -1,9 +1,9 @@
 using System.Linq;
 using UnityEngine;
-using ReadyPlayerMe.Data;
+using PlayerZero.Data;
 using System.Collections.Generic;
 
-namespace ReadyPlayerMe
+namespace PlayerZero
 {
     public class MeshTransfer
     {

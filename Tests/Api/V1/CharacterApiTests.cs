@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using ReadyPlayerMe.Api.V1;
+using PlayerZero.Api.V1;
 
-namespace ReadyPlayerMe.Tests.Api.V1
+namespace PlayerZero.Tests.Api.V1
 {
     public class CharacterApiTests
     {
