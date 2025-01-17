@@ -30,6 +30,35 @@ namespace PlayerZero
             this.templateConfig = templateConfig;
         }
         
+        /// <summary>
+        ///     Loads a character based on the given character ID onto the given blueprint.
+        ///     Used for multiplayer games where the character is required to be prepared ahead of time.
+        /// </summary>
+        /// <param name="characterId">The character ID of the character to load. </param>
+        /// <param name="blueprint">The blueprint to load the character onto. </param>
+        /// <param name="meshParent">The parent object to attach the character mesh to. </param>
+        /// <param name="config">The configuration to use when loading the character. </param>
+        /// <returns> A CharacterData object representing the loaded character. </returns>
+        public async Task<CharacterData> LoadAsync(string characterId, GameObject blueprint, GameObject meshParent = null, CharacterLoaderConfig config = null)
+        {
+            var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
+            {
+                Id = characterId,
+            });
+            
+            var characterData = blueprint.AddComponent<CharacterData>();
+            characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
+
+            return await SetupCharacter(characterData, config, meshParent, response.Data.ModelUrl, response.Data.BlueprintId, response.Data.Id);
+        }
+
+        /// <summary>
+        ///     Loads a character based on the given character ID.
+        /// </summary>
+        /// <param name="characterId">The character ID of the character to load. </param>
+        /// <param name="tag">The tag of the blueprint to load. </param>
+        /// <param name="config">The configuration to use when loading the character. </param>
+        /// <returns> A CharacterData object representing the loaded character. </returns>
         public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
@@ -45,12 +74,18 @@ namespace PlayerZero
             }
             var templateInstance = Object.Instantiate(templatePrefab);
             var characterData = templateInstance.AddComponent<CharacterData>();
-            characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
+            characterData.Initialize(response.Data.Id, blueprintId);
+            
+            return await SetupCharacter(characterData, config, null, response.Data.ModelUrl, blueprintId, response.Data.Id);
+        }
+
+        private async Task<CharacterData> SetupCharacter(CharacterData characterData, CharacterLoaderConfig config, GameObject meshParent, string modelUrl, string blueprintId, string characterId)
+        {
+            config ??= new CharacterLoaderConfig();
+            var query= QueryBuilder.BuildQueryString(config);
+            var url = $"{modelUrl}?{query}";
+
             var gltf = new GltfImport();
-
-             var query= QueryBuilder.BuildQueryString(config);
-            var url = config !=null ? $"{response.Data.ModelUrl}?{query}" : response.Data.ModelUrl;
-
             if (!await gltf.Load(url))
             {
                 Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
@@ -81,13 +116,12 @@ namespace PlayerZero
                 );
             }
             
-            _meshTransfer.Transfer(characterObject, characterData.gameObject);
+            _meshTransfer.Transfer(characterObject, meshParent ?? characterData.gameObject);
             characterData.gameObject.SetActive(true);
             
             animator.enabled = true;
         
             return characterData;
-
         }
         
         /// <summary>
